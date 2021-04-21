@@ -75,8 +75,8 @@ const unsigned long LOG_OFF_SEQ3_DURATION = 7 * 1000 * 1000;  // [us]
 const unsigned long IO_MARGIN = 1 * 1000 * 1000;              // [us]
 
 const int AIS1120SX_LOG_INTERVAL = 2500;                      // [us]
-const int TC_LOG_INTERVAL = 100 * 1000;                       // [us]
-const int FLUSH_INTERVAL = 500 * 1000;                        // [us]
+const int TC_LOG_INTERVAL = 500;                       // [us]
+const int FLUSH_INTERVAL = 100 * 1000;                        // [us]
 
 // I/O -------------------------------------------------------------------------
 bool indiv_button_state[2];               // state of the individual buttons
@@ -95,7 +95,7 @@ unsigned long button_stateTime[4] = {0}; // how long button array was in state
 #define SD_CONFIG  SdioConfig(FIFO_SDIO)
 
 // Size to log 32 byte lines at 2000Hz for more than sixty minutes.
-#define LOG_FILE_SIZE 32*2000*3600
+#define LOG_FILE_SIZE 32*2000*60
 // Space to hold 32 byte lines at 2000Hz for more than 1000ms.
 #define RING_BUF_CAPACITY 32*2000*1
 
@@ -138,6 +138,18 @@ struct datastore {
   float T4;
 };
 struct datastore myData;
+
+struct smallerstore {
+  unsigned long timestamp;
+  float gyroX;
+  float gyroY;
+  float gyroZ;
+  float accX;
+  float accY;
+  float accZ;
+  float accZ_onboard;
+};
+struct smallerstore myData2;
 
 
 // USER FUNCTIONS ==============================================================
@@ -222,7 +234,7 @@ void logData() {
   unsigned long minSpareMicros = INT32_MAX;
 
   // Start time.
-  unsigned long nextAISLoop = micros();
+  unsigned long previousLogLoop = micros();
   unsigned long nextFlushLoop = micros();
 
   // Save data into the RingBuf.
@@ -285,15 +297,15 @@ void logData() {
         digitalWrite(LED1_PIN, HIGH);
         Serial.println("Inside window for first check.");
       } else if (button_state == LOG_OFF_SEQ2_STATE \
-          && button_stateTime[LOG_OFF_SEQ2_STATE] >= LOG_OFF_SEQ2_DURATION \
-          && button_stateTime[LOG_OFF_SEQ2_STATE] <= LOG_OFF_SEQ2_DURATION \
-          + IO_MARGIN && logFlag == 2) {
+                 && button_stateTime[LOG_OFF_SEQ2_STATE] >= LOG_OFF_SEQ2_DURATION \
+                 && button_stateTime[LOG_OFF_SEQ2_STATE] <= LOG_OFF_SEQ2_DURATION \
+                 + IO_MARGIN && logFlag == 2) {
         digitalWrite(LED1_PIN, HIGH);
         Serial.println("Inside window for second check.");
       } else if (button_state == LOG_OFF_SEQ3_STATE \
-          && button_stateTime[LOG_OFF_SEQ3_STATE] >= LOG_OFF_SEQ3_DURATION \
-          && button_stateTime[LOG_OFF_SEQ3_STATE] <= LOG_OFF_SEQ3_DURATION \
-          + IO_MARGIN && logFlag == 3) {
+                 && button_stateTime[LOG_OFF_SEQ3_STATE] >= LOG_OFF_SEQ3_DURATION \
+                 && button_stateTime[LOG_OFF_SEQ3_STATE] <= LOG_OFF_SEQ3_DURATION \
+                 + IO_MARGIN && logFlag == 3) {
         digitalWrite(LED1_PIN, HIGH);
         Serial.println("Inside window for third check.");
       } else {
@@ -302,21 +314,67 @@ void logData() {
       }
     }
     button_lastState = button_state;
-    
-    rb.write((const uint8_t *) 0, 4);
-    rb.write((const uint8_t *) micros(), 4);
+
+    unsigned long spareMicros = previousLogLoop + TC_LOG_INTERVAL - micros();
+    if (micros() - previousLogLoop >= TC_LOG_INTERVAL) {
+
+
+      // Read data from all of the sensors.
+      // Done next to one another to be as simultaneous as possible.
+
+      // Put the data into the structure
+      myData2.timestamp = micros();
+      myData2.gyroX = random();
+      myData2.gyroY = random();
+      myData2.gyroZ = random();
+      myData2.accX = random();
+      myData2.accY = random();
+      myData2.accZ = random();
+      myData2.accZ_onboard = random();
+
+      // Save data into the RingBuf.
+      rb.write((const uint8_t *)&myData2, sizeof(myData2));
+
+      if (rb.getWriteError()) {
+        // Error caused by too few free bytes in RingBuf.
+        Serial.println("WriteError");
+        break;
+      }
+
+
+      // Time for next point.
+      previousLogLoop += TC_LOG_INTERVAL;
+      spareMicros = previousLogLoop + TC_LOG_INTERVAL - micros();
+      if (spareMicros < minSpareMicros) {
+        minSpareMicros = spareMicros;
+      }
+      Serial.print(micros());
+      Serial.print(", ");
+      Serial.print(previousLogLoop);
+      Serial.print(", ");
+      Serial.print(spareMicros);
+      Serial.print(", ");
+      Serial.println(minSpareMicros);
+      if (spareMicros >= 10000000) {
+        Serial.print("Rate too fast ");
+        Serial.println(spareMicros);
+        break;
+      }
+    } // measurement if statement
 
     // Flush the sd card if it's been long enough
-    if (micros() - nextFlushLoop > 0) {
-      loggingFile.flush();
+    if (micros() - nextFlushLoop >= FLUSH_INTERVAL) {
       nextFlushLoop += FLUSH_INTERVAL; // restart the flush timer
+      rb.sync();
+      Serial.print("Just flushed. Spare micros: ");
+      Serial.println(spareMicros);
     }
 
-//    // Read from the AIS1120SX if it's been long enough
-//    if (micros() - nextAISLoop > 0) {
-//      loggingFile.flush();
-//      nextFlushLoop += FLUSH_INTERVAL; // restart the flush timer
-//    }
+    //    // Read from the AIS1120SX if it's been long enough
+    //    if (micros() - nextAISLoop > 0) {
+    //      loggingFile.flush();
+    //      nextFlushLoop += FLUSH_INTERVAL; // restart the flush timer
+    //    }
 
     // See if data is ready for the ADIS16470
     //    // Read IMU burst data and point to data array without checksum
