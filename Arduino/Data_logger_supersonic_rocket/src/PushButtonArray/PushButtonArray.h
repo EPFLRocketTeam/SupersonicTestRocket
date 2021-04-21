@@ -50,8 +50,10 @@ public:
   // Gets the state of button array according to the individual button states
   uint8_t translateState(bool individualButtonStates[buttonNum]);
 
-  uint8_t addEvent(uint8_t state, unsigned long windowStart,
+  uint8_t addEvent(uint8_t state, uint8_t nextState, unsigned long windowStart,
                    unsigned long windowEnd);
+  void activateEvent(uint8_t idx);
+  void deactivateEvent(uint8_t idx);
   void deleteEvent(uint8_t idx);
 
   // Check if there are any events that just happened

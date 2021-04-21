@@ -106,35 +106,6 @@ struct smallerstore myData2;
 
 // USER FUNCTIONS ==============================================================
 
-void getButtonArrayState() {
-  // gets the state of button array according to the individual button states
-  if (indiv_button_state[0] == LOW && indiv_button_state[1] == LOW) {
-    button_state = 0;
-  } else if (indiv_button_state[0] == HIGH && indiv_button_state[1] == LOW) {
-    button_state = 1;
-  } else if (indiv_button_state[0] == LOW && indiv_button_state[1] == HIGH) {
-    button_state = 2;
-  } else {
-    button_state = 3;
-  }
-}
-
-void updateButtonState() {
-  // function that updates the current state of the button array
-
-  // start the current state timer
-  button_startState[button_state] = micros();
-  // end the previous state timer
-  button_endState[button_lastState] = button_startState[button_state];
-  // calculate duration of previous state
-  button_stateTime[button_lastState] = button_endState[button_lastState] \
-                                       -  button_startState[button_lastState];
-}
-
-void updateButtonTimer() {
-  // function that updates the current state of the button array timer
-  button_stateTime[button_state] = micros() - button_startState[button_state];
-}
 
 void logData() {
   // INITIALIZATION

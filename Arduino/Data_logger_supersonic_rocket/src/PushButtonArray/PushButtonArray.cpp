@@ -43,7 +43,8 @@ uint8_t PushButtonArray::translateState(bool individualButtonStates[buttonNum])
 	}
 }
 
-uint8_t PushButtonArray::addEvent(uint8_t state, unsigned long windowStart,
+uint8_t PushButtonArray::addEvent(uint8_t state, uint8_t nextState,
+																	unsigned long windowStart,
 																	unsigned long windowEnd)
 {
 	int i;
@@ -54,7 +55,7 @@ uint8_t PushButtonArray::addEvent(uint8_t state, unsigned long windowStart,
 			Serial.println("No available events left!");
 			return -1;
 		}
-		if (!Events[i].status())
+		if (Events[i].deletedStatus())
 		// event was empty, will use it
 		{
 			break;
@@ -62,57 +63,57 @@ uint8_t PushButtonArray::addEvent(uint8_t state, unsigned long windowStart,
 	}
 
 	// assign the new event to the empty event that was just found
-	Events[i].activate(state, windowStart, windowEnd);
+	Events[i].activate(state, nextState, windowStart, windowEnd);
 	return i;
+}
+
+void PushButtonArray::activateEvent(uint8_t idx)
+{
+	Events[idx].activate();
+}
+
+void PushButtonArray::deactivateEvent(uint8_t idx)
+{
+	Events[idx].deactivate();
 }
 
 void PushButtonArray::deleteEvent(uint8_t idx)
 {
-	Events[idx].deactivate();
+	Events[idx].deleteEvent();
 }
 
 eventOutput PushButtonArray::checkEvents(bool individualButtonStates[buttonNum])
 {
 	state = translateState(individualButtonStates);
-	uint8_t stateToSend;
-	bool released;
+	unsigned long durationToSend;
 
 	if (state != lastState) // state changed
 	{
 		// update the state times
 		// start the current state timer
 		stateStartTime[state] = millis();
-		stateDuration[state] = 0; 
+		stateDuration[state] = 0;
 		// end the previous state timer
 		stateEndTime[lastState] = stateStartTime[state];
 		// calculate duration of previous state
 		stateDuration[lastState] = stateEndTime[lastState] -
 															 stateStartTime[lastState];
 
-		// when releasing, interested in state array was
-		stateToSend = lastState;
-		released = true;
+		// the duration to send to the event checker
+		durationToSend = stateDuration[lastState];
 	}
 	else
 	{
 		// updates the timer of the current state of the button array
 		stateDuration[state] = millis() - stateStartTime[state];
 
-		// when still in state, interested in current state
-		stateToSend = state;
-		released = false;
+		// the duration to send to the event checker
+		durationToSend = stateDuration[state];
 	}
 
 	// Check if any events were triggered
 	eventOutput output;					// prepare the output structure
 	output.triggeredEvent = -1; // no events triggered by default
-
-	// Serial.print("State to send: ");
-	// Serial.print(stateToSend);
-	// Serial.print(". State duration: ");
-	// Serial.print(stateDuration[stateToSend]);
-	// Serial.print(". Released: ");
-	// Serial.println(released);
 
 	for (int i = 0; i < 8; i++) // go through all the events
 	{
@@ -121,7 +122,7 @@ eventOutput PushButtonArray::checkEvents(bool individualButtonStates[buttonNum])
 			continue;
 		}
 		output.triggeredEventType =
-				Events[i].checkEvent(stateToSend, stateDuration[stateToSend], released);
+				Events[i].checkEvent(state, lastState, durationToSend);
 		if (output.triggeredEventType != NONE) // a valid event happened
 		{
 			output.triggeredEvent = i;

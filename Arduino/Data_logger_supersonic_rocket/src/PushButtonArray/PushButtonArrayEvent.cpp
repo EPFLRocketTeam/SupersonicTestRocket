@@ -7,10 +7,10 @@
 
 #include "PushButtonArrayEvent.h"
 
-// Default constructor with the event deactivated
+// Default constructor with the event deleted (empty event)
 PushButtonArrayEvent::PushButtonArrayEvent()
 {
-  deactivate();
+  deleteEvent();
 }
 
 bool PushButtonArrayEvent::status()
@@ -18,49 +18,72 @@ bool PushButtonArrayEvent::status()
   return activated;
 }
 
-void PushButtonArrayEvent::activate(uint8_t state,
+bool PushButtonArrayEvent::deletedStatus()
+{
+  return deleted;
+}
+
+void PushButtonArrayEvent::activate(uint8_t state, uint8_t nextState,
                                     unsigned long windowStart,
                                     unsigned long windowEnd)
 {
   activated = true;
+  deleted = false;
   eventState = state;
+  eventNextState = nextState;
   eventWindowStart = windowStart;
   eventWindowEnd = windowEnd;
 }
 
-// Deactivate the event by setting it to deactivated
-// and all of its elements to zero
+void PushButtonArrayEvent::activate()
+{
+  activated = true;
+}
+
 void PushButtonArrayEvent::deactivate()
 {
   activated = false;
+}
+
+// Delete the event by setting it to deleted
+// and all of its elements to zero
+void PushButtonArrayEvent::deleteEvent()
+{
+  activated = false;
+  deleted = true;
   eventState = 0;
   eventWindowStart = 0;
   eventWindowEnd = 0;
   lastEventType = NONE;
 }
 
-eventType PushButtonArrayEvent::checkEvent(uint8_t state,
-                                           unsigned long stateDuration,
-                                           bool released)
+eventType PushButtonArrayEvent::checkEvent(uint8_t state, uint8_t lastState,
+                                           unsigned long stateDuration)
 {
-  if (state == eventState && stateDuration >= eventWindowStart &&
-      stateDuration <= eventWindowEnd &&
-      released && lastEventType != RELEASED) // released in window
+  if (lastState == eventState && state == eventNextState &&
+      stateDuration >= eventWindowStart && stateDuration <= eventWindowEnd &&
+      lastEventType != GOOD_TRANSITION) // released in window
   {
-    lastEventType = RELEASED;
+    lastEventType = GOOD_TRANSITION;
     return lastEventType;
   }
-  else if (state == eventState && stateDuration >= eventWindowStart &&
+  else if (lastState == eventState && state == eventState &&
+           stateDuration >= eventWindowStart &&
            stateDuration <= eventWindowEnd &&
-           !released && lastEventType != WINDOW_START) // holding enter window
+           lastEventType != WINDOW_START) // holding enter window
   {
     lastEventType = WINDOW_START;
     return lastEventType;
   }
-  else if (state == eventState && stateDuration >= eventWindowEnd &&
-           !released && lastEventType != WINDOW_END) // holding exit window
+  else if (lastState == eventState && state == eventState &&
+           stateDuration >= eventWindowEnd &&
+           lastEventType != WINDOW_END) // holding exit window
   {
     lastEventType = WINDOW_END;
+    return lastEventType;
+  }
+  else if (lastState != state) {
+    lastEventType = BAD_TRANSITION;
     return lastEventType;
   }
   else
