@@ -1,17 +1,3 @@
-// DATA_LOGGER Main file that will be used to log data on the Teensy.
-//
-// HEADER ======================================================================
-// DATA_LOGGER Script v0.1
-// Author: Joshua Cayetano-Emond
-// Email: newbie856@gmail.com
-// Last updated: 2021-04-06
-//
-// Changelog:
-// v0.1 : first version of the script
-//
-//
-//  This line is exactly 80 characters long. No line should be longer than this.
-
 
 // IMPORT LIBRARIES ============================================================
 // Standard libraries
@@ -29,31 +15,7 @@
 
 // DEFINE VARIABLES ============================================================
 
-// Pins ------------------------------------------------------------------------
-// I/O
-const byte LED1_PIN = 7,
-           LED2_PIN = 8,
-           BUTTON0_PIN = 2,
-           BUTTON1_PIN = 6;
-// ADIS164760
-const byte DR_ADIS16470_PIN = 24,
-           SYNC_ADIS16470_PIN = 25,
-           RST_ADIS16470_PIN = 35,
-           CS_ADIS16470_PIN = 36;
-// AIS1120SX
-const byte CS_AIS1120SX_PIN = 31;
-// Pressure sensors
-const byte CS_RSC015_EE_PIN = 17,
-           CS_RSC015_ADC_PIN = 16,
-           DR_RSC015 = 15;
-const byte CS_RSC060_EE_PIN = 28,
-           CS_RSC060_ADC_PIN = 27,
-           DR_RSC060 = 26;
-// Thermocouples
-const byte CS_TC1 = 23,
-           CS_TC2 = 22,
-           CS_TC3 = 21,
-           CS_TC4 = 20;
+
 
 
 // Atmosphere ------------------------------------------------------------------
@@ -78,17 +40,7 @@ const int AIS1120SX_LOG_INTERVAL = 2500;                      // [us]
 const int TC_LOG_INTERVAL = 500;                       // [us]
 const int FLUSH_INTERVAL = 100 * 1000;                        // [us]
 
-// I/O -------------------------------------------------------------------------
-bool indiv_button_state[2];               // state of the individual buttons
-int button_state;                         // current state of button array
-// state 0:: button 0: LOW,  button 1: LOW
-// state 1:: button 0: HIGH, button 1: LOW
-// state 2:: button 0: LOW,  button 1: HIGH
-// state 3:: button 0: HIGH, button 1: HIGH
-int button_lastState;                     // previous state of button array
-unsigned long button_startState[4] = {0}; // moment button array entered state
-unsigned long button_endState[4] = {0};   // moment button array left state
-unsigned long button_stateTime[4] = {0}; // how long button array was in state
+
 
 // File logging ----------------------------------------------------------------
 // Use Teensy SDIO
@@ -419,49 +371,11 @@ void logData() {
 // SETUP =======================================================================
 
 void setup() {
-  // Open serial communications and give some time for the port to open
-  // Not waiting on the port in case the device is not connected to USB
-  Serial.begin(9600);
-  delay(1000);
-
-  // Set up I/O
-  pinMode(LED1_PIN, OUTPUT);
-  pinMode(LED2_PIN, OUTPUT);
-  pinMode(BUTTON0_PIN, INPUT);
-  pinMode(BUTTON1_PIN, INPUT);
-  Serial.println("I/O has been set up");
 
 
-  digitalWrite(LED1_PIN, LOW);
-  digitalWrite(LED2_PIN, HIGH);
-  delay(500);
-  digitalWrite(LED2_PIN, LOW);
-  delay(5000);
-
-  // Set up the ADIS16470
-  //  IMU.configSPI(); // Configure SPI communication
-  //  delay(1000); // Give the part time to start up
-  //  IMU.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
-  //  IMU.regWrite(DEC_RATE, 0x00); // Set digital filter
-  //  IMU.regWrite(FILT_CTRL, 0x04); // Set digital filter
-  // Serial.println("ADIS16470 has been set up");
 
 
-  // Set up the AIS1120SX
-  // Serial.println("AIS1120SX has been set up");
 
-  // Set up the pressure sensors
-  // Serial.println("Pressure sensors have been set up");
-
-  // Set up the thermocouples
-  // Serial.println("Thermocouples have been set up");
-
-
-  // Initialize the SD.
-  if (!sd.begin(SD_CONFIG)) {
-    sd.initErrorHalt(&Serial);
-  }
-  Serial.println("SD Card has been set up");
 
   logData();
 
