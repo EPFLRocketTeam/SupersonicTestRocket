@@ -28,18 +28,17 @@ private:
   static const uint8_t stateNum = buttonNum * buttonNum; // number of states
   static const uint8_t eventNum = 8;                     // max number of events
 
-  uint8_t state;     // current state of button array
-                     //    0--> button 0: LOW,  button 1: LOW
-                     //    1--> button 0: HIGH, button 1: LOW
-                     //    2--> button 0: LOW,  button 1: HIGH
-                     //    3--> button 0: HIGH, button 1: HIGH
-  uint8_t lastState; // previous state of button array
-
-  unsigned long stateStartTime[stateNum]; // moment button array entered state
-  unsigned long stateEndTime[stateNum];   // moment button array left state
-  unsigned long stateDuration[stateNum];  // how long button array was in state
+  unsigned long stateStartTime[stateNum] = {0}; // moment entered state
+  unsigned long stateEndTime[stateNum] = {0};   // moment left state
+  unsigned long stateDuration[stateNum] = {0};  // how long was in state
 
   PushButtonArrayEvent Events[eventNum]; // the events associated to the array
+  uint8_t state = 0;                     // current state of button array
+                                         //    0--> button 0: LOW,  button 1: LOW
+                                         //    1--> button 0: HIGH, button 1: LOW
+                                         //    2--> button 0: LOW,  button 1: HIGH
+                                         //    3--> button 0: HIGH, button 1: HIGH
+  uint8_t lastState = 0;                 // previous state of button array
 
 public:
   // constructor

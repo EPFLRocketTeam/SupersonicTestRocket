@@ -10,8 +10,6 @@
 //The constructor
 PushButtonArray::PushButtonArray()
 {
-	state = 0;
-	lastState = 0;
 }
 
 uint8_t PushButtonArray::getState()
@@ -63,23 +61,23 @@ uint8_t PushButtonArray::addEvent(uint8_t state, uint8_t nextState,
 	}
 
 	// assign the new event to the empty event that was just found
-	Events[i].activate(state, nextState, windowStart, windowEnd);
+	Events[i].createEvent(state, nextState, windowStart, windowEnd);
 	return i;
-}
-
-void PushButtonArray::activateEvent(uint8_t idx)
-{
-	Events[idx].activate();
-}
-
-void PushButtonArray::deactivateEvent(uint8_t idx)
-{
-	Events[idx].deactivate();
 }
 
 void PushButtonArray::deleteEvent(uint8_t idx)
 {
 	Events[idx].deleteEvent();
+}
+
+void PushButtonArray::activateEvent(uint8_t idx)
+{
+	Events[idx].activated = true;
+}
+
+void PushButtonArray::deactivateEvent(uint8_t idx)
+{
+	Events[idx].activated = false;
 }
 
 eventOutput PushButtonArray::checkEvents(bool individualButtonStates[buttonNum])
@@ -117,7 +115,7 @@ eventOutput PushButtonArray::checkEvents(bool individualButtonStates[buttonNum])
 
 	for (int i = 0; i < 8; i++) // go through all the events
 	{
-		if (!Events[i].status())
+		if (!Events[i].activated)
 		{ // event is not activate, skip it.
 			continue;
 		}

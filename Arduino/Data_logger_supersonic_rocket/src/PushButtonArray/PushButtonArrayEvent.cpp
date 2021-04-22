@@ -13,17 +13,12 @@ PushButtonArrayEvent::PushButtonArrayEvent()
   deleteEvent();
 }
 
-bool PushButtonArrayEvent::status()
-{
-  return activated;
-}
-
 bool PushButtonArrayEvent::deletedStatus()
 {
   return deleted;
 }
 
-void PushButtonArrayEvent::activate(uint8_t state, uint8_t nextState,
+void PushButtonArrayEvent::createEvent(uint8_t state, uint8_t nextState,
                                     unsigned long windowStart,
                                     unsigned long windowEnd)
 {
@@ -33,16 +28,6 @@ void PushButtonArrayEvent::activate(uint8_t state, uint8_t nextState,
   eventNextState = nextState;
   eventWindowStart = windowStart;
   eventWindowEnd = windowEnd;
-}
-
-void PushButtonArrayEvent::activate()
-{
-  activated = true;
-}
-
-void PushButtonArrayEvent::deactivate()
-{
-  activated = false;
 }
 
 // Delete the event by setting it to deleted
