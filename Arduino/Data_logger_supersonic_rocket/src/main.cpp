@@ -23,8 +23,9 @@
 #include <SPI.h>
 
 // User-defined headers
-#include "global_variables.h"
+#include "globalVariables.h"
 #include "PushButtonArray/PushButtonArray.h"
+#include "dataAcquisition.h"
 
 // DEFINE VARIABLES ============================================================
 
@@ -54,131 +55,11 @@ const byte CS_TC1_PIN = 23,
            CS_TC3_PIN = 21,
            CS_TC4_PIN = 20;
 
-void logData()
-{
-  Serial.println("Logging.");
-  digitalWrite(LED2_PIN, HIGH);
-
-  // create the button array
-  PushButtonArray buttonArray = PushButtonArray();
-  // setup the events
-  uint8_t logStop1Event = buttonArray.addEvent(1, 0, 3000, 4000);
-  uint8_t logStop2Event = buttonArray.addEvent(0, 2, 5000, 6000);
-  uint8_t logStop3Event = buttonArray.addEvent(2, 0, 7000, 8000);
-  // deactivate the events for now
-  buttonArray.deactivateEvent(logStop2Event);
-  buttonArray.deactivateEvent(logStop3Event);
-  // setup the output from the event check
-  eventOutput eventCheck;
-
-  // repeatedly check if button has been pressed for logging
-  bool logFlag = true;
-  while (logFlag)
-  {
-    bool indiv_button_state[2];
-    indiv_button_state[0] = digitalRead(BUTTON0_PIN);
-    indiv_button_state[1] = digitalRead(BUTTON1_PIN);
-    eventCheck = buttonArray.checkEvents(indiv_button_state);
-
-    // if any of the events happened, do something
-    if (eventCheck.triggeredEvent == logStop1Event)
-    {
-      switch (eventCheck.triggeredEventType)
-      {
-      case NONE:
-        break;
-      case GOOD_TRANSITION:
-        Serial.println("First check to stop logging passed.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, LOW);
-        buttonArray.deactivateEvent(logStop1Event);
-        buttonArray.activateEvent(logStop2Event);
-        break;
-      case BAD_TRANSITION:
-        Serial.println("Button input wrong. Left window.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        break;
-      case WINDOW_START:
-        Serial.println("Within window for first check.");
-        digitalWrite(LED1_PIN, HIGH);
-        break;
-      case WINDOW_END:
-        Serial.println("Left window for first check.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        break;
-      }
-    }
-    if (eventCheck.triggeredEvent == logStop2Event)
-    {
-      switch (eventCheck.triggeredEventType)
-      {
-      case NONE:
-        break;
-      case GOOD_TRANSITION:
-        Serial.println("Second check to stop logging passed.");
-        digitalWrite(LED1_PIN, LOW);
-        buttonArray.deactivateEvent(logStop2Event);
-        buttonArray.activateEvent(logStop3Event);
-        break;
-      case BAD_TRANSITION:
-        Serial.println("Button input wrong. Left window.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        buttonArray.deactivateEvent(logStop2Event);
-        buttonArray.activateEvent(logStop1Event);
-        break;
-      case WINDOW_START:
-        Serial.println("Within window for second check.");
-        digitalWrite(LED1_PIN, HIGH);
-        break;
-      case WINDOW_END:
-        Serial.println("Left window for second check.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        buttonArray.deactivateEvent(logStop2Event);
-        buttonArray.activateEvent(logStop1Event);
-        break;
-      }
-    }
-    if (eventCheck.triggeredEvent == logStop3Event)
-    {
-      switch (eventCheck.triggeredEventType)
-      {
-      case NONE:
-        break;
-      case GOOD_TRANSITION:
-        Serial.println("Passed all checks to stop logging.");
-        logFlag = false;
-        digitalWrite(LED1_PIN, HIGH);
-        digitalWrite(LED2_PIN, LOW);
-        buttonArray.deactivateEvent(logStop3Event);
-        break;
-      case BAD_TRANSITION:
-        Serial.println("Button input wrong. Left window.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        buttonArray.deactivateEvent(logStop3Event);
-        buttonArray.activateEvent(logStop1Event);
-        break;
-      case WINDOW_START:
-        Serial.println("Within window for third check.");
-        digitalWrite(LED1_PIN, HIGH);
-        break;
-      case WINDOW_END:
-        Serial.println("Left window for third check.");
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        buttonArray.deactivateEvent(logStop3Event);
-        buttonArray.activateEvent(logStop1Event);
-        break;
-      }
-    }
-    delay(50);
-  }
-  digitalWrite(LED1_PIN, LOW);
-}
+// Button event ----------------------------------------------------------------
+const int ACQ_STATE = 1;                     // State to turn on acquisition
+const int ACQ_NEXT_STATE = 0;                // Next state to turn on
+const unsigned long ACQ_WINDOW_START = 1000; // [ms]
+const unsigned long ACQ_WINDOW_END = 2000;   // [ms]
 
 // SETUP =======================================================================
 
@@ -219,12 +100,6 @@ void setup()
   // Set up the thermocouples
   // Serial.println("Thermocouples have been set up");
 
-  // // Initialize the SD.
-  // if (!sd.begin(SD_CONFIG))
-  // {
-  //   sd.initErrorHalt(&Serial);
-  // }
-  // Serial.println("SD Card has been set up");
   digitalWrite(LED2_PIN, HIGH);
   delay(500);
   digitalWrite(LED2_PIN, LOW);
@@ -237,17 +112,18 @@ void loop()
   // create the button array
   PushButtonArray buttonArray = PushButtonArray();
   // setup the event
-  uint8_t logStartEvent = buttonArray.addEvent(1, 0, 1000, 2000);
+  uint8_t logStartEvent = buttonArray.addEvent(
+      ACQ_STATE, ACQ_NEXT_STATE, ACQ_WINDOW_START, ACQ_WINDOW_END);
   // setup the output from the event check
   eventOutput eventCheck;
 
-  // repeatedly check if button has been pressed for logging
+  // repeatedly check if button has been pressed for data acquistion
   while (true)
   {
-    bool indiv_button_state[2];
-    indiv_button_state[0] = digitalRead(BUTTON0_PIN);
-    indiv_button_state[1] = digitalRead(BUTTON1_PIN);
-    eventCheck = buttonArray.checkEvents(indiv_button_state);
+    bool indivButtonState[2];
+    indivButtonState[0] = digitalRead(BUTTON0_PIN);
+    indivButtonState[1] = digitalRead(BUTTON1_PIN);
+    eventCheck = buttonArray.checkEvents(indivButtonState);
 
     // if any of the events happened, do something
     if (eventCheck.triggeredEvent == logStartEvent)
@@ -257,20 +133,20 @@ void loop()
       case NONE:
         break;
       case GOOD_TRANSITION:
-        Serial.println("Will begin logging as button was pressed.");
+        Serial.println("Will begin data acquisition as button was pressed.");
         digitalWrite(LED1_PIN, LOW);
-        logData();
+        acquireData();
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");
         digitalWrite(LED1_PIN, LOW);
         break;
       case WINDOW_START:
-        Serial.println("Within window to start logging.");
+        Serial.println("Within window to start data acquisition.");
         digitalWrite(LED1_PIN, HIGH);
         break;
       case WINDOW_END:
-        Serial.println("Left window to start logging.");
+        Serial.println("Left window to start data acquisition.");
         digitalWrite(LED1_PIN, LOW);
         break;
       }
