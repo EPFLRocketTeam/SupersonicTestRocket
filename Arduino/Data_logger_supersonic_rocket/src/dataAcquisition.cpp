@@ -44,7 +44,6 @@ void acquireData()
   unsigned long prevSyncLoop = micros();
   unsigned long prevAis1120sxLoop = micros();
   unsigned long prevTcLoop = micros();
-  long minSpareMicros = INT32_MAX; // Min spare micros in loop.
 
   // Data ready variables
   bool Adis16470DataReadyStates[2] = {0, 0};
@@ -59,6 +58,13 @@ void acquireData()
   // acquire data as long as button sequence is not initated
   while (checkButtons(buttonArray, stopEvent))
   {
+
+    // // check if missed a beat
+    // if (micros() - prevAis1120sxLoop > 2 * AIS1120SX_INTERVAL)
+    // {
+    //   Serial.println("WARNING! Skipped a beat for the AIS1120SX.");
+    //   Serial.println("Consider lowering frequency.");
+    // }
     // Check if ADIS16470 is ready
     // TODO: find a better rising edge detection
     Adis16470DataReadyStates[0] = digitalRead(DR_ADIS16470_PIN);
@@ -83,27 +89,24 @@ void acquireData()
     }
 
     // check if it's time to read the AIS1120SX
-    if (micros() - prevAis1120sxLoop > AIS1120SX_INTERVAL)
+    if (checkEventDue(micros(), prevAis1120sxLoop, AIS1120SX_INTERVAL))
     {
-      // do stuff
-      Serial.println("Acquiring data from the AIS1120SX.");
-      prevAis1120sxLoop += AIS1120SX_INTERVAL;
+      AIS1120SXPacket packet = encodeAIS1120SXPacket(
+          micros(), (uint16_t)random());
+      rb.write((const uint8_t *)&packet, sizeof(packet));
     }
 
     // check if it's time to read the thermocouples
-    if (micros() - prevTcLoop > TC_INTERVAL)
+    if (checkEventDue(micros(), prevTcLoop, TC_INTERVAL))
     {
       // do stuff
-      Serial.println("Acquiring data from the thermocouples.");
-      prevTcLoop += TC_INTERVAL;
     }
 
     // check if it's time to sync
-    if (micros() - prevSyncLoop > SYNC_INTERVAL)
+    if (checkEventDue(micros(), prevSyncLoop, SYNC_INTERVAL))
     {
       Serial.println("Syncing data.");
       rb.sync();
-      prevSyncLoop += SYNC_INTERVAL;
     }
 
     // Check if ringBuf is ready for writing
@@ -138,33 +141,11 @@ void acquireData()
       break;
     }
 
-    //delay(100); // eventually remove this
-
-    // check the spare time for each loop
-    long spareSyncMicros = prevSyncLoop + SYNC_INTERVAL - micros();
-    minSpareMicros = min(minSpareMicros, spareSyncMicros);
-    long spareAis1120sxMicros = prevAis1120sxLoop + AIS1120SX_INTERVAL -
-                                micros();
-    minSpareMicros = min(minSpareMicros, spareAis1120sxMicros);
-    long spareTcMicros = prevTcLoop + TC_INTERVAL - micros();
-    minSpareMicros = min(minSpareMicros, spareTcMicros);
-
-    
-    Serial.println(spareSyncMicros);
-    Serial.println(spareAis1120sxMicros);
-    Serial.println(spareTcMicros);
-
-    if (minSpareMicros < 0)
-    {
-      Serial.print("Rate too fast.");
-      Serial.println(minSpareMicros);
-      break;
-    }
+    delayMicroseconds(2000); // eventually remove this
 
   } // Finished acquiring data
 
   // CLEANUP Phase
-
   // Write any RingBuf data to file.
   rb.sync();
   loggingFile.truncate();
@@ -172,6 +153,7 @@ void acquireData()
   loggingFile.close();
   sd.end();
 
+  // Visual cue acquisition has finished
   digitalWrite(LED1_PIN, HIGH);
   digitalWrite(LED2_PIN, LOW);
 }
@@ -279,5 +261,30 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       buttonArray.activateEvent(stopEvent[0]);
       break;
     }
+  }
+  return true;
+}
+
+bool checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
+                   unsigned long interval)
+{
+  // check if missed a beat
+  if (currMicros - prevEvent > 2 * interval)
+  {
+    int beatsSkipped = floor((currMicros - prevEvent) / interval);
+    Serial.print("WARNING! Skipped following amount of beats:");
+    Serial.println(beatsSkipped - 1);
+    Serial.println("Consider lowering frequency.");
+    prevEvent += beatsSkipped * interval; // catch up
+    return 1;                             // event is also due
+  }
+  else if (currMicros - prevEvent > interval) // check if the event is due
+  {
+    prevEvent += interval;
+    return 1; // event is due
+  }
+  else
+  {
+    return 0; // event is not due
   }
 }

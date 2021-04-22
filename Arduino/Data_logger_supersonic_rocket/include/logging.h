@@ -44,10 +44,10 @@ struct IMUPacket
 
 struct AIS1120SXPacket
 {
-  const byte packetType = 2;
-  const byte packetSize = 8;
-  unsigned long timestamp;
+  const uint8_t packetType = 2;
+  const uint8_t packetSize = 8;
   uint16_t reading;
+  uint32_t timestamp;
 };
 
 struct HoneywellRSCPressurePacket

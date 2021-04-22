@@ -82,6 +82,7 @@ void setup()
   digitalWrite(LED2_PIN, HIGH);
   delay(500);
   digitalWrite(LED2_PIN, LOW);
+  delay(500);
 
   // Set up the ADIS16470
   //  IMU.configSPI(); // Configure SPI communication
@@ -103,6 +104,7 @@ void setup()
   digitalWrite(LED2_PIN, HIGH);
   delay(500);
   digitalWrite(LED2_PIN, LOW);
+  delay(500);
 }
 
 // LOOP ========================================================================
