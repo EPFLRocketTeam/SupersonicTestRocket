@@ -25,7 +25,7 @@ void setupLoggingFile(FsFile &loggingFile,
   if (counterFile.size() != 0)
   {
     counterFile.read(&counterVal, 2);
-    counterFile.seek(0); // return to beginning so we don't append to file
+    counterFile.rewind(); // return to beginning so we don't append to file
   }
 
   // get the name of the logging file
@@ -57,14 +57,83 @@ void setupLoggingFile(FsFile &loggingFile,
   rb.begin(&loggingFile);
 }
 
-AIS1120SXPacket encodeAIS1120SXPacket(unsigned long currMicros, uint16_t accel)
+uint8_t getErrorCode(bool skippedBeat)
 {
-  AIS1120SXPacket packet;
-  Serial.println(sizeof(packet));
-  Serial.println(sizeof(currMicros));
-  Serial.println(sizeof(accel));
-  packet.timestamp = currMicros;
-  packet.reading = accel;
-  Serial.println(sizeof(packet));
-  return packet;
+  uint8_t errorCode = 0;
+
+  // first bit: if skipped a beat or not
+  if (skippedBeat)
+  {
+    bitSet(errorCode, 7); // set left-most bit (7th bit) to 1
+  }
+
+  // second bit: if DR pin didn't trigger the read
+
+  // third bit: missing data from a sensor
+
+  //
+
+  return errorCode;
+}
+
+// converts from a binary file of packets to CSV files for human reading
+bool binFileToCSV(FsFile &binFile)
+{
+  FsFile outFile;
+
+  // Open or create counter file.
+  if (!outFile.open("out2.csv", O_RDWR | O_CREAT | O_TRUNC))
+  {
+    Serial.println("Open out file failed.");
+    return;
+  }
+
+  // read the first byte of the next packet
+  while (uint8_t packetType = binFile.read())
+  {
+    if (packetType == -1)
+    {
+      Serial.println("There was an error reading the file.");
+      return;
+    }
+    uint8_t packetLength = binFile.read();
+    binFile.seekCur(-2); // go back two bytes since they were already read
+
+    // check if the read packet corresponds to any of the defined packed types
+    if (packetType == 1 && packetLength == sizeof(IMUPacket))
+    {
+    }
+    else if (packetType == 2 && packetLength == sizeof(AISx120SXPacket))
+    {
+      struct AISx120SXPacket packet;
+      binFile.read((uint8_t *)&packet, sizeof(packet));
+      outFile.printField(packet.header.timestamp, ',');
+      outFile.printField(packet.accelX, ',');
+      outFile.printField(packet.accelX, '\n');
+    }
+    else if (packetType == 3 && packetLength ==
+                                    sizeof(HoneywellRSCPressurePacket))
+    {
+    }
+    else if (packetType == 4 && packetLength == sizeof(HoneywellRSCTempPacket))
+    {
+    }
+    else if (packetType == 5 && packetLength == sizeof(ThermocouplePacket))
+    {
+    }
+    else if (packetLength == 0)
+    {
+      Serial.println("Packet length was zero. Likely reached EOF.");
+      return 0;
+    }
+    else
+    {
+      Serial.println("Could not read packet! Cannot continue.");
+      return 0;
+    }
+  }
+  outFile.truncate();
+  outFile.rewind();
+  outFile.close();
+  return 1;
 }

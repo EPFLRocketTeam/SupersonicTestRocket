@@ -89,24 +89,29 @@ void acquireData()
     }
 
     // check if it's time to read the AIS1120SX
-    if (checkEventDue(micros(), prevAis1120sxLoop, AIS1120SX_INTERVAL))
+    int8_t ais110sxDue = checkEventDue(micros(), prevAis1120sxLoop,
+                                       AIS1120SX_INTERVAL);
+    if (ais110sxDue)
     {
-      AIS1120SXPacket packet = encodeAIS1120SXPacket(
-          micros(), (uint16_t)random());
+      uint8_t errorCode = getErrorCode(ais110sxDue == -1);
+      AISx120SXPacket packet(errorCode, micros(), (uint16_t)random(), 0);
       rb.write((const uint8_t *)&packet, sizeof(packet));
     }
 
     // check if it's time to read the thermocouples
     if (checkEventDue(micros(), prevTcLoop, TC_INTERVAL))
     {
-      // do stuff
+
+      //ThermocouplePacket packet(micros(),
+      //rb.write((const uint8_t *)&packet, sizeof(packet));
     }
 
     // check if it's time to sync
-    if (checkEventDue(micros(), prevSyncLoop, SYNC_INTERVAL))
+    int8_t syncDue = checkEventDue(micros(), prevSyncLoop, SYNC_INTERVAL);
+    if (syncDue)
     {
+      uint8_t errorCode = getErrorCode(syncDue == -1);
       Serial.println("Syncing data.");
-      rb.sync();
     }
 
     // Check if ringBuf is ready for writing
@@ -150,12 +155,22 @@ void acquireData()
   rb.sync();
   loggingFile.truncate();
   loggingFile.rewind();
+
+  Serial.println("Started converting file.");
+  binFileToCSV(loggingFile); // TODO: do this after file has been safely closed
+  Serial.println("Finished converting file.");
+
   loggingFile.close();
   sd.end();
 
   // Visual cue acquisition has finished
   digitalWrite(LED1_PIN, HIGH);
   digitalWrite(LED2_PIN, LOW);
+  delay(1000);
+  digitalWrite(LED1_PIN, LOW);
+  delay(1000);
+  digitalWrite(LED1_PIN, HIGH);
+  Serial.println("Finished acquiring data");
 }
 
 bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
@@ -174,7 +189,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      Serial.println("First check to stop logging passed.");
+      Serial.println("First check to stop acquisition passed.");
       digitalWrite(LED1_PIN, LOW);
       digitalWrite(LED2_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[0]);
@@ -203,7 +218,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      Serial.println("Second check to stop logging passed.");
+      Serial.println("Second check to stop acquisition passed.");
       digitalWrite(LED1_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
       buttonArray.activateEvent(stopEvent[2]);
@@ -235,7 +250,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      Serial.println("Passed all checks to stop logging.");
+      Serial.println("Passed all checks to stop acquisition.");
       digitalWrite(LED1_PIN, HIGH);
       digitalWrite(LED2_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[2]);
@@ -265,8 +280,8 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
   return true;
 }
 
-bool checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
-                   unsigned long interval)
+int8_t checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
+                     unsigned long interval)
 {
   // check if missed a beat
   if (currMicros - prevEvent > 2 * interval)
@@ -276,7 +291,7 @@ bool checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
     Serial.println(beatsSkipped - 1);
     Serial.println("Consider lowering frequency.");
     prevEvent += beatsSkipped * interval; // catch up
-    return 1;                             // event is also due
+    return -1;                            // event is due but an error happened
   }
   else if (currMicros - prevEvent > interval) // check if the event is due
   {

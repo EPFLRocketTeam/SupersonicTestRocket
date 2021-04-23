@@ -39,8 +39,11 @@ void acquireData();
 bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3]);
 
 // Checks if the event is due and if it has skipped any beats
-bool checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
-                   unsigned long interval);
+int8_t checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
+                      unsigned long interval);
+
+// checkEventDueTime
+// checkEventDueDRPin
 
 // check and acquire data from the ADIS16470
 //void acquireAdis16470()
