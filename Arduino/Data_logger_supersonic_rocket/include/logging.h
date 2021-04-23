@@ -33,5 +33,6 @@ void setupLoggingFile(FsFile &loggingFile,
 // takes all the errors that happened and returns an error code
 uint8_t getErrorCode(bool skippedBeat);
 
+// Deprecated function as too slow on a Teensy
 // converts from a binary file of packets to a CSV file for human reading
-bool binFileToCSV(FsFile &binFile);
+//bool binFileToCSV(FsFile &binFile);

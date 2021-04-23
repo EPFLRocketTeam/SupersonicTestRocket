@@ -76,64 +76,65 @@ uint8_t getErrorCode(bool skippedBeat)
   return errorCode;
 }
 
-// converts from a binary file of packets to CSV files for human reading
-bool binFileToCSV(FsFile &binFile)
-{
-  FsFile outFile;
+// Deprecated function as too slow on Teensy
+// // converts from a binary file of packets to CSV files for human reading
+// bool binFileToCSV(FsFile &binFile)
+// {
+//   FsFile outFile;
 
-  // Open or create counter file.
-  if (!outFile.open("out2.csv", O_RDWR | O_CREAT | O_TRUNC))
-  {
-    Serial.println("Open out file failed.");
-    return;
-  }
+//   // Open or create counter file.
+//   if (!outFile.open("out2.csv", O_RDWR | O_CREAT | O_TRUNC))
+//   {
+//     Serial.println("Open out file failed.");
+//     return;
+//   }
 
-  // read the first byte of the next packet
-  while (uint8_t packetType = binFile.read())
-  {
-    if (packetType == -1)
-    {
-      Serial.println("There was an error reading the file.");
-      return;
-    }
-    uint8_t packetLength = binFile.read();
-    binFile.seekCur(-2); // go back two bytes since they were already read
+//   // read the first byte of the next packet
+//   while (uint8_t packetType = binFile.read())
+//   {
+//     if (packetType == -1)
+//     {
+//       Serial.println("There was an error reading the file.");
+//       return;
+//     }
+//     uint8_t packetLength = binFile.read();
+//     binFile.seekCur(-2); // go back two bytes since they were already read
 
-    // check if the read packet corresponds to any of the defined packed types
-    if (packetType == 1 && packetLength == sizeof(IMUPacket))
-    {
-    }
-    else if (packetType == 2 && packetLength == sizeof(AISx120SXPacket))
-    {
-      struct AISx120SXPacket packet;
-      binFile.read((uint8_t *)&packet, sizeof(packet));
-      outFile.printField(packet.header.timestamp, ',');
-      outFile.printField(packet.accelX, ',');
-      outFile.printField(packet.accelX, '\n');
-    }
-    else if (packetType == 3 && packetLength ==
-                                    sizeof(HoneywellRSCPressurePacket))
-    {
-    }
-    else if (packetType == 4 && packetLength == sizeof(HoneywellRSCTempPacket))
-    {
-    }
-    else if (packetType == 5 && packetLength == sizeof(ThermocouplePacket))
-    {
-    }
-    else if (packetLength == 0)
-    {
-      Serial.println("Packet length was zero. Likely reached EOF.");
-      return 0;
-    }
-    else
-    {
-      Serial.println("Could not read packet! Cannot continue.");
-      return 0;
-    }
-  }
-  outFile.truncate();
-  outFile.rewind();
-  outFile.close();
-  return 1;
-}
+//     // check if the read packet corresponds to any of the defined packed types
+//     if (packetType == 1 && packetLength == sizeof(IMUPacket))
+//     {
+//     }
+//     else if (packetType == 2 && packetLength == sizeof(AISx120SXPacket))
+//     {
+//       struct AISx120SXPacket packet;
+//       binFile.read((uint8_t *)&packet, sizeof(packet));
+//       outFile.printField(packet.header.timestamp, ',');
+//       outFile.printField(packet.accelX, ',');
+//       outFile.printField(packet.accelX, '\n');
+//     }
+//     else if (packetType == 3 && packetLength ==
+//                                     sizeof(HoneywellRSCPressurePacket))
+//     {
+//     }
+//     else if (packetType == 4 && packetLength == sizeof(HoneywellRSCTempPacket))
+//     {
+//     }
+//     else if (packetType == 5 && packetLength == sizeof(ThermocouplePacket))
+//     {
+//     }
+//     else if (packetLength == 0)
+//     {
+//       Serial.println("Packet length was zero. Likely reached EOF.");
+//       return 0;
+//     }
+//     else
+//     {
+//       Serial.println("Could not read packet! Cannot continue.");
+//       return 0;
+//     }
+//   }
+//   outFile.truncate();
+//   outFile.rewind();
+//   outFile.close();
+//   return 1;
+// }

@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <Arduino.h>
-
 // Packet definitions. If packets are discontinued in the future, they
 // SHOULD NOT BE REMOVED FROM HERE! Instead, they should be commented to allow
 // easy decoding of older packet types.
@@ -41,7 +39,7 @@ struct IMUPacket
   {
     // skipping packetType 0 since that will indicate an EOF
     header.packetType = 1;
-    header.packetSize = sizeof(IMUPacket);
+    header.packetSize = sizeof(IMUPacket); // 24 bytes
     header.errorCode = errCode;
     header.timestamp = timestamp;
     gyroX = IMUdata[1];
@@ -61,24 +59,12 @@ struct AISx120SXPacket
   // following unused for the AIS1120SX but necessary for alignment
   uint16_t accelY; // 2 bytes
 
-
-  // empty constructor
-  AISx120SXPacket()
-  {
-    header.packetType = 2;
-    header.packetSize = sizeof(AISx120SXPacket);
-    header.errorCode = 0;
-    header.timestamp = 0;
-    accelX = 0;
-    accelY = 0;
-  }
-
   // overloaded constructor
   AISx120SXPacket(uint8_t errCode, uint32_t timestamp,
                   uint16_t aX, uint16_t aY)
   {
     header.packetType = 2;
-    header.packetSize = sizeof(AISx120SXPacket);
+    header.packetSize = sizeof(AISx120SXPacket); // 12 bytes
     header.errorCode = errCode;
     header.timestamp = timestamp;
     accelX = aX;
@@ -98,7 +84,7 @@ struct HoneywellRSCPressurePacket
                              float rsc015P, float rsc060P)
   {
     header.packetType = 3;
-    header.packetSize = sizeof(HoneywellRSCPressurePacket);
+    header.packetSize = sizeof(HoneywellRSCPressurePacket); // 16 bytes
     header.errorCode = errCode;
     header.timestamp = timestamp;
     rsc015Pressure = rsc015P;
@@ -118,7 +104,7 @@ struct HoneywellRSCTempPacket
                          float rsc015T, float rsc060T)
   {
     header.packetType = 4;
-    header.packetSize = sizeof(HoneywellRSCTempPacket);
+    header.packetSize = sizeof(HoneywellRSCTempPacket); // 16 bytes
     header.errorCode = errCode;
     header.timestamp = timestamp;
     rsc015Temp = rsc015T;
@@ -138,7 +124,7 @@ struct ThermocouplePacket
                      int32_t probeT[4], int32_t sensorT[4])
   {
     header.packetType = 5;
-    header.packetSize = sizeof(ThermocouplePacket);
+    header.packetSize = sizeof(ThermocouplePacket); // 40 bytes
     header.errorCode = errCode;
     header.timestamp = timestamp;
     memcpy(probeTemperature, probeT, sizeof(probeTemperature));

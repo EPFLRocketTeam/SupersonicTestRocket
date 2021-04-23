@@ -146,7 +146,7 @@ void acquireData()
       break;
     }
 
-    delayMicroseconds(2000); // eventually remove this
+    delayMicroseconds(3000); // eventually remove this
 
   } // Finished acquiring data
 
@@ -155,11 +155,6 @@ void acquireData()
   rb.sync();
   loggingFile.truncate();
   loggingFile.rewind();
-
-  Serial.println("Started converting file.");
-  binFileToCSV(loggingFile); // TODO: do this after file has been safely closed
-  Serial.println("Finished converting file.");
-
   loggingFile.close();
   sd.end();
 
