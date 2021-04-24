@@ -24,21 +24,22 @@ struct eventOutput
 class PushButtonArray
 {
 private:
-  static const uint8_t buttonNum = 2;                    // number of buttons
-  static const uint8_t stateNum = buttonNum * buttonNum; // number of states
-  static const uint8_t eventNum = 8;                     // max number of events
+  static const uint8_t BUTTON_NUM = 2;                      // number of buttons
+  static const uint8_t STATE_NUM = BUTTON_NUM * BUTTON_NUM; // number of states
+  static const uint8_t EVENT_NUM = 8;                       // max events
 
-  unsigned long stateStartTime[stateNum] = {0}; // moment entered state
-  unsigned long stateEndTime[stateNum] = {0};   // moment left state
-  unsigned long stateDuration[stateNum] = {0};  // how long was in state
+  unsigned long stateStartTime[STATE_NUM] = {0}; // moment entered state
+  unsigned long stateEndTime[STATE_NUM] = {0};   // moment left state
+  unsigned long stateDuration[STATE_NUM] = {0};  // how long was in state
 
-  PushButtonArrayEvent Events[eventNum]; // the events associated to the array
-  uint8_t state = 0;                     // current state of button array
-                                         //    0--> button 0: LOW,  button 1: LOW
-                                         //    1--> button 0: HIGH, button 1: LOW
-                                         //    2--> button 0: LOW,  button 1: HIGH
-                                         //    3--> button 0: HIGH, button 1: HIGH
-  uint8_t lastState = 0;                 // previous state of button array
+  PushButtonArrayEvent Events[EVENT_NUM]; // the events associated to the array
+
+  uint8_t state = 0;     // current state of button array
+                         //    0--> button 0: LOW,  button 1: LOW
+                         //    1--> button 0: HIGH, button 1: LOW
+                         //    2--> button 0: LOW,  button 1: HIGH
+                         //    3--> button 0: HIGH, button 1: HIGH
+  uint8_t lastState = 0; // previous state of button array
 
 public:
   // constructor
@@ -47,7 +48,7 @@ public:
   uint8_t getState();
 
   // Gets the state of button array according to the individual button states
-  uint8_t translateState(bool individualButtonStates[buttonNum]);
+  uint8_t translateState(bool individualButtonStates[BUTTON_NUM]);
 
   uint8_t addEvent(uint8_t state, uint8_t nextState, unsigned long windowStart,
                    unsigned long windowEnd);
@@ -56,5 +57,5 @@ public:
   void deleteEvent(uint8_t idx);
 
   // Check if there are any events that just happened
-  eventOutput checkEvents(bool individualButtonStates[buttonNum]);
+  eventOutput checkEvents(bool individualButtonStates[BUTTON_NUM]);
 };

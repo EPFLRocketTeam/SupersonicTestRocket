@@ -17,7 +17,7 @@ uint8_t PushButtonArray::getState()
 	return state;
 }
 
-uint8_t PushButtonArray::translateState(bool individualButtonStates[buttonNum])
+uint8_t PushButtonArray::translateState(bool individualButtonStates[BUTTON_NUM])
 {
 	if (individualButtonStates[0] == 0 && individualButtonStates[1] == 0)
 	{
@@ -80,7 +80,7 @@ void PushButtonArray::deactivateEvent(uint8_t idx)
 	Events[idx].activated = false;
 }
 
-eventOutput PushButtonArray::checkEvents(bool individualButtonStates[buttonNum])
+eventOutput PushButtonArray::checkEvents(bool individualButtonStates[BUTTON_NUM])
 {
 	state = translateState(individualButtonStates);
 	unsigned long durationToSend;

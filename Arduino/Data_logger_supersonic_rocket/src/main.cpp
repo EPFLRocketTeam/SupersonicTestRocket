@@ -13,53 +13,66 @@
 //
 // Changelog:
 // v0.1 : first version of the script
-//
-//
-//  This line is exactly 80 characters long. No line should be longer than this.
 
 // IMPORT LIBRARIES ============================================================
 // Standard libraries
 #include <Arduino.h>
 #include <SPI.h>
 
+// External libraries
+#include <ADIS16470.h>
+#include <AISx120SX.h>
+#include <Honeywell_RSC.h>
+#include <MAX31855.h>
+
 // User-defined headers
 #include "globalVariables.h"
 #include "PushButtonArray/PushButtonArray.h"
 #include "dataAcquisition.h"
+#include "io.h"
 
 // DEFINE VARIABLES ============================================================
 
 // Pins ------------------------------------------------------------------------
 // I/O
-const byte LED1_PIN = 7,
-           LED2_PIN = 8,
-           BUTTON0_PIN = 2,
-           BUTTON1_PIN = 6;
+const uint8_t LED1_PIN = 7,
+              LED2_PIN = 8,
+              BUTTON0_PIN = 2,
+              BUTTON1_PIN = 6;
 // ADIS164760
-const byte DR_ADIS16470_PIN = 24,
-           SYNC_ADIS16470_PIN = 25,
-           RST_ADIS16470_PIN = 35,
-           CS_ADIS16470_PIN = 36;
+const uint8_t DR_ADIS16470_PIN = 24,
+              SYNC_ADIS16470_PIN = 25,
+              RST_ADIS16470_PIN = 35,
+              CS_ADIS16470_PIN = 36;
 // AIS1120SX
-const byte CS_AIS1120SX_PIN = 31;
+const uint8_t CS_AIS1120SX_PIN = 31;
 // Pressure sensors
-const byte CS_RSC015_EE_PIN = 17,
-           CS_RSC015_ADC_PIN = 16,
-           DR_RSC015 = 15;
-const byte CS_RSC060_EE_PIN = 28,
-           CS_RSC060_ADC_PIN = 27,
-           DR_RSC060 = 26;
+const uint8_t CS_RSC015_EE_PIN = 17,
+              CS_RSC015_ADC_PIN = 16,
+              DR_RSC015 = 15;
+const uint8_t CS_RSC060_EE_PIN = 28,
+              CS_RSC060_ADC_PIN = 27,
+              DR_RSC060 = 26;
 // Thermocouples
-const byte CS_TC1_PIN = 23,
-           CS_TC2_PIN = 22,
-           CS_TC3_PIN = 21,
-           CS_TC4_PIN = 20;
+const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
 
-// Button event ----------------------------------------------------------------
+// I/O -------------------------------------------------------------------------
+// Button event
 const int ACQ_STATE = 1;                     // State to turn on acquisition
 const int ACQ_NEXT_STATE = 0;                // Next state to turn on
 const unsigned long ACQ_WINDOW_START = 1000; // [ms]
 const unsigned long ACQ_WINDOW_END = 2000;   // [ms]
+
+// Create the sensor objects ---------------------------------------------------
+ADIS16470 adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN, RST_ADIS16470_PIN);
+AISx120SX ais1120sx(CS_AIS1120SX_PIN);
+Honeywell_RSC rsc015(DR_RSC015, CS_RSC015_EE_PIN, CS_RSC015_ADC_PIN);
+Honeywell_RSC rsc060(DR_RSC060, CS_RSC060_EE_PIN, CS_RSC060_ADC_PIN);
+MAX31855_Class tcs[4];
+
+const int sensorAttempts = 3; // How many times to try to turn on the sensors
+
+// USER FUNCTIONS ==============================================================
 
 // SETUP =======================================================================
 
@@ -75,36 +88,74 @@ void setup()
   pinMode(LED2_PIN, OUTPUT);
   pinMode(BUTTON0_PIN, INPUT);
   pinMode(BUTTON1_PIN, INPUT);
+  digitalWrite(LED1_PIN, LOW); // turn off LED in case
+  digitalWrite(LED2_PIN, LOW); // turn off LED in case
   Serial.println("I/O has been set up");
+  successFlash(); // visual feedback setup is happening
 
-  // set pins low in case and give some visual feedback
-  digitalWrite(LED1_PIN, LOW);
-  digitalWrite(LED2_PIN, HIGH);
-  delay(500);
-  digitalWrite(LED2_PIN, LOW);
-  delay(500);
+  SPI.begin();
 
   // Set up the ADIS16470
-  //  IMU.configSPI(); // Configure SPI communication
-  //  delay(1000); // Give the part time to start up
-  //  IMU.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
-  //  IMU.regWrite(DEC_RATE, 0x00); // Set digital filter
-  //  IMU.regWrite(FILT_CTRL, 0x04); // Set digital filter
-  // Serial.println("ADIS16470 has been set up");
+  adis16470.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
+  adis16470.regWrite(DEC_RATE, 0x00);  // Set digital filter
+  adis16470.regWrite(FILT_CTRL, 0x04); // Set digital filter
+  // Try to see if the ADIS is working
+  for (int i = 0; i < sensorAttempts; i++)
+  {
+    // TODO: Find better way to ensure ADIS16470 is working properly
+    if (digitalRead(DR_ADIS16470_PIN))
+    {
+      Serial.println("ADIS16470 has been set up properly.");
+      successFlash();
+      break;
+    }
+    else if (i == sensorAttempts - 1)
+    {
+      Serial.println(F("Unable to start ADIS16470."));
+      errorFlash();
+    }
+    else // give it time before the next try
+    {
+      delay(1000);
+    }
+  }
 
   // Set up the AIS1120SX
-  // Serial.println("AIS1120SX has been set up");
+  Serial.println("AIS1120SX has been set up");
+  successFlash(); // visual feedback setup is happening
 
   // Set up the pressure sensors
-  // Serial.println("Pressure sensors have been set up");
+  rsc015.init();
+  rsc060.init();
+  Serial.println("Pressure sensors have been set up");
+  successFlash(); // visual feedback setup is happening
 
   // Set up the thermocouples
-  // Serial.println("Thermocouples have been set up");
+  for (int i = 0; i < 4; i++)
+  {
+    // Try to see if the thermocouple is working
+    for (int i = 0; i < sensorAttempts; i++)
+    {
+      if (tcs[i].begin(CS_TCS_PIN[i]))
+      {
+        Serial.println("Thermocouple has been set up properly.");
+        successFlash();
+        break;
+      }
+      else if (i == sensorAttempts - 1)
+      {
+        Serial.println(F("Unable to start thermocouple."));
+        errorFlash();
+      }
+      else // give it time before the next try
+      {
+        delay(1000);
+      }
+    }
+  }
 
-  digitalWrite(LED2_PIN, HIGH);
-  delay(500);
-  digitalWrite(LED2_PIN, LOW);
-  delay(500);
+  Serial.println("Setup complete.");
+  successFlash();
 }
 
 // LOOP ========================================================================
@@ -136,20 +187,20 @@ void loop()
         break;
       case GOOD_TRANSITION:
         Serial.println("Will begin data acquisition as button was pressed.");
-        digitalWrite(LED1_PIN, LOW);
-        acquireData();
+        digitalWrite(GREEN_LED_PIN, LOW);
+        acquireData(adis16470, ais1120sx, rsc015, rsc060, tcs);
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");
-        digitalWrite(LED1_PIN, LOW);
+        digitalWrite(GREEN_LED_PIN, LOW);
         break;
       case WINDOW_START:
         Serial.println("Within window to start data acquisition.");
-        digitalWrite(LED1_PIN, HIGH);
+        digitalWrite(GREEN_LED_PIN, HIGH);
         break;
       case WINDOW_END:
         Serial.println("Left window to start data acquisition.");
-        digitalWrite(LED1_PIN, LOW);
+        digitalWrite(GREEN_LED_PIN, LOW);
         break;
       }
     }
