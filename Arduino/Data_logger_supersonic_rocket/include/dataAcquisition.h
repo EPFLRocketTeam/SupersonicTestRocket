@@ -27,10 +27,10 @@
 #include "io.h"
 
 // Button events settings
-const int STOP_STATES[3] = {1, 0, 2};                          // States to stop
-const int NEXT_STOP_STATES[3] = {0, 2, 0};                     // Next states
-const unsigned long STOP_WINDOW_START[3] = {3000, 5000, 7000}; // [ms]
-const unsigned long STOP_WINDOW_END[3] = {4000, 6000, 8000};   // [ms]
+const int STOP_STATES[3] = {1, 0, 2};                     // States to stop
+const int NEXT_STOP_STATES[3] = {0, 2, 0};                // Next states
+const uint32_t STOP_WINDOW_START[3] = {3000, 5000, 7000}; // [ms]
+const uint32_t STOP_WINDOW_END[3] = {4000, 6000, 8000};   // [ms]
 
 // Acquisition intervals
 const int ADIS16470_INTERVAL = 500;     // [us] (2000Hz)
@@ -47,10 +47,9 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
                  Honeywell_RSC rsc015, Honeywell_RSC rsc060,
                  MAX31855_Class tcs[4]);
 
-
 // Checks if the event is due and if it has skipped any beats
-int8_t checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
-                     unsigned long interval);
+int8_t checkEventDue(uint32_t currMicros, uint32_t &prevEvent,
+                     uint32_t interval);
 
 // checkEventDueTime
 // checkEventDueDRPin

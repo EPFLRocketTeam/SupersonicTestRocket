@@ -42,8 +42,8 @@ uint8_t PushButtonArray::translateState(bool individualButtonStates[BUTTON_NUM])
 }
 
 uint8_t PushButtonArray::addEvent(uint8_t state, uint8_t nextState,
-																	unsigned long windowStart,
-																	unsigned long windowEnd)
+																	uint32_t windowStart,
+																	uint32_t windowEnd)
 {
 	int i;
 	for (i = 0; i <= 8; i++) // find first available event
@@ -83,7 +83,7 @@ void PushButtonArray::deactivateEvent(uint8_t idx)
 eventOutput PushButtonArray::checkEvents(bool individualButtonStates[BUTTON_NUM])
 {
 	state = translateState(individualButtonStates);
-	unsigned long durationToSend;
+	uint32_t durationToSend;
 
 	if (state != lastState) // state changed
 	{

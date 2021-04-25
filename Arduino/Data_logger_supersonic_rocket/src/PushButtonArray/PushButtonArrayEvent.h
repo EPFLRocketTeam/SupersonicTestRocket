@@ -26,8 +26,8 @@ private:
   bool deleted;
   uint8_t eventState;             // state to trigger the holding
   uint8_t eventNextState;         // next state to trigger the transition
-  unsigned long eventWindowStart; // when the event window starts
-  unsigned long eventWindowEnd;   // when the event window ends
+  uint32_t eventWindowStart; // when the event window starts
+  uint32_t eventWindowEnd;   // when the event window ends
   eventType lastEventType = NONE; // last event type that happened
 
 public:
@@ -39,10 +39,10 @@ public:
   // see if the event is deleted or not.
   bool deletedStatus();
   // Activate event with arguments
-  void createEvent(uint8_t state, uint8_t nextState, unsigned long windowStart,
-              unsigned long windowEnd);
+  void createEvent(uint8_t state, uint8_t nextState, uint32_t windowStart,
+              uint32_t windowEnd);
   void deleteEvent();
   // Check if there was an event
   eventType checkEvent(uint8_t state, uint8_t lastState,
-                       unsigned long stateDuration);
+                       uint32_t stateDuration);
 };

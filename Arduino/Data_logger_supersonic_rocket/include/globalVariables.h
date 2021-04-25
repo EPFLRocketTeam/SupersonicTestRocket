@@ -4,8 +4,8 @@
 
 // Pinout ----------------------------------------------------------------------
 // I/O
-extern const uint8_t LED1_PIN,
-    LED2_PIN,
+extern const uint8_t GREEN_LED_PIN,
+    RED_LED_PIN,
     BUTTON0_PIN,
     BUTTON1_PIN;
 // ADIS164760

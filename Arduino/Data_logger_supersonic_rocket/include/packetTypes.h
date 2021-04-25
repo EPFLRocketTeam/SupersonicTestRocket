@@ -20,7 +20,7 @@ struct PacketHeader
   uint32_t timestamp;         // 4 bytes
 };
 
-struct IMUPacket
+struct ADIS16470Packet
 {
   struct PacketHeader header; // 8 bytes
   // sending as uint16_t to save data space and since it's easy to convert
@@ -35,11 +35,11 @@ struct IMUPacket
   uint16_t padding = 0; // 2 bytes. necessary for alignment
 
   // constructor. takes data directly from wordBurst from the ADIS16470 library
-  IMUPacket(uint8_t errCode, uint32_t timestamp, uint16_t IMUdata[10])
+  ADIS16470Packet(uint8_t errCode, uint32_t timestamp, uint16_t IMUdata[10])
   {
     // skipping packetType 0 since that will indicate an EOF
     header.packetType = 1;
-    header.packetSize = sizeof(IMUPacket); // 24 bytes
+    header.packetSize = sizeof(ADIS16470Packet); // 24 bytes
     header.errorCode = errCode;
     header.timestamp = timestamp;
     gyroX = IMUdata[1];

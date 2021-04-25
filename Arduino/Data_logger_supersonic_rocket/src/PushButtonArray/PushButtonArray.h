@@ -28,9 +28,9 @@ private:
   static const uint8_t STATE_NUM = BUTTON_NUM * BUTTON_NUM; // number of states
   static const uint8_t EVENT_NUM = 8;                       // max events
 
-  unsigned long stateStartTime[STATE_NUM] = {0}; // moment entered state
-  unsigned long stateEndTime[STATE_NUM] = {0};   // moment left state
-  unsigned long stateDuration[STATE_NUM] = {0};  // how long was in state
+  uint32_t stateStartTime[STATE_NUM] = {0}; // moment entered state
+  uint32_t stateEndTime[STATE_NUM] = {0};   // moment left state
+  uint32_t stateDuration[STATE_NUM] = {0};  // how long was in state
 
   PushButtonArrayEvent Events[EVENT_NUM]; // the events associated to the array
 
@@ -50,8 +50,8 @@ public:
   // Gets the state of button array according to the individual button states
   uint8_t translateState(bool individualButtonStates[BUTTON_NUM]);
 
-  uint8_t addEvent(uint8_t state, uint8_t nextState, unsigned long windowStart,
-                   unsigned long windowEnd);
+  uint8_t addEvent(uint8_t state, uint8_t nextState, uint32_t windowStart,
+                   uint32_t windowEnd);
   void activateEvent(uint8_t idx);
   void deactivateEvent(uint8_t idx);
   void deleteEvent(uint8_t idx);

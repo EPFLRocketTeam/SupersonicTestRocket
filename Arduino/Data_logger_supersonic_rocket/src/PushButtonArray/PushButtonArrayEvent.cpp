@@ -19,8 +19,8 @@ bool PushButtonArrayEvent::deletedStatus()
 }
 
 void PushButtonArrayEvent::createEvent(uint8_t state, uint8_t nextState,
-                                    unsigned long windowStart,
-                                    unsigned long windowEnd)
+                                    uint32_t windowStart,
+                                    uint32_t windowEnd)
 {
   activated = true;
   deleted = false;
@@ -43,7 +43,7 @@ void PushButtonArrayEvent::deleteEvent()
 }
 
 eventType PushButtonArrayEvent::checkEvent(uint8_t state, uint8_t lastState,
-                                           unsigned long stateDuration)
+                                           uint32_t stateDuration)
 {
   if (lastState == eventState && state == eventNextState &&
       stateDuration >= eventWindowStart && stateDuration <= eventWindowEnd &&

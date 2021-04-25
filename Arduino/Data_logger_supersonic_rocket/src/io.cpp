@@ -12,7 +12,7 @@ void flashLED(uint8_t pinNumber, int flashDuration)
   digitalWrite(pinNumber, HIGH);
   delay(flashDuration);
   digitalWrite(pinNumber, LOW);
-  delay(flashDuration);
+  //delay(flashDuration);
 }
 
 void successFlash()

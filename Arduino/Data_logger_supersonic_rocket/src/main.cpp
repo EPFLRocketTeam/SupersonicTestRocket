@@ -35,8 +35,8 @@
 
 // Pins ------------------------------------------------------------------------
 // I/O
-const uint8_t LED1_PIN = 7,
-              LED2_PIN = 8,
+const uint8_t GREEN_LED_PIN = 7,
+              RED_LED_PIN = 8,
               BUTTON0_PIN = 2,
               BUTTON1_PIN = 6;
 // ADIS164760
@@ -60,8 +60,8 @@ const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
 // Button event
 const int ACQ_STATE = 1;                     // State to turn on acquisition
 const int ACQ_NEXT_STATE = 0;                // Next state to turn on
-const unsigned long ACQ_WINDOW_START = 1000; // [ms]
-const unsigned long ACQ_WINDOW_END = 2000;   // [ms]
+const uint32_t ACQ_WINDOW_START = 1000; // [ms]
+const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
 // Create the sensor objects ---------------------------------------------------
 ADIS16470 adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN, RST_ADIS16470_PIN);
@@ -84,12 +84,12 @@ void setup()
   delay(2500);
 
   // Set up I/O
-  pinMode(LED1_PIN, OUTPUT);
-  pinMode(LED2_PIN, OUTPUT);
+  pinMode(GREEN_LED_PIN, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
   pinMode(BUTTON0_PIN, INPUT);
   pinMode(BUTTON1_PIN, INPUT);
-  digitalWrite(LED1_PIN, LOW); // turn off LED in case
-  digitalWrite(LED2_PIN, LOW); // turn off LED in case
+  digitalWrite(GREEN_LED_PIN, LOW); // turn off LED in case
+  digitalWrite(RED_LED_PIN, LOW); // turn off LED in case
   Serial.println("I/O has been set up");
   successFlash(); // visual feedback setup is happening
 
@@ -102,8 +102,17 @@ void setup()
   // Try to see if the ADIS is working
   for (int i = 0; i < sensorAttempts; i++)
   {
-    // TODO: Find better way to ensure ADIS16470 is working properly
-    if (digitalRead(DR_ADIS16470_PIN))
+    // acquire some data
+    uint16_t *wordBurstData;
+    wordBurstData = adis16470.wordBurst();                // Read data and insert into array
+    int16_t checksum = adis16470.checksum(wordBurstData); // get the checksum
+
+    // get a zero vector to make sure the data we are getting isn't just zeros
+    uint16_t zeros[sizeof(wordBurstData)] = {0};
+
+    // checksum ok AND didn't read just zeros --> setup successful!
+    if (wordBurstData[9] == checksum &&
+        memcmp(wordBurstData, zeros, sizeof(wordBurstData)) != 0)
     {
       Serial.println("ADIS16470 has been set up properly.");
       successFlash();
@@ -111,7 +120,7 @@ void setup()
     }
     else if (i == sensorAttempts - 1)
     {
-      Serial.println(F("Unable to start ADIS16470."));
+      Serial.println("Unable to start ADIS16470.");
       errorFlash();
     }
     else // give it time before the next try
@@ -134,7 +143,7 @@ void setup()
   for (int i = 0; i < 4; i++)
   {
     // Try to see if the thermocouple is working
-    for (int i = 0; i < sensorAttempts; i++)
+    for (int j = 0; j < sensorAttempts; j++)
     {
       if (tcs[i].begin(CS_TCS_PIN[i]))
       {
@@ -142,9 +151,10 @@ void setup()
         successFlash();
         break;
       }
-      else if (i == sensorAttempts - 1)
+      else if (j == sensorAttempts - 1)
       {
-        Serial.println(F("Unable to start thermocouple."));
+        Serial.print("Unable to start thermocouple TC");
+        Serial.println(i + 1);
         errorFlash();
       }
       else // give it time before the next try

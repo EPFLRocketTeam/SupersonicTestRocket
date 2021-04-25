@@ -43,11 +43,14 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   buttonArray.deactivateEvent(stopEvent[2]);
 
   // Time variables
-  unsigned long prevADIS16470loop = micros();
-  unsigned long prevRSCloop = micros();
-  unsigned long prevAis1120sxLoop = micros();
-  unsigned long prevTcLoop = micros();
-  unsigned long prevSyncLoop = micros();
+  // start the loop on an even second to make debugging easier
+  // TODO: make the second rounding actually work. Far from critical
+  uint32_t loopstart = ((uint32_t)micros() / 1000000 + 1) * 1000000;
+  uint32_t prevADIS16470loop = loopstart;
+  uint32_t prevAis1120sxLoop = loopstart;
+  uint32_t prevRSCloop = loopstart;
+  uint32_t prevTcLoop = loopstart;
+  uint32_t prevSyncLoop = loopstart;
 
   // Data ready variables
   bool Adis16470DataReadyStates[2] = {0, 0};
@@ -63,31 +66,61 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   while (checkButtons(buttonArray, stopEvent))
   {
 
-    // // check if missed a beat
-    // if (micros() - prevAis1120sxLoop > 2 * AIS1120SX_INTERVAL)
-    // {
-    //   Serial.println("WARNING! Skipped a beat for the AIS1120SX.");
-    //   Serial.println("Consider lowering frequency.");
-    // }
-    // Check if ADIS16470 is ready
+    // check if the ADIS16470 is ready because of time
+    // if it is, it means that the data ready line isn't working properly
+    // adding a small margin to allow for timing inconsistencies with DR line
+    int8_t adis16470Due = checkEventDue(micros() + ADIS16470_MARGIN,
+                                        prevADIS16470loop, ADIS16470_INTERVAL);
+    if (adis16470Due)
+    {
+      Serial.println("Acquiring data from the ADIS16470 due to time.");
+      // acquire the data
+      uint16_t *wordBurstData;
+      wordBurstData = adis16470.wordBurst(); // Read data and insert into array
+
+      // check for errors
+      int16_t checksum = adis16470.checksum(wordBurstData);
+      uint8_t errorCode = getErrorCode(adis16470Due == -1, 1, 0,
+                                       wordBurstData[9] == checksum);
+
+      // create and write the packet
+      ADIS16470Packet packet(errorCode, micros(), wordBurstData);
+      rb.write((const uint8_t *)&packet, sizeof(packet));
+    }
+    // Check if ADIS16470 is ready because of the data ready signal
     // TODO: find a better rising edge detection
     Adis16470DataReadyStates[0] = digitalRead(DR_ADIS16470_PIN);
+    // rising edge is when current reading is high and last reading is low
     if (Adis16470DataReadyStates[0] == 1 &&
-        Adis16470DataReadyStates[1] == 0) // rising edge
+        Adis16470DataReadyStates[1] == 0)
     {
-      Serial.println("Acquiring data from the ADIS16470.");
+      prevADIS16470loop += micros(); // reset the timer now that DR works
+      Serial.println("Acquiring data from the ADIS16470 due to DR.");
+      // acquire the data
+      uint16_t *wordBurstData;
+      wordBurstData = adis16470.wordBurst(); // Read data and insert into array
 
-      // Check if a beat was skipped
-      int8_t ais110sxDue = checkEventDue(micros(), prevADIS16470loop,
-                                         ADIS16470_INTERVAL);
-      // read data from the ADIS16470
-      //uint8_t wordData[10] = wordBurst
+      // check for errors
+      int16_t checksum = adis16470.checksum(wordBurstData);
+      uint8_t errorCode = getErrorCode(adis16470Due == -1, 0, 0,
+                                       wordBurstData[9] == checksum);
 
-      // do stuff
-      // Save data into the RingBuf.
-      // rb.write((const uint8_t *)&myData2, sizeof(myData2));
+      // create and write the packet
+      ADIS16470Packet packet(errorCode, micros(), wordBurstData);
+      rb.write((const uint8_t *)&packet, sizeof(packet));
     }
     Adis16470DataReadyStates[1] = Adis16470DataReadyStates[0];
+
+    // check if it's time to read the AIS1120SX
+    int8_t ais110sxDue = checkEventDue(micros(), prevAis1120sxLoop,
+                                       AIS1120SX_INTERVAL);
+    if (ais110sxDue)
+    {
+      Serial.println("Acquiring data from the AIS1120SX");
+      uint8_t errorCode = getErrorCode(ais110sxDue == -1, 0, 0, 0);
+      AISx120SXPacket packet(errorCode, micros(), (uint16_t)random(), 0);
+      rb.write((const uint8_t *)&packet, sizeof(packet));
+    }
 
     // Check if RSC is ready
     // TODO: find a better rising edge detection
@@ -97,17 +130,6 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
     {
       Serial.println("Acquiring data from the RSCs.");
       // do stuff
-    }
-
-    // check if it's time to read the AIS1120SX
-    int8_t ais110sxDue = checkEventDue(micros(), prevAis1120sxLoop,
-                                       AIS1120SX_INTERVAL);
-    if (ais110sxDue)
-    {
-      Serial.println("Acquiring data from the AIS1120SX");
-      uint8_t errorCode = getErrorCode(ais110sxDue == -1, 0, 0);
-      AISx120SXPacket packet(errorCode, micros(), (uint16_t)random(), 0);
-      rb.write((const uint8_t *)&packet, sizeof(packet));
     }
 
     // check if it's time to read the thermocouples
@@ -122,7 +144,7 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
     int8_t syncDue = checkEventDue(micros(), prevSyncLoop, SYNC_INTERVAL);
     if (syncDue)
     {
-      uint8_t errorCode = getErrorCode(syncDue == -1, 0, 0);
+      uint8_t errorCode = getErrorCode(syncDue == -1, 0, 0, 0);
       Serial.println("Syncing data.");
       // Serial.println(micros());
       // TODO: See if better to have with or without syncing.
@@ -164,8 +186,6 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
       break;
     }
 
-    delayMicroseconds(2000); // eventually remove this
-
   } // Finished acquiring data
 
   // CLEANUP Phase
@@ -177,14 +197,14 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   sd.end();
 
   // Visual cue acquisition has finished
-    digitalWrite(GREEN_LED_PIN, LOW);
-    digitalWrite(RED_LED_PIN, LOW);
-    successFlash();
+  digitalWrite(GREEN_LED_PIN, LOW);
+  digitalWrite(RED_LED_PIN, LOW);
+  successFlash();
   Serial.println("Finished acquiring data");
 }
 
-int8_t checkEventDue(unsigned long currMicros, unsigned long &prevEvent,
-                     unsigned long interval)
+int8_t checkEventDue(uint32_t currMicros, uint32_t &prevEvent,
+                     uint32_t interval)
 {
   // check if missed a beat
   if (currMicros - prevEvent > 2 * interval)
