@@ -15,8 +15,6 @@
 #include <SdFat.h>
 #include <RingBuf.h>
 
-#include "packetTypes.h"
-
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
 
 // Size to log 64 byte lines at 2000Hz for more than sixty minutes.

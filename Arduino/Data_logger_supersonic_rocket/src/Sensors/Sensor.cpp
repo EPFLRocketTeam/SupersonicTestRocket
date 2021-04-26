@@ -10,13 +10,11 @@
 Sensor::Sensor(uint32_t checkInterval_,
                uint32_t checkIntervalMargin_,
                uint32_t measInterval_,
-               bool DR_driven_,
-               uint8_t sensorID_) : // initalizer list for constants
-                                    CHECK_INTERVAL(checkInterval_),
-                                    CHECK_INTERVAL_MARGIN(checkIntervalMargin_),
-                                    MEAS_INTERVAL(measInterval_),
-                                    DR_DRIVEN(DR_driven_),
-                                    SENSOR_ID(sensorID_)
+               bool DR_driven_) : // initalizer list for constants
+                                  CHECK_INTERVAL(checkInterval_),
+                                  CHECK_INTERVAL_MARGIN(checkIntervalMargin_),
+                                  MEAS_INTERVAL(measInterval_),
+                                  DR_DRIVEN(DR_driven_)
 {
   checksumError = false;
 }
@@ -72,7 +70,7 @@ bool Sensor::isDueByDR(uint32_t currMicros, bool currDR, int triggerType)
 
 bool Sensor::isMeasurementLate(uint32_t currMicros)
 {
-  bool measurementLate = currMicros - prevMeas > 2 * MEAS_INTERVAL;
+  bool measurementLate = currMicros - prevMeasTime > 2 * MEAS_INTERVAL;
   return measurementLate;
 }
 
@@ -109,12 +107,13 @@ uint8_t Sensor::getErrorCode(uint32_t currMicros)
 
 // generates a packet header for the sensor
 PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
-                          uint32_t currMicros)
+                               uint32_t currMicros)
 {
   PacketHeader header;
   header.packetType_ = packetType_;
   header.packetSize = packetSize_;
-  header.sensorID = SENSOR_ID;
+  header.sensorID = sensorID;
   header.errorCode = getErrorCode(currMicros);
+  header.timestamp = currMicros;
   return header;
 }

@@ -44,7 +44,6 @@ class Sensor
 {
 private:
   uint32_t prevCheck;                   // when sensor was last checked for data
-  uint32_t prevMeas;                    // when last new measurement was made
   const uint32_t CHECK_INTERVAL;        // how often to check for data
   const uint32_t CHECK_INTERVAL_MARGIN; // margin on check
   const uint32_t MEAS_INTERVAL;         // nominal interval for data measurement
@@ -56,14 +55,15 @@ private:
   dueType dueMethod;     // how the measurement is due
 
 protected:
-  const uint8_t SENSOR_ID; // sensor's id. non-zero if identical sensors used
-  bool checksumError;      // if there was a checksum erro
+  uint8_t sensorID;      // sensor's id. non-zero if identical sensors used
+  bool checksumError;    // if there was a checksum erro
+  uint32_t prevMeasTime; // when last new measurement was made
 public:
   bool active; // if the sensor is active
 
   // constructor
   Sensor(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
-         uint32_t measInterval_, bool DR_driven_, uint8_t sensorID_);
+         uint32_t measInterval_, bool DR_driven_);
 
   // destructor
   ~Sensor();
@@ -83,5 +83,5 @@ public:
 
   // generates a packet header for the sensor
   PacketHeader getHeader(packetType packetType_, uint8_t packetSize_,
-                         uint32_t currMicros)
+                         uint32_t currMicros);
 };

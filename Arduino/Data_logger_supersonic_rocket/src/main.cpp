@@ -22,7 +22,6 @@
 // External libraries
 #include <AISx120SX.h>
 #include <Honeywell_RSC.h>
-#include <MAX31855.h>
 
 // User-defined headers
 #include "globalVariables.h"
@@ -31,6 +30,9 @@
 #include "io.h"
 //    Sensors
 #include "Sensors/ADIS16470Wrapper.h"
+#include "Sensors/AISx120SXWrapper.h"
+#include "Sensors/HoneywellRscWrapper.h"
+#include "Sensors/MAX31855Wrapper.h"
 
 // DEFINE VARIABLES ============================================================
 
@@ -64,12 +66,12 @@ const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 // Create the sensor wrapper objects -------------------------------------------
 ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
                            RST_ADIS16470_PIN);
-AISx120SX ais1120sx(CS_AIS1120SX_PIN);
-Honeywell_RSC rscs[2] = {Honeywell_RSC(DR_RSC[0], CS_RS_EE_PIN[0],
-                                       CS_RSC_ADC_PIN[0]),
-                         Honeywell_RSC(DR_RSC[1], CS_RS_EE_PIN[1],
-                                       CS_RSC_ADC_PIN[1])};
-MAX31855_Class tcs[4];
+AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN);
+HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
+                                                   CS_RSC_ADC_PIN[0]),
+                               HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
+                                                   CS_RSC_ADC_PIN[1])};
+MAX31855Wrapper tcs[4];
 
 const int sensorAttempts = 3; // How many times to try to turn on the sensors
 
@@ -82,7 +84,7 @@ void setup()
   // Open serial communications and give some time for the port to open
   // Not waiting on the port in case the device is not connected to USB
   Serial.begin(9600);
-  delay(1000);
+  delay(2500);
 
   // Set up I/O
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -108,42 +110,49 @@ void setup()
     errorFlash();
   }
 
-  // Set up the AIS1120SX
-  Serial.println("AIS1120SX has been set up");
-  successFlash(); // visual feedback setup is happening
-
-  // Set up the pressure sensors
-  size_t pSensorNum = sizeof(rscs) / sizeof(rscs[0]);
-  for (size_t i = 0; i < pSensorNum; i++)
+  // Setup the AIS1120SX
+  if (ais1120sx.setup(3, 1000))
   {
-    rscs[i].init();
+    Serial.println("AIS1120SX has been set up succesfully.");
+    successFlash();
   }
-  Serial.println("Pressure sensors have been set up");
-  successFlash(); // visual feedback setup is happening
-
-  // Set up the thermocouples
-  size_t tcNum = sizeof(tcs) / sizeof(tcs[0]);
-  for (size_t i = 0; i < tcNum; i++)
+  else
   {
-    // Try to see if the thermocouple is working
-    for (int j = 0; j < sensorAttempts; j++)
+    Serial.println("Could not set up AIS1120SX.");
+    errorFlash();
+  }
+
+  // Setup the pressure sensors
+  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+  {
+    if (rscs[i].setup(3, 1000))
     {
-      if (tcs[i].begin(CS_TCS_PIN[i]))
-      {
-        Serial.println("Thermocouple has been set up properly.");
-        successFlash();
-        break;
-      }
-      else if (j == sensorAttempts - 1)
-      {
-        Serial.print("Unable to start thermocouple TC");
-        Serial.println(i + 1);
-        errorFlash();
-      }
-      else // give it time before the next try
-      {
-        delay(1000);
-      }
+      Serial.print("Succesfully started RSC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start RSC");
+      Serial.println(i + 1);
+      errorFlash();
+    }
+  }
+
+  // Setup the thermocouples
+  for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+  {
+    if (tcs[i].setup(3, 1000, CS_TCS_PIN[i]))
+    {
+      Serial.print("Succesfully started thermocouple TC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start thermocouple TC");
+      Serial.println(i + 1);
+      errorFlash();
     }
   }
 

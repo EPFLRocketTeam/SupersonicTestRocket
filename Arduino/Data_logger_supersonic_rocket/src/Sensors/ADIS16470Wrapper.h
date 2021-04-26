@@ -48,15 +48,15 @@ struct ADIS16470Packet
 class ADIS16470Wrapper : public Sensor
 {
 private:
-  const uint32_t MEASUREMENT_INTERVAL = 500; // [us] (2000Hz)
-  const uint32_t MEASUREMENT_MARGIN = 50;    // [us]
+  static const uint32_t MEASUREMENT_INTERVAL = 500;            // [us] (2000Hz)
+  static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
+  static const uint32_t MEASUREMENT_MARGIN = 50;               // [us]
 
   const int DR_PIN;
 
   ADIS16470 adisObject;
-public:
   static uint8_t sensorQty; // how many sensors of this type exist
-
+public:
   // constructor
   ADIS16470Wrapper(int CS, int DR, int RST);
 
@@ -65,6 +65,8 @@ public:
 
   // attemps to set up the sensor and returns true if it was successful
   bool setup(int attempts, int delayDuration);
+
+  uint8_t getSensorQty();
 
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros, bool currDR);

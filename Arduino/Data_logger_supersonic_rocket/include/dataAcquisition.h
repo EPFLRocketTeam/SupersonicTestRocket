@@ -14,11 +14,6 @@
 #include <SdFat.h>
 #include <RingBuf.h>
 
-// sensors
-#include <AISx120SX.h>
-#include <Honeywell_RSC.h>
-#include <MAX31855.h>
-
 // user headers
 #include "globalVariables.h"
 #include "logging.h"
@@ -26,6 +21,9 @@
 #include "io.h"
 //    Sensors
 #include "Sensors/ADIS16470Wrapper.h"
+#include "Sensors/AISx120SXWrapper.h"
+#include "Sensors/HoneywellRscWrapper.h"
+#include "Sensors/MAX31855Wrapper.h"
 
 // Button events settings
 const int STOP_STATES[3] = {1, 0, 2};                     // States to stop
@@ -39,14 +37,12 @@ const int HONEYWELL_RSC_MARGIN = 50;     // [us]
 const int AIS1120SX_NOM_INTERVAL = 2500; // [us] (400Hz)
 const int AIS1120SX_CHECK_INTERVAL =
     AIS1120SX_NOM_INTERVAL / 10;                    // [us]
-const int TC_NOM_INTERVAL = 80 * 1000;              // [us] (80 ms)
-const int TC_CHECK_INTERVAL = TC_NOM_INTERVAL / 10; // [us]
 const int SYNC_INTERVAL = 100 * 1000;               // [us] (100 ms)
 
 // Start to acquire data periodically from the sensors and log it in a file
 // Sets up the necessary things and then loops periodically
-void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
-                 Honeywell_RSC rscs[2], MAX31855_Class tcs[4]);
+void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
+                 HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs);
 
 // Check the buttons and see if loop should continue according to input.
 bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3]);

@@ -7,22 +7,26 @@
 
 #include "ADIS16470Wrapper.h"
 
+// initialize the sensor count
+uint8_t ADIS16470Wrapper::sensorQty = 0;
+
 // constructor
 ADIS16470Wrapper::
-    ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(MEASUREMENT_INTERVAL,
+    ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(CHECK_INTERVAL,
                                                        MEASUREMENT_MARGIN,
                                                        MEASUREMENT_INTERVAL,
-                                                       true,
-                                                       sensorQty),
+                                                       true),
                                                 DR_PIN(DR),
                                                 adisObject(CS, DR, RST)
 {
-  sensorQty += 1; // increment sensor number by 1
+  sensorID = sensorQty;
+  sensorQty += 1;
 }
 
 // destructor
 ADIS16470Wrapper::~ADIS16470Wrapper()
 {
+  sensorQty -= 1;
 }
 
 bool ADIS16470Wrapper::setup(int attempts, int delayDuration)
@@ -59,10 +63,16 @@ bool ADIS16470Wrapper::setup(int attempts, int delayDuration)
   return active; // setup was not succesful
 }
 
+uint8_t ADIS16470Wrapper::getSensorQty()
+{
+  return sensorQty;
+}
+
 bool ADIS16470Wrapper::isDue(uint32_t currMicros, bool currDR)
 {
   if (isDueByDR(currMicros, currDR, RISING) || isDueByTime(currMicros))
   {
+    prevMeasTime = currMicros;
     return true;
   }
   else
@@ -83,7 +93,6 @@ bool ADIS16470Wrapper::verifyCheckSum(uint16_t sensorData[10])
 
 ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
 {
-  Serial.println("Acquiring data from an ADIS16470.");
   // acquire the data
   uint16_t *wordBurstData;
   wordBurstData = adisObject.wordBurst(); // Read data and insert into array
