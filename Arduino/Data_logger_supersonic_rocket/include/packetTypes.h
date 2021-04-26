@@ -13,11 +13,11 @@
 // 8 byte header for all packets
 struct PacketHeader
 {
-  uint8_t packetType;         // 1 byte
-  uint8_t packetSize;         // 1 byte
-  uint8_t errorCode;          // 1 byte
-  const uint8_t reserved = 0; // 1 bytes, reserved for future use
-  uint32_t timestamp;         // 4 bytes
+  uint8_t packetType; // 1 byte
+  uint8_t packetSize; // 1 byte
+  uint8_t sensorID;   // 1 byte
+  uint8_t errorCode;  // 1 byte
+  uint32_t timestamp; // 4 bytes
 };
 
 struct ADIS16470Packet
@@ -35,11 +35,13 @@ struct ADIS16470Packet
   uint16_t padding = 0; // 2 bytes. necessary for alignment
 
   // constructor. takes data directly from wordBurst from the ADIS16470 library
-  ADIS16470Packet(uint8_t errCode, uint32_t timestamp, uint16_t IMUdata[10])
+  ADIS16470Packet(uint8_t id, uint8_t errCode, uint32_t timestamp,
+                  uint16_t IMUdata[10])
   {
     // skipping packetType 0 since that will indicate an EOF
     header.packetType = 1;
     header.packetSize = sizeof(ADIS16470Packet); // 24 bytes
+    header.sensorID = id;
     header.errorCode = errCode;
     header.timestamp = timestamp;
     gyroX = IMUdata[1];
@@ -60,15 +62,16 @@ struct AISx120SXPacket
   uint16_t accelY; // 2 bytes
 
   // overloaded constructor
-  AISx120SXPacket(uint8_t errCode, uint32_t timestamp,
-                  uint16_t aX, uint16_t aY)
+  AISx120SXPacket(uint8_t id, uint8_t errCode, uint32_t timestamp,
+                  int16_t acceleration[2])
   {
     header.packetType = 2;
     header.packetSize = sizeof(AISx120SXPacket); // 12 bytes
+    header.sensorID = id;
     header.errorCode = errCode;
     header.timestamp = timestamp;
-    accelX = aX;
-    accelY = aY;
+    accelX = acceleration[0];
+    accelY = acceleration[1];
   }
 };
 
@@ -76,19 +79,18 @@ struct HoneywellRSCPressurePacket
 {
   struct PacketHeader header; // 8 bytes
   // sending as floats since the computation is hard to do after acquistion
-  float rsc015Pressure; // 4 bytes
-  float rsc060Pressure; // 4 bytes
+  float pressure; // 4 bytes
 
   // constructor
-  HoneywellRSCPressurePacket(uint8_t errCode, uint32_t timestamp,
-                             float rsc015P, float rsc060P)
+  HoneywellRSCPressurePacket(uint8_t id, uint8_t errCode, uint32_t timestamp,
+                             float p)
   {
     header.packetType = 3;
-    header.packetSize = sizeof(HoneywellRSCPressurePacket); // 16 bytes
+    header.packetSize = sizeof(HoneywellRSCPressurePacket); // 12 bytes
+    header.sensorID = id;
     header.errorCode = errCode;
     header.timestamp = timestamp;
-    rsc015Pressure = rsc015P;
-    rsc060Pressure = rsc060P;
+    pressure = p;
   }
 };
 
@@ -96,19 +98,18 @@ struct HoneywellRSCTempPacket
 {
   struct PacketHeader header; // 8 bytes
   // sending as floats since the computation is hard to do after acquistion
-  float rsc015Temp; // 4 bytes
-  float rsc060Temp; // 4 bytes
+  float temperature; // 4 bytes
 
   // constructor
-  HoneywellRSCTempPacket(uint8_t errCode, uint32_t timestamp,
-                         float rsc015T, float rsc060T)
+  HoneywellRSCTempPacket(uint8_t id, uint8_t errCode, uint32_t timestamp,
+                         float T)
   {
     header.packetType = 4;
-    header.packetSize = sizeof(HoneywellRSCTempPacket); // 16 bytes
+    header.packetSize = sizeof(HoneywellRSCTempPacket); // 12 bytes
+    header.sensorID = id;
     header.errorCode = errCode;
     header.timestamp = timestamp;
-    rsc015Temp = rsc015T;
-    rsc060Temp = rsc060T;
+    temperature = T;
   }
 };
 
@@ -116,18 +117,19 @@ struct ThermocouplePacket
 {
   struct PacketHeader header; // 8 bytes
   // sending as floats since the computation is hard to do after acquistion
-  int32_t probeTemperature[4];  // 4 * 4 = 16 bytes
-  int32_t sensorTemperature[4]; // 4 * 4 = 16 bytes
+  int16_t probeTemperature;  // 2 bytes
+  int16_t sensorTemperature; // 2 bytes
 
   // constructor
-  ThermocouplePacket(uint8_t errCode, uint32_t timestamp,
-                     int32_t probeT[4], int32_t sensorT[4])
+  ThermocouplePacket(uint8_t id, uint8_t errCode, uint32_t timestamp,
+                     int16_t probeT, int16_t sensorT)
   {
     header.packetType = 5;
-    header.packetSize = sizeof(ThermocouplePacket); // 40 bytes
+    header.packetSize = sizeof(ThermocouplePacket); // 24 bytes
+    header.sensorID = id;
     header.errorCode = errCode;
     header.timestamp = timestamp;
-    memcpy(probeTemperature, probeT, sizeof(probeTemperature));
-    memcpy(sensorTemperature, sensorT, sizeof(sensorTemperature));
+    probeTemperature = probeT;
+    sensorTemperature = sensorT;
   }
 };

@@ -16,6 +16,9 @@ extern const uint8_t DR_ADIS16470_PIN,
 // AIS1120SX
 extern const uint8_t CS_AIS1120SX_PIN;
 // Pressure sensors
+extern const uint8_t CS_RS_EE_PIN[2],
+    CS_RSC_ADC_PIN[2],
+    DR_RSC[2];
 extern const uint8_t CS_RSC015_EE_PIN,
     CS_RSC015_ADC_PIN,
     DR_RSC015;

@@ -8,8 +8,7 @@
 #include "dataAcquisition.h"
 
 void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
-                 Honeywell_RSC rsc015, Honeywell_RSC rsc060,
-                 MAX31855_Class tcs[4])
+                 Honeywell_RSC rscs[2], MAX31855_Class tcs[4])
 {
   // SETUP phase
 
@@ -42,20 +41,32 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   buttonArray.deactivateEvent(stopEvent[1]);
   buttonArray.deactivateEvent(stopEvent[2]);
 
+  // Quantity of sensors
+  size_t rscNum = sizeof(rscs) / sizeof(rscs[0]);
+  size_t tcNum = sizeof(tcs) / sizeof(tcs[0]);
+
+  // Data ready variables
+  bool Adis16470DataReadyStates[2] = {0};
+  bool RscDataReadyStates[rscNum][2] = {0};
+
+  // Last measurements
+  int16_t prevProbeMeas[tcNum] = {0};
+  int16_t prevAmbientMeas[tcNum] = {0};
+  int16_t prevAis1120sxMeas[2] = {0};
+
+  // 
+
   // Time variables
   // start the loop on an even second to make debugging easier
   // TODO: make the second rounding actually work. Far from critical
   uint32_t loopstart = ((uint32_t)micros() / 1000000 + 1) * 1000000;
   uint32_t prevADIS16470loop = loopstart;
   uint32_t prevAis1120sxLoop = loopstart;
-  uint32_t prevRSCloop = loopstart;
+  uint32_t prevAis1120sxMeasTime = loopstart;
+  uint32_t prevRSCloop[rscNum] = {loopstart};
   uint32_t prevTcLoop = loopstart;
+  uint32_t prevTcMeasTime[tcNum] = {loopstart};
   uint32_t prevSyncLoop = loopstart;
-
-  // Data ready variables
-  bool Adis16470DataReadyStates[2] = {0, 0};
-  bool RSC015DataReadyStates[2] = {0, 0};
-  bool RSC060DataReadyStates[2] = {0, 0};
 
   // Start acquiring data
   Serial.println("Starting to acquire data.");
@@ -66,6 +77,7 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   while (checkButtons(buttonArray, stopEvent))
   {
 
+    // ADIS16470
     // check if the ADIS16470 is ready because of time
     // if it is, it means that the data ready line isn't working properly
     // adding a small margin to allow for timing inconsistencies with DR line
@@ -80,11 +92,11 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
 
       // check for errors
       int16_t checksum = adis16470.checksum(wordBurstData);
-      uint8_t errorCode = getErrorCode(adis16470Due == -1, 1, 0,
+      uint8_t errorCode = getErrorCode(adis16470Due == -1, 0, 1,
                                        wordBurstData[9] == checksum);
 
       // create and write the packet
-      ADIS16470Packet packet(errorCode, micros(), wordBurstData);
+      ADIS16470Packet packet(0, errorCode, micros(), wordBurstData);
       rb.write((const uint8_t *)&packet, sizeof(packet));
     }
     // Check if ADIS16470 is ready because of the data ready signal
@@ -94,7 +106,7 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
     if (Adis16470DataReadyStates[0] == 1 &&
         Adis16470DataReadyStates[1] == 0)
     {
-      prevADIS16470loop += micros(); // reset the timer now that DR works
+      prevADIS16470loop = micros(); // reset the timer now that DR works
       Serial.println("Acquiring data from the ADIS16470 due to DR.");
       // acquire the data
       uint16_t *wordBurstData;
@@ -106,38 +118,134 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
                                        wordBurstData[9] == checksum);
 
       // create and write the packet
-      ADIS16470Packet packet(errorCode, micros(), wordBurstData);
+      ADIS16470Packet packet(0, errorCode, micros(), wordBurstData);
       rb.write((const uint8_t *)&packet, sizeof(packet));
     }
     Adis16470DataReadyStates[1] = Adis16470DataReadyStates[0];
 
+    // AIS1120SX
     // check if it's time to read the AIS1120SX
+    // checking around 10 times more often than the sampling frequency to
+    // get data as soon as it comes out
     int8_t ais110sxDue = checkEventDue(micros(), prevAis1120sxLoop,
-                                       AIS1120SX_INTERVAL);
+                                       AIS1120SX_CHECK_INTERVAL);
     if (ais110sxDue)
     {
-      Serial.println("Acquiring data from the AIS1120SX");
-      uint8_t errorCode = getErrorCode(ais110sxDue == -1, 0, 0, 0);
-      AISx120SXPacket packet(errorCode, micros(), (uint16_t)random(), 0);
-      rb.write((const uint8_t *)&packet, sizeof(packet));
+      // read the data
+      int16_t *rawData;
+      rawData = ais1120sx.readData();
+
+      // check if the new measurement is different from the last one
+      if (memcmp(rawData, prevAis1120sxMeas, sizeof(*rawData)) != 0)
+      {
+        Serial.println("Acquiring data from the AIS1120SX");
+        // see if the new measurements are late
+        bool measSkippedBeat = (micros() - prevAis1120sxMeasTime >
+                                2 * AIS1120SX_NOM_INTERVAL);
+
+        // get the error code
+        uint8_t errorCode = getErrorCode(measSkippedBeat, ais110sxDue == -1, 0, 0);
+        //uint16_t *accelData;
+
+        // create and send packet
+        AISx120SXPacket packet(0, errorCode, micros(), rawData);
+        rb.write((const uint8_t *)&packet, sizeof(packet));
+
+        // save last measurements and when they were obtained
+        memcpy(prevAis1120sxMeas, rawData, sizeof(prevAis1120sxMeas));
+        prevAis1120sxMeasTime = micros();
+      }
     }
 
-    // Check if RSC is ready
-    // TODO: find a better rising edge detection
-    RSC015DataReadyStates[0] = digitalRead(DR_RSC015);
-    if (RSC015DataReadyStates[0] == 1 &&
-        RSC015DataReadyStates[1] == 0) // rising edge
+    // RSC
+    // loop through all RSCs
+    for (size_t i = 0; i < rscNum; i++)
     {
-      Serial.println("Acquiring data from the RSCs.");
-      // do stuff
+      // check if the RSC is ready because of time
+      // if it is, it means that the data ready line isn't working properly
+      // adding a small margin to allow for timing inconsistencies with DR line
+
+      int8_t rscDue = checkEventDue(micros() + HONEYWELL_RSC_MARGIN,
+                                    prevRSCloop[i], HONEYWELL_RSC_INTERVAL);
+      if (rscDue)
+      {
+        Serial.print("Acquiring data from the RSC");
+        Serial.print(i);
+        Serial.println(" due to time.");
+
+        // acquire the data
+        float meas = 0;
+
+        // check for errors
+        uint8_t errorCode = getErrorCode(rscDue == -1, 0, 1, 0);
+
+        // create and write the packet
+        HoneywellRSCPressurePacket packet(i, errorCode, micros(), meas);
+        rb.write((const uint8_t *)&packet, sizeof(packet));
+      }
+      // Check if RSC is ready because of the data ready signal
+      // TODO: find a better rising edge detection
+      RscDataReadyStates[i][0] = digitalRead(DR_RSC[i]);
+      // rising edge is when current reading is high and last reading is low
+      if (RscDataReadyStates[i][0] == 1 &&
+          RscDataReadyStates[i][1] == 0)
+      {
+        prevRSCloop[i] = micros(); // reset the timer now that DR works
+        Serial.print("Acquiring data from the RSC");
+        Serial.print(i);
+        Serial.println(" due to DR.");
+
+        // acquire the data
+        float meas = 0;
+
+        // check for errors
+        uint8_t errorCode = getErrorCode(rscDue == -1, 0, 1, 0);
+
+        // create and write the packet
+        HoneywellRSCPressurePacket packet(i, errorCode, micros(), meas);
+        rb.write((const uint8_t *)&packet, sizeof(packet));
+      }
+      RscDataReadyStates[i][1] = RscDataReadyStates[i][0];
     }
 
+    // THERMOCOUPLES
     // check if it's time to read the thermocouples
-    if (checkEventDue(micros(), prevTcLoop, TC_INTERVAL))
+    // checking around 10 times more often than the sampling frequency to
+    // get data as soon as it comes out
+    int8_t tcDue = checkEventDue(micros(), prevTcLoop, TC_CHECK_INTERVAL);
+    if (tcDue)
     {
+      // loop through all thermocouples
+      for (size_t i = 0; i < tcNum; i++)
+      {
+        // read the measurements from the sensor
+        int32_t rawMeas = tcs[i].readRaw();
+        int16_t probeT = tcs[i].rawToProbe(rawMeas);
+        int16_t ambientT = tcs[i].rawToAmbient(rawMeas);
 
-      //ThermocouplePacket packet(micros(),
-      //rb.write((const uint8_t *)&packet, sizeof(packet));
+        // check if the new measurement is different from the last one
+        // and that it does not contain an error
+        if (probeT != prevProbeMeas[i] && ambientT != prevAmbientMeas[i] &&
+            probeT != INT16_MAX && ambientT != INT16_MAX)
+        {
+          Serial.print("Acquiring data from TC");
+          Serial.println(i);
+          // see if the new measurements are late
+          bool measSkippedBeat = (micros() - prevTcMeasTime[i] >
+                                  2 * TC_NOM_INTERVAL);
+          // get the error code
+          uint8_t errorCode = getErrorCode(measSkippedBeat, tcDue, 0, 0);
+
+          // get and send the packet
+          ThermocouplePacket packet(i, errorCode, micros(), probeT, ambientT);
+          rb.write((const uint8_t *)&packet, sizeof(packet));
+
+          // save last measurements and when they were obtained
+          prevProbeMeas[i] = probeT;
+          prevAmbientMeas[i] = ambientT;
+          prevTcMeasTime[i] = micros();
+        }
+      }
     }
 
     // check if it's time to sync

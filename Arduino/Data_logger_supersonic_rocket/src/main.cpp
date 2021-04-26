@@ -47,27 +47,26 @@ const uint8_t DR_ADIS16470_PIN = 24,
 // AIS1120SX
 const uint8_t CS_AIS1120SX_PIN = 31;
 // Pressure sensors
-const uint8_t CS_RSC015_EE_PIN = 17,
-              CS_RSC015_ADC_PIN = 16,
-              DR_RSC015 = 15;
-const uint8_t CS_RSC060_EE_PIN = 28,
-              CS_RSC060_ADC_PIN = 27,
-              DR_RSC060 = 26;
+const uint8_t CS_RS_EE_PIN[2] = {17, 28};
+const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
+const uint8_t DR_RSC[2] = {15, 26};
 // Thermocouples
 const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
 
 // I/O -------------------------------------------------------------------------
 // Button event
-const int ACQ_STATE = 1;                     // State to turn on acquisition
-const int ACQ_NEXT_STATE = 0;                // Next state to turn on
+const int ACQ_STATE = 1;                // State to turn on acquisition
+const int ACQ_NEXT_STATE = 0;           // Next state to turn on
 const uint32_t ACQ_WINDOW_START = 1000; // [ms]
 const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
 // Create the sensor objects ---------------------------------------------------
 ADIS16470 adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN, RST_ADIS16470_PIN);
 AISx120SX ais1120sx(CS_AIS1120SX_PIN);
-Honeywell_RSC rsc015(DR_RSC015, CS_RSC015_EE_PIN, CS_RSC015_ADC_PIN);
-Honeywell_RSC rsc060(DR_RSC060, CS_RSC060_EE_PIN, CS_RSC060_ADC_PIN);
+Honeywell_RSC rscs[2] = {Honeywell_RSC(DR_RSC[0], CS_RS_EE_PIN[0],
+                                       CS_RSC_ADC_PIN[0]),
+                         Honeywell_RSC(DR_RSC[1], CS_RS_EE_PIN[1],
+                                       CS_RSC_ADC_PIN[1])};
 MAX31855_Class tcs[4];
 
 const int sensorAttempts = 3; // How many times to try to turn on the sensors
@@ -89,7 +88,7 @@ void setup()
   pinMode(BUTTON0_PIN, INPUT);
   pinMode(BUTTON1_PIN, INPUT);
   digitalWrite(GREEN_LED_PIN, LOW); // turn off LED in case
-  digitalWrite(RED_LED_PIN, LOW); // turn off LED in case
+  digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
   Serial.println("I/O has been set up");
   successFlash(); // visual feedback setup is happening
 
@@ -112,7 +111,7 @@ void setup()
 
     // checksum ok AND didn't read just zeros --> setup successful!
     if (wordBurstData[9] == checksum &&
-        memcmp(wordBurstData, zeros, sizeof(wordBurstData)) != 0)
+        memcmp(wordBurstData, zeros, sizeof(*wordBurstData)) != 0)
     {
       Serial.println("ADIS16470 has been set up properly.");
       successFlash();
@@ -134,13 +133,17 @@ void setup()
   successFlash(); // visual feedback setup is happening
 
   // Set up the pressure sensors
-  rsc015.init();
-  rsc060.init();
+  size_t pSensorNum = sizeof(rscs) / sizeof(rscs[0]);
+  for (size_t i = 0; i < pSensorNum; i++)
+  {
+    rscs[i].init();
+  }
   Serial.println("Pressure sensors have been set up");
   successFlash(); // visual feedback setup is happening
 
   // Set up the thermocouples
-  for (int i = 0; i < 4; i++)
+  size_t tcNum = sizeof(tcs) / sizeof(tcs[0]);
+  for (size_t i = 0; i < tcNum; i++)
   {
     // Try to see if the thermocouple is working
     for (int j = 0; j < sensorAttempts; j++)
@@ -198,7 +201,7 @@ void loop()
       case GOOD_TRANSITION:
         Serial.println("Will begin data acquisition as button was pressed.");
         digitalWrite(GREEN_LED_PIN, LOW);
-        acquireData(adis16470, ais1120sx, rsc015, rsc060, tcs);
+        acquireData(adis16470, ais1120sx, rscs, tcs);
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");

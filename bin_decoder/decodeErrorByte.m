@@ -2,14 +2,14 @@ function [decodedByte] = decodeErrorByte(errorByte)
 % Decodes the error byte into a usable format for CSV
 
 
-skippedBeat = bitget(errorByte, 8);
-drNoTrigger = bitget(errorByte, 7);
-missingData = bitget(errorByte, 6);
+measSkippedBeat = bitget(errorByte, 8);
+acqSkippedBeat = bitget(errorByte, 7);
+drNoTrigger = bitget(errorByte, 6);
 checksumError = bitget(errorByte, 5);
 
 
-decodedByte = sprintf('%d, %d, %d, %d', skippedBeat, ...
-    drNoTrigger, missingData, checksumError);
+decodedByte = sprintf('%d, %d, %d, %d', measSkippedBeat, ...
+    acqSkippedBeat, drNoTrigger, checksumError);
 
 end
 

@@ -57,33 +57,33 @@ void setupLoggingFile(FsFile &loggingFile,
   rb.begin(&loggingFile);
 }
 
-uint8_t getErrorCode(bool skippedBeat, bool drNoTrigger, bool missingData,
+uint8_t getErrorCode(bool measSkippedBeat, bool acqSkippedBeat, bool drNoTrigger,
                      bool checksumError)
 {
   uint8_t errorCode = 0;
 
-  // first bit: if skipped a beat or not
-  if (skippedBeat)
+  // first bit: if a measurement beat was missed (measurement beat skipped)
+  if (measSkippedBeat)
   {
-    bitSet(errorCode, 7); // set left-most bit (7th bit) to 1
+    bitSet(errorCode, 7); // set bit to 1
   }
 
-  // second bit: if DR pin didn't trigger the read
+  // second bit: if the acquisition loop skipped a beat
+  if (acqSkippedBeat)
+  {
+    bitSet(errorCode, 6); // set bit to 1
+  }
+
+  // third bit: if DR pin didn't trigger the read
   if (drNoTrigger)
   {
-    bitSet(errorCode, 6); // set 2nd left-most bit (6th bit) to 1
-  }
-
-  // third bit: missing data from a sensor
-  if (missingData)
-  {
-    bitSet(errorCode, 5); // set 3rd left-most bit (5th bit) to 1
+    bitSet(errorCode, 5); // set bit to 1
   }
 
   // fourth bit: checksum error
-  if (missingData)
+  if (checksumError)
   {
-    bitSet(checksumError, 4); // set 4th left-most bit (4th bit) to 1
+    bitSet(errorCode, 4); // set bit to 1
   }
 
   return errorCode;
