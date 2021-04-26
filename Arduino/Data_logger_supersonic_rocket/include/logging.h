@@ -29,10 +29,6 @@
 void setupLoggingFile(FsFile &loggingFile,
                       RingBuf<FsFile, RING_BUF_CAPACITY> &rb);
 
-// takes all the errors that happened and returns an error code
-uint8_t getErrorCode(bool measSkippedBeat, bool acqSkippedBeat,
-                     bool drNoTrigger, bool checksumError);
-
 // Deprecated function as too slow on a Teensy
 // converts from a binary file of packets to a CSV file for human reading
 //bool binFileToCSV(FsFile &binFile);

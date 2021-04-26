@@ -20,7 +20,6 @@
 #include <SPI.h>
 
 // External libraries
-#include <ADIS16470.h>
 #include <AISx120SX.h>
 #include <Honeywell_RSC.h>
 #include <MAX31855.h>
@@ -30,6 +29,8 @@
 #include "PushButtonArray/PushButtonArray.h"
 #include "dataAcquisition.h"
 #include "io.h"
+//    Sensors
+#include "Sensors/ADIS16470Wrapper.h"
 
 // DEFINE VARIABLES ============================================================
 
@@ -60,8 +61,9 @@ const int ACQ_NEXT_STATE = 0;           // Next state to turn on
 const uint32_t ACQ_WINDOW_START = 1000; // [ms]
 const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
-// Create the sensor objects ---------------------------------------------------
-ADIS16470 adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN, RST_ADIS16470_PIN);
+// Create the sensor wrapper objects -------------------------------------------
+ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
+                           RST_ADIS16470_PIN);
 AISx120SX ais1120sx(CS_AIS1120SX_PIN);
 Honeywell_RSC rscs[2] = {Honeywell_RSC(DR_RSC[0], CS_RS_EE_PIN[0],
                                        CS_RSC_ADC_PIN[0]),
@@ -80,7 +82,7 @@ void setup()
   // Open serial communications and give some time for the port to open
   // Not waiting on the port in case the device is not connected to USB
   Serial.begin(9600);
-  delay(2500);
+  delay(1000);
 
   // Set up I/O
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -94,38 +96,16 @@ void setup()
 
   SPI.begin();
 
-  // Set up the ADIS16470
-  adis16470.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
-  adis16470.regWrite(DEC_RATE, 0x00);  // Set digital filter
-  adis16470.regWrite(FILT_CTRL, 0x04); // Set digital filter
-  // Try to see if the ADIS is working
-  for (int i = 0; i < sensorAttempts; i++)
+  // Setup the IMU
+  if (adis16470.setup(3, 1000))
   {
-    // acquire some data
-    uint16_t *wordBurstData;
-    wordBurstData = adis16470.wordBurst();                // Read data and insert into array
-    int16_t checksum = adis16470.checksum(wordBurstData); // get the checksum
-
-    // get a zero vector to make sure the data we are getting isn't just zeros
-    uint16_t zeros[sizeof(wordBurstData)] = {0};
-
-    // checksum ok AND didn't read just zeros --> setup successful!
-    if (wordBurstData[9] == checksum &&
-        memcmp(wordBurstData, zeros, sizeof(*wordBurstData)) != 0)
-    {
-      Serial.println("ADIS16470 has been set up properly.");
-      successFlash();
-      break;
-    }
-    else if (i == sensorAttempts - 1)
-    {
-      Serial.println("Unable to start ADIS16470.");
-      errorFlash();
-    }
-    else // give it time before the next try
-    {
-      delay(1000);
-    }
+    Serial.println("ADIS16470 has been set up succesfully.");
+    successFlash();
+  }
+  else
+  {
+    Serial.println("Could not set up ADIS16470.");
+    errorFlash();
   }
 
   // Set up the AIS1120SX

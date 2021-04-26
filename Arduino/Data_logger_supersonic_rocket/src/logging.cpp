@@ -57,38 +57,6 @@ void setupLoggingFile(FsFile &loggingFile,
   rb.begin(&loggingFile);
 }
 
-uint8_t getErrorCode(bool measSkippedBeat, bool acqSkippedBeat, bool drNoTrigger,
-                     bool checksumError)
-{
-  uint8_t errorCode = 0;
-
-  // first bit: if a measurement beat was missed (measurement beat skipped)
-  if (measSkippedBeat)
-  {
-    bitSet(errorCode, 7); // set bit to 1
-  }
-
-  // second bit: if the acquisition loop skipped a beat
-  if (acqSkippedBeat)
-  {
-    bitSet(errorCode, 6); // set bit to 1
-  }
-
-  // third bit: if DR pin didn't trigger the read
-  if (drNoTrigger)
-  {
-    bitSet(errorCode, 5); // set bit to 1
-  }
-
-  // fourth bit: checksum error
-  if (checksumError)
-  {
-    bitSet(errorCode, 4); // set bit to 1
-  }
-
-  return errorCode;
-}
-
 // Deprecated function as too slow on Teensy
 // // converts from a binary file of packets to CSV files for human reading
 // bool binFileToCSV(FsFile &binFile)

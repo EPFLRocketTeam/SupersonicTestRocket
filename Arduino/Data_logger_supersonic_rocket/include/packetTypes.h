@@ -10,49 +10,6 @@
 // Packet definitions. If packets are discontinued in the future, they
 // SHOULD NOT BE REMOVED FROM HERE! Instead, they should be commented to allow
 // easy decoding of older packet types.
-// 8 byte header for all packets
-struct PacketHeader
-{
-  uint8_t packetType; // 1 byte
-  uint8_t packetSize; // 1 byte
-  uint8_t sensorID;   // 1 byte
-  uint8_t errorCode;  // 1 byte
-  uint32_t timestamp; // 4 bytes
-};
-
-struct ADIS16470Packet
-{
-  struct PacketHeader header; // 8 bytes
-  // sending as uint16_t to save data space and since it's easy to convert
-  // could likely send as float to save a potential headache later
-  uint16_t gyroX;       // 2 bytes
-  uint16_t gyroY;       // 2 bytes
-  uint16_t gyroZ;       // 2 bytes
-  uint16_t accX;        // 2 bytes
-  uint16_t accY;        // 2 bytes
-  uint16_t accZ;        // 2 bytes
-  uint16_t temp;        // 2 bytes
-  uint16_t padding = 0; // 2 bytes. necessary for alignment
-
-  // constructor. takes data directly from wordBurst from the ADIS16470 library
-  ADIS16470Packet(uint8_t id, uint8_t errCode, uint32_t timestamp,
-                  uint16_t IMUdata[10])
-  {
-    // skipping packetType 0 since that will indicate an EOF
-    header.packetType = 1;
-    header.packetSize = sizeof(ADIS16470Packet); // 24 bytes
-    header.sensorID = id;
-    header.errorCode = errCode;
-    header.timestamp = timestamp;
-    gyroX = IMUdata[1];
-    gyroY = IMUdata[2];
-    gyroZ = IMUdata[3];
-    accX = IMUdata[4];
-    accY = IMUdata[5];
-    accZ = IMUdata[6];
-    temp = IMUdata[7];
-  }
-};
 
 struct AISx120SXPacket
 {

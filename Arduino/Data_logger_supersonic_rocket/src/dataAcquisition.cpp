@@ -7,7 +7,7 @@
 
 #include "dataAcquisition.h"
 
-void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
+void acquireData(ADIS16470Wrapper adis16470, AISx120SX ais1120sx,
                  Honeywell_RSC rscs[2], MAX31855_Class tcs[4])
 {
   // SETUP phase
@@ -78,50 +78,11 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   {
 
     // ADIS16470
-    // check if the ADIS16470 is ready because of time
-    // if it is, it means that the data ready line isn't working properly
-    // adding a small margin to allow for timing inconsistencies with DR line
-    int8_t adis16470Due = checkEventDue(micros() + ADIS16470_MARGIN,
-                                        prevADIS16470loop, ADIS16470_INTERVAL);
-    if (adis16470Due)
+    if (adis16470.isDue(micros(), digitalRead(DR_ADIS16470_PIN)))
     {
-      Serial.println("Acquiring data from the ADIS16470 due to time.");
-      // acquire the data
-      uint16_t *wordBurstData;
-      wordBurstData = adis16470.wordBurst(); // Read data and insert into array
-
-      // check for errors
-      int16_t checksum = adis16470.checksum(wordBurstData);
-      uint8_t errorCode = getErrorCode(adis16470Due == -1, 0, 1,
-                                       wordBurstData[9] == checksum);
-
-      // create and write the packet
-      ADIS16470Packet packet(0, errorCode, micros(), wordBurstData);
+      ADIS16470Packet packet = adis16470.getPacket(micros());
       rb.write((const uint8_t *)&packet, sizeof(packet));
     }
-    // Check if ADIS16470 is ready because of the data ready signal
-    // TODO: find a better rising edge detection
-    Adis16470DataReadyStates[0] = digitalRead(DR_ADIS16470_PIN);
-    // rising edge is when current reading is high and last reading is low
-    if (Adis16470DataReadyStates[0] == 1 &&
-        Adis16470DataReadyStates[1] == 0)
-    {
-      prevADIS16470loop = micros(); // reset the timer now that DR works
-      Serial.println("Acquiring data from the ADIS16470 due to DR.");
-      // acquire the data
-      uint16_t *wordBurstData;
-      wordBurstData = adis16470.wordBurst(); // Read data and insert into array
-
-      // check for errors
-      int16_t checksum = adis16470.checksum(wordBurstData);
-      uint8_t errorCode = getErrorCode(adis16470Due == -1, 0, 0,
-                                       wordBurstData[9] == checksum);
-
-      // create and write the packet
-      ADIS16470Packet packet(0, errorCode, micros(), wordBurstData);
-      rb.write((const uint8_t *)&packet, sizeof(packet));
-    }
-    Adis16470DataReadyStates[1] = Adis16470DataReadyStates[0];
 
     // AIS1120SX
     // check if it's time to read the AIS1120SX
@@ -309,30 +270,6 @@ void acquireData(ADIS16470 adis16470, AISx120SX ais1120sx,
   digitalWrite(RED_LED_PIN, LOW);
   successFlash();
   Serial.println("Finished acquiring data");
-}
-
-int8_t checkEventDue(uint32_t currMicros, uint32_t &prevEvent,
-                     uint32_t interval)
-{
-  // check if missed a beat
-  if (currMicros - prevEvent > 2 * interval)
-  {
-    int beatsSkipped = floor((currMicros - prevEvent) / interval);
-    Serial.print("WARNING! Skipped following amount of beats:");
-    Serial.println(beatsSkipped - 1);
-    Serial.println("Consider lowering frequency.");
-    prevEvent += beatsSkipped * interval; // catch up
-    return -1;                            // event is due but an error happened
-  }
-  else if (currMicros - prevEvent > interval) // check if the event is due
-  {
-    prevEvent += interval;
-    return 1; // event is due
-  }
-  else
-  {
-    return 0; // event is not due
-  }
 }
 
 bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
