@@ -35,7 +35,12 @@ bool HoneywellRscWrapper::setup(int attempts, int delayDuration)
   // Try to see if the RSC is working
   for (int i = 0; i < attempts; i++)
   {
-    if (true) // condition for success
+    rscObject.init(); // initialize the object
+    // try to make a dummy measurement
+    rscObject.adc_request(PRESSURE);
+    delay(50);
+    float reading = rscObject.get_pressure();
+    if (reading != 0) // condition for success
     {
       active = true;
       return active;
@@ -67,16 +72,59 @@ bool HoneywellRscWrapper::isDue(uint32_t currMicros, bool currDR)
   }
 }
 
+READING_T HoneywellRscWrapper::currReadType()
+{
+  // temperature readings are requested when modulo = 0
+  if (measurementAmountModulo == 1)
+  {
+    return TEMPERATURE;
+  }
+  else
+  {
+    return PRESSURE;
+  }
+}
+
+READING_T HoneywellRscWrapper::nextReadType()
+{
+  // temperature readings are requested when modulo = 0
+  if (measurementAmountModulo == 0)
+  {
+    return TEMPERATURE;
+  }
+  else
+  {
+    return PRESSURE;
+  }
+}
+
 HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
-  // read the measurements from the sensor
-  float presure = rscObject.get_pressure();
+  float meas;
+  packetType packetTypeNum;
+
+  // determine the type of measurement we are getting
+  if (currReadType() == TEMPERATURE)
+  {
+    meas = rscObject.get_temperature();   // get the measurement
+    packetTypeNum = RSC_TEMP_PACKET_TYPE; // set the packet type
+  }
+  else
+  {
+    meas = rscObject.get_pressure();          // get the measurement
+    packetTypeNum = RSC_PRESSURE_PACKET_TYPE; // set the packet type
+  }
+  // update the measurement count
+  measurementAmountModulo += 1;
+  measurementAmountModulo = measurementAmountModulo % TEMP_FREQUENCY;
+
+  // request the next data from the adc
+  rscObject.adc_request(nextReadType());
 
   // create and write the packet
-
-  HoneywellRSCPacket packet(getHeader(RSC_PRESSURE_PACKET_TYPE,
+  HoneywellRSCPacket packet(getHeader(packetTypeNum,
                                       sizeof(HoneywellRSCPacket),
                                       currMicros),
-                            presure);
+                            meas);
   return packet;
 }

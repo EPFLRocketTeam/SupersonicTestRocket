@@ -74,58 +74,20 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
       }
     }
 
-    
-
-    // // RSC
-    // // loop through all RSCs
-    // for (size_t i = 0; i < rscNum; i++)
-    // {
-    //   // check if the RSC is ready because of time
-    //   // if it is, it means that the data ready line isn't working properly
-    //   // adding a small margin to allow for timing inconsistencies with DR line
-
-    //   int8_t rscDue = checkEventDue(micros() + HONEYWELL_RSC_MARGIN,
-    //                                 prevRSCloop[i], HONEYWELL_RSC_INTERVAL);
-    //   if (rscDue)
-    //   {
-    //     Serial.print("Acquiring data from the RSC");
-    //     Serial.print(i);
-    //     Serial.println(" due to time.");
-
-    //     // acquire the data
-    //     float meas = 0;
-
-    //     // check for errors
-    //     uint8_t errorCode = getErrorCode(rscDue == -1, 0, 1, 0);
-
-    //     // create and write the packet
-    //     HoneywellRSCPressurePacket packet(i, errorCode, micros(), meas);
-    //     rb.write((const uint8_t *)&packet, sizeof(packet));
-    //   }
-    //   // Check if RSC is ready because of the data ready signal
-    //   // TODO: find a better rising edge detection
-    //   RscDataReadyStates[i][0] = digitalRead(DR_RSC[i]);
-    //   // rising edge is when current reading is high and last reading is low
-    //   if (RscDataReadyStates[i][0] == 1 &&
-    //       RscDataReadyStates[i][1] == 0)
-    //   {
-    //     prevRSCloop[i] = micros(); // reset the timer now that DR works
-    //     Serial.print("Acquiring data from the RSC");
-    //     Serial.print(i);
-    //     Serial.println(" due to DR.");
-
-    //     // acquire the data
-    //     float meas = 0;
-
-    //     // check for errors
-    //     uint8_t errorCode = getErrorCode(rscDue == -1, 0, 1, 0);
-
-    //     // create and write the packet
-    //     HoneywellRSCPressurePacket packet(i, errorCode, micros(), meas);
-    //     rb.write((const uint8_t *)&packet, sizeof(packet));
-    //   }
-    //   RscDataReadyStates[i][1] = RscDataReadyStates[i][0];
-    // }
+    // Pressure sensors
+    for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+    {
+      if (rscs[i].active) // check if the sensor is active
+      {
+        if (rscs[i].isDue(micros(), digitalRead(DR_RSC[i]))) // sensor is due
+        {
+          Serial.print("Acquiring data from RSC");
+          Serial.println(i + 1);
+          HoneywellRSCPacket packet = rscs[i].getPacket(micros());
+          rb.write((const uint8_t *)&packet, sizeof(packet));
+        }
+      }
+    }
 
     // THERMOCOUPLES
     for (size_t i = 0; i < tcs[i].getSensorQty(); i++)

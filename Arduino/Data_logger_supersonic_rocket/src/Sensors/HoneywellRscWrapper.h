@@ -38,6 +38,11 @@ private:
   static const uint32_t MEASUREMENT_INTERVAL = 520;            // [us] (400 Hz)
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
   static const uint32_t MEASUREMENT_MARGIN = 50;               // [us]
+  
+  // how often temperature measurements will be made
+  // every nth measurement will be a temperature measurement
+  static const int TEMP_FREQUENCY = 50;
+  int measurementAmountModulo = 0; // modulo of how many measurements were made
 
   Honeywell_RSC rscObject;
   static uint8_t sensorQty; // how many sensors of this type exist
@@ -57,6 +62,12 @@ public:
 
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros, bool currDR);
+
+  // determine current reading type
+  READING_T currReadType();
+
+  // determine next reading type
+  READING_T nextReadType();
 
   HoneywellRSCPacket getPacket(uint32_t currMicros);
 };

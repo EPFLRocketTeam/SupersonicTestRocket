@@ -19,11 +19,5 @@ extern const uint8_t CS_AIS1120SX_PIN;
 extern const uint8_t CS_RS_EE_PIN[2],
     CS_RSC_ADC_PIN[2],
     DR_RSC[2];
-extern const uint8_t CS_RSC015_EE_PIN,
-    CS_RSC015_ADC_PIN,
-    DR_RSC015;
-extern const uint8_t CS_RSC060_EE_PIN,
-    CS_RSC060_ADC_PIN,
-    DR_RSC060;
 // Thermocouples
 extern const uint8_t CS_TCS_PIN[4];
