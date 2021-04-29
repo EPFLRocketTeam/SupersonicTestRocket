@@ -10,7 +10,7 @@
 #include "globalVariables.h"
 
 const int SUCCESS_FLASH_DURATION = 500;
-const int ERROR_FLASH_DURATION = 50;
+const int ERROR_FLASH_DURATION = 500;
 
 // flashes the given LED for a certain time
 // \!/ uses delay(). do not use in any time-sensitive application

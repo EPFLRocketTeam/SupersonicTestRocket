@@ -40,7 +40,7 @@ bool HoneywellRscWrapper::setup(int attempts, int delayDuration)
     rscObject.adc_request(PRESSURE);
     delay(50);
     float reading = rscObject.get_pressure();
-    if (reading != 0) // condition for success
+    if (reading != 0 && !isnan(reading)) // condition for success
     {
       active = true;
       return active;

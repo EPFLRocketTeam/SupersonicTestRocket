@@ -196,6 +196,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       break;
     case WINDOW_START:
       Serial.println("Within window for first check.");
+      digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
@@ -226,6 +227,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       break;
     case WINDOW_START:
       Serial.println("Within window for second check.");
+      digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
@@ -260,6 +262,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       break;
     case WINDOW_START:
       Serial.println("Within window for third check.");
+      digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:

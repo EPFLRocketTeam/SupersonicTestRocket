@@ -19,10 +19,6 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-// External libraries
-#include <AISx120SX.h>
-#include <Honeywell_RSC.h>
-
 // User-defined headers
 #include "globalVariables.h"
 #include "PushButtonArray/PushButtonArray.h"
