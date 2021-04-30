@@ -17,13 +17,13 @@
 // user headers
 #include "globalVariables.h"
 #include "logging.h"
-#include "PushButtonArray/PushButtonArray.h"
+#include "PushButtonArray.h"
 #include "io.h"
 //    Sensors
-#include "Sensors/ADIS16470Wrapper.h"
-#include "Sensors/AISx120SXWrapper.h"
-#include "Sensors/HoneywellRscWrapper.h"
-#include "Sensors/MAX31855Wrapper.h"
+#include "ADIS16470Wrapper.h"
+#include "AISx120SXWrapper.h"
+#include "HoneywellRscWrapper.h"
+#include "MAX31855Wrapper.h"
 
 // Button events settings
 const int STOP_STATES[3] = {1, 0, 2};                     // States to stop

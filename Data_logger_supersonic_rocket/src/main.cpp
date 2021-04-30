@@ -21,14 +21,14 @@
 
 // User-defined headers
 #include "globalVariables.h"
-#include "PushButtonArray/PushButtonArray.h"
+#include "PushButtonArray.h"
 #include "dataAcquisition.h"
 #include "io.h"
 //    Sensors
-#include "Sensors/ADIS16470Wrapper.h"
-#include "Sensors/AISx120SXWrapper.h"
-#include "Sensors/HoneywellRscWrapper.h"
-#include "Sensors/MAX31855Wrapper.h"
+#include "ADIS16470Wrapper.h"
+#include "AISx120SXWrapper.h"
+#include "HoneywellRscWrapper.h"
+#include "MAX31855Wrapper.h"
 
 // DEFINE VARIABLES ============================================================
 
@@ -174,7 +174,7 @@ void loop()
     bool indivButtonState[2];
     indivButtonState[0] = digitalRead(BUTTON0_PIN);
     indivButtonState[1] = digitalRead(BUTTON1_PIN);
-    eventCheck = buttonArray.checkEvents(indivButtonState);
+    eventCheck = buttonArray.checkEvents(millis(), indivButtonState);
 
     // if any of the events happened, do something
     if (eventCheck.triggeredEvent == logStartEvent)

@@ -57,5 +57,6 @@ public:
   void deleteEvent(uint8_t idx);
 
   // Check if there are any events that just happened
-  eventOutput checkEvents(bool individualButtonStates[BUTTON_NUM]);
+  eventOutput checkEvents(uint32_t currMillis,
+                          bool individualButtonStates[BUTTON_NUM]);
 };

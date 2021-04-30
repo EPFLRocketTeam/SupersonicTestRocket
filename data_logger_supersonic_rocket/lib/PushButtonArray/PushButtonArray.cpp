@@ -80,7 +80,8 @@ void PushButtonArray::deactivateEvent(uint8_t idx)
 	Events[idx].activated = false;
 }
 
-eventOutput PushButtonArray::checkEvents(bool individualButtonStates[BUTTON_NUM])
+eventOutput PushButtonArray::
+		checkEvents(uint32_t currMillis, bool individualButtonStates[BUTTON_NUM])
 {
 	state = translateState(individualButtonStates);
 	uint32_t durationToSend;
@@ -89,7 +90,7 @@ eventOutput PushButtonArray::checkEvents(bool individualButtonStates[BUTTON_NUM]
 	{
 		// update the state times
 		// start the current state timer
-		stateStartTime[state] = millis();
+		stateStartTime[state] = currMillis;
 		stateDuration[state] = 0;
 		// end the previous state timer
 		stateEndTime[lastState] = stateStartTime[state];
@@ -103,7 +104,7 @@ eventOutput PushButtonArray::checkEvents(bool individualButtonStates[BUTTON_NUM]
 	else
 	{
 		// updates the timer of the current state of the button array
-		stateDuration[state] = millis() - stateStartTime[state];
+		stateDuration[state] = currMillis - stateStartTime[state];
 
 		// the duration to send to the event checker
 		durationToSend = stateDuration[state];
@@ -120,7 +121,7 @@ eventOutput PushButtonArray::checkEvents(bool individualButtonStates[BUTTON_NUM]
 			continue;
 		}
 		output.triggeredEventType =
-				Events[i].checkEvent(state, lastState, durationToSend);
+				Events[i].checkEvent(lastState, state, durationToSend);
 		if (output.triggeredEventType != NONE) // a valid event happened
 		{
 			output.triggeredEvent = i;

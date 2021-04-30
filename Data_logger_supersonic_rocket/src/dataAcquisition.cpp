@@ -173,7 +173,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
   bool indivButtonState[2];
   indivButtonState[0] = digitalRead(BUTTON0_PIN);
   indivButtonState[1] = digitalRead(BUTTON1_PIN);
-  eventOutput eventCheck = buttonArray.checkEvents(indivButtonState);
+  eventOutput eventCheck = buttonArray.checkEvents(millis(), indivButtonState);
 
   // if any of the events happened, do something
   if (eventCheck.triggeredEvent == stopEvent[0])
