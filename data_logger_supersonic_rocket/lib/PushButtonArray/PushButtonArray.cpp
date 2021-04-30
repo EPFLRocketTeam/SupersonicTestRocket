@@ -37,7 +37,7 @@ uint8_t PushButtonArray::translateState(bool individualButtonStates[BUTTON_NUM])
 	}
 	else
 	{
-		return -1; // error
+		return 0xFF; // error
 	}
 }
 
@@ -51,7 +51,7 @@ uint8_t PushButtonArray::addEvent(uint8_t state, uint8_t nextState,
 		if (i == 8) // there are no empty events
 		{
 			Serial.println("No available events left!");
-			return -1;
+			return 0xFF;
 		}
 		if (Events[i].deletedStatus())
 		// event was empty, will use it
@@ -112,7 +112,8 @@ eventOutput PushButtonArray::
 
 	// Check if any events were triggered
 	eventOutput output;					// prepare the output structure
-	output.triggeredEvent = -1; // no events triggered by default
+	output.triggeredEvent = 0xFF; // no events triggered by default
+	output.triggeredEventType = NONE;
 
 	for (int i = 0; i < 8; i++) // go through all the events
 	{

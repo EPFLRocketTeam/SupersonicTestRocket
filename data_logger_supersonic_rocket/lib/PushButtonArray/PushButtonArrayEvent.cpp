@@ -65,24 +65,30 @@ eventType PushButtonArrayEvent::checkEvent(uint8_t lastState, uint8_t state,
   if (activated)
   {
     if (lastState != state)
-    {
-      if (lastState == eventState && state == eventNextState &&
-          stateDuration >= eventWindowStart && stateDuration <= eventWindowEnd)
-      { // released in window
-        if (lastEventType != GOOD_TRANSITION)
-        {
-          lastEventType = GOOD_TRANSITION;
-          return lastEventType;
+    { // if states changed
+      if (stateDuration >= eventWindowStart && stateDuration <= eventWindowEnd)
+      { // in window
+        if (lastState == eventState && state == eventNextState)
+        { // correct keypress
+          if (lastEventType != GOOD_TRANSITION)
+          {
+            lastEventType = GOOD_TRANSITION;
+            return lastEventType;
+          }
+          else
+          { // if transition already triggered
+            return NONE;
+          }
         }
         else
-        { // if transition already triggered
-          return NONE;
+        { 
+          lastEventType = BAD_TRANSITION;
+          return lastEventType;
         }
       }
       else
       {
-        lastEventType = BAD_TRANSITION;
-        return lastEventType;
+        return NONE;
       }
     }
     else if (lastState == eventState && state == eventState)
