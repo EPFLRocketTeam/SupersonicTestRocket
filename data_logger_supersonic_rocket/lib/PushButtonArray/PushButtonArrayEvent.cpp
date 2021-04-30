@@ -13,16 +13,28 @@ PushButtonArrayEvent::PushButtonArrayEvent()
   deleteEvent();
 }
 
-bool PushButtonArrayEvent::deletedStatus()
+void PushButtonArrayEvent::activateEvent()
 {
-  return deleted;
+  activated = true;
+  lastEventType = NONE;
+}
+
+void PushButtonArrayEvent::deactivateEvent()
+{
+  activated = false;
+  lastEventType = NONE;
+}
+
+bool PushButtonArrayEvent::activatedStatus()
+{
+  return activated;
 }
 
 void PushButtonArrayEvent::createEvent(uint8_t state, uint8_t nextState,
                                        uint32_t windowStart,
                                        uint32_t windowEnd)
 {
-  activated = true;
+  activateEvent();
   deleted = false;
   eventState = state;
   eventNextState = nextState;
@@ -42,46 +54,64 @@ void PushButtonArrayEvent::deleteEvent()
   lastEventType = NONE;
 }
 
+bool PushButtonArrayEvent::deletedStatus()
+{
+  return deleted;
+}
+
 eventType PushButtonArrayEvent::checkEvent(uint8_t lastState, uint8_t state,
                                            uint32_t stateDuration)
 {
   if (activated)
   {
-
-    if (lastState == eventState && state == eventNextState &&
-        stateDuration >= eventWindowStart && stateDuration <= eventWindowEnd &&
-        lastEventType != GOOD_TRANSITION) // released in window
+    if (lastState != state)
     {
-      lastEventType = GOOD_TRANSITION;
-      return lastEventType;
+      if (lastState == eventState && state == eventNextState &&
+          stateDuration >= eventWindowStart && stateDuration <= eventWindowEnd)
+      { // released in window
+        if (lastEventType != GOOD_TRANSITION)
+        {
+          lastEventType = GOOD_TRANSITION;
+          return lastEventType;
+        }
+        else
+        { // if transition already triggered
+          return NONE;
+        }
+      }
+      else
+      {
+        lastEventType = BAD_TRANSITION;
+        return lastEventType;
+      }
     }
-    else if (lastState == eventState && state == eventState &&
-             stateDuration >= eventWindowStart &&
-             stateDuration <= eventWindowEnd &&
-             lastEventType != WINDOW_START) // holding enter window
+    else if (lastState == eventState && state == eventState)
     {
-      lastEventType = WINDOW_START;
-      return lastEventType;
-    }
-    else if (lastState == eventState && state == eventState &&
-             stateDuration >= eventWindowEnd &&
-             lastEventType != WINDOW_END) // holding exit window
-    {
-      lastEventType = WINDOW_END;
-      return lastEventType;
-    }
-    else if (lastState != state)
-    {
-      lastEventType = BAD_TRANSITION;
-      return lastEventType;
+      if (stateDuration >= eventWindowStart &&
+          stateDuration < eventWindowEnd &&
+          lastEventType != WINDOW_START && lastEventType != GOOD_TRANSITION)
+      { // holding enter window
+        lastEventType = WINDOW_START;
+        return lastEventType;
+      }
+      else if (stateDuration >= eventWindowEnd &&
+               lastEventType != WINDOW_END)
+      { // holding exit window
+        lastEventType = WINDOW_END;
+        return lastEventType;
+      }
+      else
+      { // if in wrong window or last event type already triggered
+        return NONE;
+      }
     }
     else
-    {
+    { // if state transitions were not correct
       return NONE;
     }
   }
   else
-  {
+  { // if not activated
     return NONE;
   }
 }

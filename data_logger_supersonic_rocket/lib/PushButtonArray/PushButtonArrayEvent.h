@@ -23,6 +23,7 @@ class PushButtonArrayEvent
 {
 private:
   // whether the event is deleted or not. using a flag because of static arrays
+  bool activated; // whether the event is activated or not
   bool deleted;
   uint8_t eventState;             // state to trigger the holding
   uint8_t eventNextState;         // next state to trigger the transition
@@ -31,17 +32,27 @@ private:
   eventType lastEventType = NONE; // last event type that happened
 
 public:
-  bool activated; // whether the event is activated or not
-
   // constructor
   PushButtonArrayEvent();
 
-  // see if the event is deleted or not.
-  bool deletedStatus();
+  // getter function for activation status
+  bool activatedStatus();
+
+  // safely activate the event
+  void activateEvent();
+
+  // safely deactivate the event
+  void deactivateEvent();
+
   // Activate event with arguments
   void createEvent(uint8_t state, uint8_t nextState, uint32_t windowStart,
                    uint32_t windowEnd);
+
   void deleteEvent();
+
+  // see if the event is deleted or not.
+  bool deletedStatus();
+
   // Check if there was an event
   eventType checkEvent(uint8_t lastState, uint8_t state,
                        uint32_t stateDuration);

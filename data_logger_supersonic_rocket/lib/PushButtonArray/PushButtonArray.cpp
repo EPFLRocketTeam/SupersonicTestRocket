@@ -72,12 +72,12 @@ void PushButtonArray::deleteEvent(uint8_t idx)
 
 void PushButtonArray::activateEvent(uint8_t idx)
 {
-	Events[idx].activated = true;
+	Events[idx].activateEvent();
 }
 
 void PushButtonArray::deactivateEvent(uint8_t idx)
 {
-	Events[idx].activated = false;
+	Events[idx].deactivateEvent();
 }
 
 eventOutput PushButtonArray::
@@ -116,7 +116,7 @@ eventOutput PushButtonArray::
 
 	for (int i = 0; i < 8; i++) // go through all the events
 	{
-		if (!Events[i].activated)
+		if (!Events[i].activatedStatus())
 		{ // event is not activate, skip it.
 			continue;
 		}

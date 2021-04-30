@@ -32,12 +32,28 @@ void test_PushButtonArrayEvent_constructor(void)
     TEST_ASSERT_EQUAL(1, buttonArrayEvent.deletedStatus());
 }
 
+void test_PushButtonArrayEvent_activateEvent(void)
+{
+    PushButtonArrayEvent buttonArrayEvent = PushButtonArrayEvent();
+    buttonArrayEvent.activateEvent();
+    TEST_ASSERT_EQUAL(1, buttonArrayEvent.activatedStatus());
+}
+
+void test_PushButtonArrayEvent_deactivateEvent(void)
+{
+    PushButtonArrayEvent buttonArrayEvent = PushButtonArrayEvent();
+    buttonArrayEvent.activateEvent();
+    TEST_ASSERT_EQUAL(1, buttonArrayEvent.activatedStatus());
+    buttonArrayEvent.deactivateEvent();
+    TEST_ASSERT_EQUAL(0, buttonArrayEvent.activatedStatus());
+}
+
 void test_PushButtonArrayEvent_createEvent(void)
 {
     PushButtonArrayEvent buttonArrayEvent = PushButtonArrayEvent();
     buttonArrayEvent.createEvent(0, 1, 500, 1000);
     TEST_ASSERT_EQUAL(0, buttonArrayEvent.deletedStatus());
-    TEST_ASSERT_EQUAL(1, buttonArrayEvent.activated);
+    TEST_ASSERT_EQUAL(1, buttonArrayEvent.activatedStatus());
 }
 
 void test_PushButtonArrayEvent_deleteEvent(void)
@@ -46,7 +62,7 @@ void test_PushButtonArrayEvent_deleteEvent(void)
     buttonArrayEvent.createEvent(0, 1, 500, 1000);
     buttonArrayEvent.deleteEvent();
     TEST_ASSERT_EQUAL(1, buttonArrayEvent.deletedStatus());
-    TEST_ASSERT_EQUAL(0, buttonArrayEvent.activated);
+    TEST_ASSERT_EQUAL(0, buttonArrayEvent.activatedStatus());
 }
 
 void test_PushButtonArrayEvent_checkEvent(void)
@@ -56,37 +72,45 @@ void test_PushButtonArrayEvent_checkEvent(void)
     TEST_ASSERT_EQUAL(WINDOW_START, buttonArrayEvent.checkEvent(0, 0, 500));
     TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 0, 500));
     TEST_ASSERT_EQUAL(GOOD_TRANSITION, buttonArrayEvent.checkEvent(0, 1, 500));
-    // TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 1, 500));
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 1, 500));
     TEST_ASSERT_EQUAL(BAD_TRANSITION, buttonArrayEvent.checkEvent(1, 0, 500));
     TEST_ASSERT_EQUAL(GOOD_TRANSITION, buttonArrayEvent.checkEvent(0, 1, 750));
-    // TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 1, 750));
-    // TEST_ASSERT_EQUAL(WINDOW_END, buttonArrayEvent.checkEvent(0, 0, 1000));
-    // TEST_ASSERT_EQUAL(GOOD_TRANSITION, buttonArrayEvent.checkEvent(0, 1, 1000));
-    
-    // TEST_ASSERT_EQUAL(1, buttonArrayEvent.checkEvent(0, 1, 1000));
-    // TEST_ASSERT_EQUAL(1, buttonArrayEvent.checkEvent(0, 1,
-    //                                                  250 - (INT_MAX - 748)));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(0, 1, 0));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(0, 1, 499));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(0, 1, 1001));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(0, 1, INT_MAX));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 1, 500));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 1, 750));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 1, 1000));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 500));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 750));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 1000));
-    // buttonArrayEvent.createEvent(1, 0, 50000, 55000);
-    // TEST_ASSERT_EQUAL(1, buttonArrayEvent.checkEvent(1, 0, 50250));
-    // TEST_ASSERT_EQUAL(1, buttonArrayEvent.checkEvent(1, 0, 54999));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 1, 50250));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(0, 0, 50250));
-    // buttonArrayEvent.createEvent(1, 0, 50000, 4500);
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 4500));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 30000));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 22000));
-    // TEST_ASSERT_EQUAL(0, buttonArrayEvent.checkEvent(1, 0, 50000));
-    // buttonArrayEvent.deleteEvent();
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 1, 750));
+    TEST_ASSERT_EQUAL(WINDOW_END, buttonArrayEvent.checkEvent(0, 0, 1000));
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 0, 1000));
+    TEST_ASSERT_EQUAL(GOOD_TRANSITION, buttonArrayEvent.checkEvent(0, 1, 1000));
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 1, 1000));
+    TEST_ASSERT_EQUAL(BAD_TRANSITION, buttonArrayEvent.checkEvent(1, 0, 1000));
+    TEST_ASSERT_EQUAL(NONE,
+                      buttonArrayEvent.checkEvent(0, 0,
+                                                  250U - (UINT_MAX - 248U)));
+    TEST_ASSERT_EQUAL(WINDOW_START,
+                      buttonArrayEvent.checkEvent(0, 0,
+                                                  250U - (UINT_MAX - 249U)));
+    TEST_ASSERT_EQUAL(GOOD_TRANSITION,
+                      buttonArrayEvent.checkEvent(0, 1,
+                                                  250U - (UINT_MAX - 500U)));
+    TEST_ASSERT_EQUAL(NONE,
+                      buttonArrayEvent.checkEvent(0, 0,
+                                                  500U - (UINT_MAX - 498U)));
+    TEST_ASSERT_EQUAL(WINDOW_END,
+                      buttonArrayEvent.checkEvent(0, 0,
+                                                  500U - (UINT_MAX - 499U)));
+    buttonArrayEvent.deactivateEvent();
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 0, 500));
+    buttonArrayEvent.activateEvent();
+    TEST_ASSERT_EQUAL(WINDOW_START, buttonArrayEvent.checkEvent(0, 0, 500));
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 0, 500));
+    buttonArrayEvent.createEvent(1, 0, 50000, 4500);
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 0, 5000));
+    TEST_ASSERT_EQUAL(BAD_TRANSITION, buttonArrayEvent.checkEvent(1, 0, 25000));
+    TEST_ASSERT_EQUAL(BAD_TRANSITION, buttonArrayEvent.checkEvent(0, 1, 25000));
+    buttonArrayEvent.createEvent(0, 1, 500, 1000);
+    TEST_ASSERT_EQUAL(WINDOW_START, buttonArrayEvent.checkEvent(0, 0, 500));
+    TEST_ASSERT_EQUAL(GOOD_TRANSITION, buttonArrayEvent.checkEvent(0, 1, 1000));
+    buttonArrayEvent.deleteEvent();
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(0, 0, 500));
+    TEST_ASSERT_EQUAL(NONE, buttonArrayEvent.checkEvent(1, 0, 1000));
 }
 
 void setup()
