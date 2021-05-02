@@ -59,6 +59,7 @@ SupersonicTestRocket
 |───mtp                 
 |   └───mtp.ino         the code to run with the Arduino IDE to access the SD
 |
+└───PCB                 the Kicad files to reproduce the PCB
 └───readings            interesting readings relevant to the project
 
 ```
