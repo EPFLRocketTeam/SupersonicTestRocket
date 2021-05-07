@@ -13,12 +13,21 @@ outDir = './outFiles';
 processedDir = './processedFiles';
 errorDir = './errorFiles';
 
+% sensor sensitivities
+IMU_gyroSensitivity = 1/10; % [deg/LSB]
+IMU_accelSensitivity = 1/800; % [g/LSB]
+IMU_tempSensitivity = 0.1; % [degC/LSB]
+AIS_sensitivity = 1 / (68 * 4); % [g/LSB]
+MAX_probeSensitivity = 0.25 / 4; % [degC/LSB]
+MAX_ambientSensitivity = 0.0625 / 16; % [degC/LSB]
+
 % headers
 error_header = 'measSkippedBeat, skippedBeat, drNoTrigger, checksumError';
-IMU_header = 'timestep (us), gyroX, gyroY, gyroZ, accelX, accelY, accelZ, temp';
-RSC_header = 'timestep (us), gyroX, gyroY, gyroZ, accelX, accelY, accelZ, temp';
-AIS_header = 'timestep (us), accelX, accelY';
-temp_header = 'timestep (us), gyroX, gyroY, gyroZ, accelX, accelY, accelZ, temp';
+IMU_header = 'timestep (us), gyroX (deg/s), gyroY (deg/s), gyroZ (deg/s), accelX (g), accelY (g), accelZ (g), temp (degC)';
+RSC_pressureHeader = 'timestep (us), pressure (psi)';
+RSC_temperatureHeader = 'timestep (us), temperature (degC)';
+AIS_header = 'timestep (us), accelX (g), accelY (g)';
+MAX_header = 'timestep (us), gyroX, gyroY, gyroZ, accelX, accelY, accelZ, temp';
 
 %% Code ===================================================================
 
@@ -35,19 +44,31 @@ for k = 1:length(inFiles)
   mkdir(outputDir);
   
   % create the output files and write the headers
-  
   IMUfile = fopen(fullfile(outputDir,'/IMU.csv'),'w');
   fprintf(IMUfile, '%s, %s\n', error_header, IMU_header);
-  RSCfile = fopen(fullfile(outputDir,'/RSC.csv'),'w');
-  fprintf(RSCfile, '%s, %s\n', error_header, RSC_header);
   AISfile = fopen(fullfile(outputDir,'/AIS.csv'),'w');
   fprintf(AISfile, '%s, %s\n', error_header, AIS_header);
   
+  
+  % open the RSC pressure files
+  for i = 1:2
+    RSC_pressureFile(i) = fopen(fullfile(outputDir, ...
+        sprintf('/RSC%i.csv',i)),'w');
+    fprintf(RSC_pressureFile(i), '%s, %s\n', error_header, RSC_header);
+  end
+  
+  % open the RSC temperature files
+  for i = 1:2
+    RSC_temperatureFile(i) = fopen(fullfile(outputDir, ...
+        sprintf('/RSC%i.csv',i)),'w');
+    fprintf(RSC_temperatureFile(i), '%s, %s\n', error_header, RSC_header);
+  end
+  
   % open the Tempfiles
   for i = 1:4
-    Tempfile(i) = fopen(fullfile(outputDir, ...
+    MAX_file(i) = fopen(fullfile(outputDir, ...
         sprintf('/Temp%i.csv',i)),'w');
-    fprintf(Tempfile(i), '%s, %s\n', error_header, temp_header);
+    fprintf(MAX_file(i), '%s, %s\n', error_header, MAX_header);
   end
   
   % write the headers to the output files
@@ -69,13 +90,13 @@ for k = 1:length(inFiles)
         sensorId = decodeErrorByte(fread(inFile, 1, 'uint8'));
         errorMessage = decodeErrorByte(fread(inFile, 1, 'uint8'));
         timestep = fread(inFile, 1, 'uint32');
-        gyroX = fread(inFile, 1, 'uint16');
-        gyroY = fread(inFile, 1, 'uint16');
-        gyroZ = fread(inFile, 1, 'uint16');
-        accelX = fread(inFile, 1, 'uint16');
-        accelY = fread(inFile, 1, 'uint16');
-        accelZ = fread(inFile, 1, 'uint16');
-        temp = fread(inFile, 1, 'uint16', 2);
+        gyroX = fread(inFile, 1, 'uint16') * IMU_gyroSensitivity; 
+        gyroY = fread(inFile, 1, 'uint16') * IMU_gyroSensitivity;
+        gyroZ = fread(inFile, 1, 'uint16') * IMU_gyroSensitivity;
+        accelX = fread(inFile, 1, 'uint16') * IMU_accelSensitivity;
+        accelY = fread(inFile, 1, 'uint16') * IMU_accelSensitivity;
+        accelZ = fread(inFile, 1, 'uint16') * IMU_accelSensitivity;
+        temp = fread(inFile, 1, 'uint16') * IMU_tempSensitivity;
         fprintf(IMUfile, '%s, %d, %i, %i, %i, %i, %i, %i, %i\n', ...
             errorMessage, timestep, gyroX, gyroY, gyroZ, accelX, ...
             accelY, accelZ, temp);
@@ -83,19 +104,31 @@ for k = 1:length(inFiles)
         sensorId = decodeErrorByte(fread(inFile, 1, 'uint8'));
         errorMessage = decodeErrorByte(fread(inFile, 1, 'uint8'));
         timestep = fread(inFile, 1, 'uint32');
-        accelX = fread(inFile, 1, 'uint16');
-        accelY = fread(inFile, 1, 'uint16');
+        accelX = fread(inFile, 1, 'uint16') * AIS_sensitivity;
+        accelY = fread(inFile, 1, 'uint16') * AIS_sensitivity;
         fprintf(AISfile, '%s, %d, %i, %i\n', errorMessage, timestep, ...
             accelX, accelY);
     elseif (packetType == 3 && packetLength == 12) % RSC presure packet
-    elseif (packetType == 4 && packetLength == 12) % RSC temp packet
-    elseif (packetType == 5 && packetLength == 12) % temp packet
         sensorId = decodeErrorByte(fread(inFile, 1, 'uint8'));
         errorMessage = decodeErrorByte(fread(inFile, 1, 'uint8'));
         timestep = fread(inFile, 1, 'uint32');
-        rawProbeT = fread(inFile, 1, 'int16');
-        rawAmbientT = fread(inFile, 1, 'int16');
-        fprintf(Tempfile(sensorId), '%s, %d, %i, %i\n', ...
+        pressure = fread(inFile, 1, 'float32');
+        fprintf(RSC_pressureFile(sensorId + 1), '%s, %d, %i\n', ...
+            errorMessage, timestep, pressure);
+    elseif (packetType == 4 && packetLength == 12) % RSC temp packet
+        sensorId = decodeErrorByte(fread(inFile, 1, 'uint8'));
+        errorMessage = decodeErrorByte(fread(inFile, 1, 'uint8'));
+        timestep = fread(inFile, 1, 'uint32');
+        temperature = fread(inFile, 1, 'float32');
+        fprintf(RSC_temperatureFile(sensorId + 1), '%s, %d, %i\n', ...
+            errorMessage, timestep, temperature);
+    elseif (packetType == 5 && packetLength == 12) % MAX packet
+        sensorId = decodeErrorByte(fread(inFile, 1, 'uint8'));
+        errorMessage = decodeErrorByte(fread(inFile, 1, 'uint8'));
+        timestep = fread(inFile, 1, 'uint32');
+        rawProbeT = fread(inFile, 1, 'int16') * MAX_probeSensitivity;
+        rawAmbientT = fread(inFile, 1, 'int16') * MAX_ambientSensitivity;
+        fprintf(MAX_file(sensorId + 1), '%s, %d, %i, %i\n', ...
             errorMessage, timestep, rawProbeT, rawAmbientT);
     else
         fprintf('ERROR. Could not determine packet type. Stopping early.\n');

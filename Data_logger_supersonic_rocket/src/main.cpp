@@ -154,6 +154,9 @@ void setup()
 
   Serial.println("Setup complete.");
   successFlash();
+  
+  
+  acquireData(adis16470, ais1120sx, rscs, tcs);
 }
 
 // LOOP ========================================================================
