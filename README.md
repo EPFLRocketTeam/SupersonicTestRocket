@@ -8,10 +8,10 @@ This contains the various files and folders required to get a Teensy 3.5 working
   a. If no modifications are required to the code, this can be done by taking the file ```firmware.hex``` and flashing it directly with the Teensy flasher.  
   b. If modifications are required, Platform.io will need to be installed on the local computer on VSCode. Instructions can be found [here](https://platformio.org/platformio-ide). The required modifications can then be made and ```main.cpp``` can be recompiled using the IDE.
 2.  Log data on the Teensy 3.5.  
-  a. Logging should start automatically when powered on.
+  a. Logging should start automatically when powered on.  
   b. If it is not, press and hold button 1 for 1 second. The green LED (LED1 on the PCB) should then light up for 1 second. If the button is released during this window, logging should start indicated by the green LED staying on continuously.
 3.  Stop logging on the Teensy 3.5 (optional but highly recommended!).  
-  a. Logging needs to be stopped in the software using the following button sequence:
+  a. Logging needs to be stopped in the software using the following button sequence:  
   b. Hold button 1 for 3 seconds. The green LED should turn off and the red LED should turn on for 1 second.  
   c. Let go of all buttons for 5 seconds. After this, the red LED should turn on again for 1 second.  
   d. Hold button 2 for 7 seconds. After this, the red LED should turn on again for 1 second. Let go of the button.  
