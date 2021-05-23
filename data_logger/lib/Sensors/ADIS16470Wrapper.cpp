@@ -49,7 +49,7 @@ bool ADIS16470Wrapper::setup(int attempts, int delayDuration)
 
     // checksum ok AND didn't read just zeros --> setup successful!
     if (wordBurstData[9] == checksum &&
-        memcmp(wordBurstData, zeros, sizeof(*wordBurstData)) != 0)
+        memcmp(wordBurstData, zeros, sizeof(wordBurstData)) != 0)
     {
       active = true;
       return active;

@@ -31,7 +31,7 @@ bool MAX31855Wrapper::setup(int attempts, int delayDuration, uint8_t CS)
   // Try to see if the MAX is working
   for (int i = 0; i < attempts; i++)
   {
-    if (max31855Object.begin(CS))
+    if (!max31855Object.begin(CS))
     {
       active = true;
       return active;
@@ -53,14 +53,18 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros)
     // read the measurements from the sensor
     int32_t rawMeas;
     rawMeas = max31855Object.readRaw();
-    if (!(rawMeas & B111)) // if no error
+    if (!max31855Object.fault()) // if no error
     {
-      if (prevMeas != rawMeas) // if data is new
+      int16_t probeT = max31855Object.rawToProbe(rawMeas);
+      int16_t ambientT = max31855Object.rawToAmbient(rawMeas);
+      if (prevProbeMeas != probeT || prevAmbientMeas != ambientT) // data is new
       {
-      prevMeasTime = currMicros;
-      returnVal = true;
+        prevMeasTime = currMicros;
+        returnVal = true;
       }
-      prevMeas = rawMeas; // update the last measurement
+      // update the last measurements
+      prevProbeMeas = probeT;
+      prevAmbientMeas = ambientT;
     }
   }
   return returnVal;
@@ -79,7 +83,6 @@ MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
   int16_t ambientT = max31855Object.rawToAmbient(rawMeas);
 
   // create and write the packet
-
   MAX31855Packet packet(getHeader(MAX31855_PACKET_TYPE,
                                   sizeof(MAX31855Packet),
                                   currMicros),

@@ -41,7 +41,9 @@ private:
       MEASUREMENT_INTERVAL / 10;                // [us] (2000Hz)
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  int32_t prevMeas; // previous measurement from the sensor
+  // previous measurements from the sensor
+  int16_t prevProbeMeas; 
+  int16_t prevAmbientMeas;
 
   MAX31855_Class max31855Object;
   static uint8_t sensorQty; // how many sensors of this type exist

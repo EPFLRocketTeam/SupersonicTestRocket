@@ -26,8 +26,7 @@ Sensor::~Sensor()
 
 bool Sensor::isDueByTime(uint32_t currMicros)
 {
-  // check if missed a beat
-  if (currMicros - CHECK_INTERVAL_MARGIN - prevCheck > CHECK_INTERVAL)
+  if (currMicros - prevCheck > CHECK_INTERVAL + CHECK_INTERVAL_MARGIN)
   {
     // check if skipped some beats
     checkBeatsSkipped = floor((currMicros - prevCheck) / CHECK_INTERVAL);
@@ -52,19 +51,16 @@ bool Sensor::isDueByDR(uint32_t currMicros, bool currDR, int triggerType)
   if (DR_DRIVEN) // make sure the sensor has a data ready line
   {
     // TODO: Find a better rising/falling edge detector
-    if (triggerType == RISING && prevDR == 0 && currDR == 1)
+    if ((triggerType == RISING && prevDR == 0 && currDR == 1) ||
+        (triggerType == FALLING && prevDR == 1 && currDR == 0))
     {
       dueMethod = DUE_BY_DR; // sensor is due by DR
       prevCheck = currMicros;
-      return true;
-    }
-    else if (triggerType == FALLING && prevDR == 1 && currDR == 0)
-    {
-      dueMethod = DUE_BY_DR; // sensor is due by DR
-      prevCheck = currMicros;
+      prevDR = currDR;
       return true;
     }
   }
+  prevDR = currDR;
   return false;
 }
 
