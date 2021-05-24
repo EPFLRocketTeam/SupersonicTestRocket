@@ -75,6 +75,8 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
 AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
   // read the measurements from the sensor
+  // TODO: This is wrong since it will take a new measurements, but it was
+  // already taken. Add an argument where you send reading from isDue
   int16_t *rawMeas = aisObject.readAccel();
 
   // create and write the packet

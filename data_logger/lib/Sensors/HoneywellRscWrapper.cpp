@@ -17,7 +17,7 @@ HoneywellRscWrapper::
                         int CS_ADC) : Sensor(CHECK_INTERVAL,
                                              MEASUREMENT_MARGIN,
                                              MEASUREMENT_INTERVAL,
-                                             false),
+                                             true),
                                       rscObject(DR, CS_EE, CS_ADC)
 {
   sensorID = sensorQty;
@@ -30,12 +30,13 @@ HoneywellRscWrapper::~HoneywellRscWrapper()
   sensorQty -= 1;
 }
 
-bool HoneywellRscWrapper::setup(int attempts, int delayDuration)
+bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
+                                RSC_DATA_RATE data_rate)
 {
   // Try to see if the RSC is working
   for (int i = 0; i < attempts; i++)
   {
-    rscObject.init(); // initialize the object
+    rscObject.init(data_rate); // initialize the object
     // try to make a dummy measurement
     rscObject.adc_request(PRESSURE);
     delay(50);
@@ -43,6 +44,8 @@ bool HoneywellRscWrapper::setup(int attempts, int delayDuration)
     if (reading != 0 && !isnan(reading)) // condition for success
     {
       active = true;
+      rscObject.adc_request(nextReadType());
+      measurementAmountModulo += 1;
       return active;
     }
     else // give it time before the next try
@@ -61,7 +64,7 @@ uint8_t HoneywellRscWrapper::getSensorQty()
 
 bool HoneywellRscWrapper::isDue(uint32_t currMicros, bool currDR)
 {
-  if (isDueByDR(currMicros, currDR, RISING) || isDueByTime(currMicros))
+  if (isDueByDR(currMicros, currDR, FALLING) || isDueByTime(currMicros))
   {
     prevMeasTime = currMicros;
     return true;
@@ -102,24 +105,32 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
   float meas;
   packetType packetTypeNum;
+  // Serial.println(measurementAmountModulo);
+  // Serial.println(currReadType());
+  // Serial.println(nextReadType());
 
   // determine the type of measurement we are getting
   if (currReadType() == TEMPERATURE)
   {
-    meas = rscObject.get_temperature();   // get the measurement
+    meas = rscObject.get_temperature(); // get the measurement
+    Serial.print("Temperature: ");
+    Serial.println(meas);
     packetTypeNum = RSC_TEMP_PACKET_TYPE; // set the packet type
   }
   else
   {
-    meas = rscObject.get_pressure();          // get the measurement
+    meas = rscObject.get_pressure(); // get the measurement
+    Serial.print("Pressure: ");
+    Serial.println(meas);
     packetTypeNum = RSC_PRESSURE_PACKET_TYPE; // set the packet type
   }
-  // update the measurement count
-  measurementAmountModulo += 1;
-  measurementAmountModulo = measurementAmountModulo % TEMP_FREQUENCY;
 
   // request the next data from the adc
   rscObject.adc_request(nextReadType());
+
+  // update the measurement count
+  measurementAmountModulo += 1;
+  measurementAmountModulo = measurementAmountModulo % TEMP_FREQUENCY;
 
   // create and write the packet
   HoneywellRSCPacket packet(getHeader(packetTypeNum,

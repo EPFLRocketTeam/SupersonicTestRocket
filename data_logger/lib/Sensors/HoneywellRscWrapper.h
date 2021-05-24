@@ -35,9 +35,9 @@ struct HoneywellRSCPacket
 class HoneywellRscWrapper : public Sensor
 {
 private:
-  static const uint32_t MEASUREMENT_INTERVAL = 520;            // [us] (400 Hz)
+  static const uint32_t MEASUREMENT_INTERVAL = 55000;            // [us] (2000 Hz)
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
-  static const uint32_t MEASUREMENT_MARGIN = 50;               // [us]
+  static const uint32_t MEASUREMENT_MARGIN = 5000;               // [us]
   
   // how often temperature measurements will be made
   // every nth measurement will be a temperature measurement
@@ -55,7 +55,7 @@ public:
   ~HoneywellRscWrapper();
 
   // attemps to set up the sensor and returns true if it was successful
-  bool setup(int attempts, int delayDuration);
+  bool setup(int attempts, int delayDuration, RSC_DATA_RATE data_rate);
 
   // return the current count of sensors
   uint8_t getSensorQty();
