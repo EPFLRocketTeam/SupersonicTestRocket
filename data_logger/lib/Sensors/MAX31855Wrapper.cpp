@@ -77,15 +77,10 @@ uint8_t MAX31855Wrapper::getSensorQty()
 
 MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 {
-  // read the measurements from the sensor
-  int32_t rawMeas = max31855Object.readRaw();
-  int16_t probeT = max31855Object.rawToProbe(rawMeas);
-  int16_t ambientT = max31855Object.rawToAmbient(rawMeas);
-
   // create and write the packet
   MAX31855Packet packet(getHeader(MAX31855_PACKET_TYPE,
                                   sizeof(MAX31855Packet),
                                   currMicros),
-                        probeT, ambientT);
+                        prevProbeMeas, prevAmbientMeas);
   return packet;
 }

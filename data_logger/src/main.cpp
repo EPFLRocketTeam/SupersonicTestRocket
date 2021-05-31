@@ -116,33 +116,33 @@ void setup()
   // }
 
   // Setup the AIS1120SX
-  // if (ais1120sx.setup(3, 1000))
-  // {
-  //   Serial.println("AIS1120SX has been set up succesfully.");
-  //   successFlash();
-  // }
-  // else
-  // {
-  //   Serial.println("Could not set up AIS1120SX.");
-  //   errorFlash();
-  // }
-
-  // Setup the pressure sensors
-  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+  if (ais1120sx.setup(3, 1000))
   {
-    if (rscs[i].setup(3, 1000))
-    {
-      Serial.print("Succesfully started RSC");
-      Serial.println(i + 1);
-      successFlash();
-    }
-    else
-    {
-      Serial.print("Unable to start RSC");
-      Serial.println(i + 1);
-      errorFlash();
-    }
+    Serial.println("AIS1120SX has been set up succesfully.");
+    successFlash();
   }
+  else
+  {
+    Serial.println("Could not set up AIS1120SX.");
+    errorFlash();
+  }
+
+  // // Setup the pressure sensors
+  // for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+  // {
+  //   if (rscs[i].setup(3, 1000, N_DR_20_SPS))
+  //   {
+  //     Serial.print("Succesfully started RSC");
+  //     Serial.println(i + 1);
+  //     successFlash();
+  //   }
+  //   else
+  //   {
+  //     Serial.print("Unable to start RSC");
+  //     Serial.println(i + 1);
+  //     errorFlash();
+  //   }
+  // }
 
   // // Setup the thermocouples
   // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)

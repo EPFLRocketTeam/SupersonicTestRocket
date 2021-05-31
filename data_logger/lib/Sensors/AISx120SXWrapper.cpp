@@ -27,18 +27,23 @@ AISx120SXWrapper::~AISx120SXWrapper()
   sensorQty -= 1;
 }
 
-bool AISx120SXWrapper::setup(int attempts, int delayDuration)
+bool AISx120SXWrapper::setup(int attempts, int delayDuration,
+                             bandwidth bandwidthX, bandwidth bandwidthY,
+                             bool x_offset_monitor, bool x_offset_canc,
+                             bool y_offset_monitor, bool y_offset_canc)
 {
   // Try to see if the AIS is working
   for (int i = 0; i < attempts; i++)
   {
-    if (aisObject.setup(_800Hz, _800Hz)) // condition for success
+    if (aisObject.setup(bandwidthX, bandwidthY, x_offset_monitor, x_offset_canc,
+                        y_offset_monitor, y_offset_canc)) // condition for success
     {
       active = true;
       return active;
     }
     else // give it time before the next try
     {
+      aisObject.reset();
       delay(delayDuration);
     }
   }
@@ -74,15 +79,10 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
 
 AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
-  // read the measurements from the sensor
-  // TODO: This is wrong since it will take a new measurements, but it was
-  // already taken. Add an argument where you send reading from isDue
-  int16_t *rawMeas = aisObject.readAccel();
-
   // create and write the packet
   AISx120SXPacket packet(getHeader(AISx120SX_PACKET_TYPE,
                                    sizeof(AISx120SXPacket),
                                    currMicros),
-                         rawMeas);
+                         prevMeas);
   return packet;
 }

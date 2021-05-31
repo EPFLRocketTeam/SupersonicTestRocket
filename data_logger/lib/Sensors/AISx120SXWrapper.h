@@ -54,7 +54,10 @@ public:
   ~AISx120SXWrapper();
 
   // attemps to set up the sensor and returns true if it was successful
-  bool setup(int attempts, int delayDuration);
+  bool setup(int attempts, int delayDuration,
+             bandwidth bandwidthX, bandwidth bandwidthY,
+             bool x_offset_monitor, bool x_offset_canc,
+             bool y_offset_monitor, bool y_offset_canc);
 
   // return the current count of sensors
   uint8_t getSensorQty();
