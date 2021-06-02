@@ -62,9 +62,9 @@ uint8_t HoneywellRscWrapper::getSensorQty()
   return sensorQty;
 }
 
-bool HoneywellRscWrapper::isDue(uint32_t currMicros, bool currDR)
+bool HoneywellRscWrapper::isDue(uint32_t currMicros)
 {
-  if (isDueByDR(currMicros, currDR, FALLING) || isDueByTime(currMicros))
+  if (isDueByDR(currMicros) || isDueByTime(currMicros))
   {
     prevMeasTime = currMicros;
     return true;
@@ -105,23 +105,16 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
   float meas;
   packetType packetTypeNum;
-  // Serial.println(measurementAmountModulo);
-  // Serial.println(currReadType());
-  // Serial.println(nextReadType());
 
   // determine the type of measurement we are getting
   if (currReadType() == TEMPERATURE)
   {
     meas = rscObject.get_temperature(); // get the measurement
-    Serial.print("Temperature: ");
-    Serial.println(meas);
     packetTypeNum = RSC_TEMP_PACKET_TYPE; // set the packet type
   }
   else
   {
     meas = rscObject.get_pressure(); // get the measurement
-    Serial.print("Pressure: ");
-    Serial.println(meas);
     packetTypeNum = RSC_PRESSURE_PACKET_TYPE; // set the packet type
   }
 

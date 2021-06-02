@@ -69,9 +69,22 @@ HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
                                                    CS_RSC_ADC_PIN[1])};
 MAX31855Wrapper tcs[4];
 
-const int sensorAttempts = 3; // How many times to try to turn on the sensors
+const int SENSOR_ATTEMPTS = 3; // How many times to try to turn on the sensors
 
 // USER FUNCTIONS ==============================================================
+
+void interruptFunctionADIS()
+{
+  adis16470.setDRtriggered();
+}
+void interruptFunctionRSC1()
+{
+  rscs[0].setDRtriggered();
+}
+void interruptFunctionRSC2()
+{
+  rscs[1].setDRtriggered();
+}
 
 // SETUP =======================================================================
 
@@ -80,13 +93,14 @@ void setup()
   // Open serial communications and give some time for the port to open
   // Not waiting on the port in case the device is not connected to USB
   Serial.begin(9600);
-  for (size_t i=0; i<10; i++)
+  for (size_t i = 0; i < 10; i++)
   {
     if (Serial.available())
     {
       break;
     }
-    else{
+    else
+    {
       delay(1000);
     }
   }
@@ -103,20 +117,23 @@ void setup()
 
   SPI.begin();
 
-  // // Setup the IMU
-  // if (adis16470.setup(3, 1000))
-  // {
-  //   Serial.println("ADIS16470 has been set up succesfully.");
-  //   successFlash();
-  // }
-  // else
-  // {
-  //   Serial.println("Could not set up ADIS16470.");
-  //   errorFlash();
-  // }
+  // Setup the IMU
+  if (adis16470.setup(SENSOR_ATTEMPTS, 1000))
+  {
+    attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
+                    interruptFunctionADIS, RISING);
+    Serial.println("ADIS16470 has been set up succesfully.");
+    successFlash();
+  }
+  else
+  {
+    Serial.println("Could not set up ADIS16470.");
+    errorFlash();
+  }
 
   // Setup the AIS1120SX
-  if (ais1120sx.setup(3, 1000))
+  if (ais1120sx.setup(SENSOR_ATTEMPTS, 1000, _800Hz, _800Hz,
+                      false, false, false, false))
   {
     Serial.println("AIS1120SX has been set up succesfully.");
     successFlash();
@@ -127,44 +144,55 @@ void setup()
     errorFlash();
   }
 
-  // // Setup the pressure sensors
-  // for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
-  // {
-  //   if (rscs[i].setup(3, 1000, N_DR_20_SPS))
-  //   {
-  //     Serial.print("Succesfully started RSC");
-  //     Serial.println(i + 1);
-  //     successFlash();
-  //   }
-  //   else
-  //   {
-  //     Serial.print("Unable to start RSC");
-  //     Serial.println(i + 1);
-  //     errorFlash();
-  //   }
-  // }
+  // Setup the pressure sensors
+  // not done in a loop because interrupt functions have to be attached
+  // RSC1
+  if (rscs[0].setup(SENSOR_ATTEMPTS, 1000, F_DR_2000_SPS))
+  {
+    attachInterrupt(digitalPinToInterrupt(DR_RSC[0]),
+                    interruptFunctionRSC1, FALLING);
+    Serial.print("Succesfully started RSC1");
+    successFlash();
+  }
+  else
+  {
+    Serial.print("Unable to start RSC1");
+    errorFlash();
+  }
+  // RSC2
+  if (rscs[1].setup(SENSOR_ATTEMPTS, 1000, F_DR_2000_SPS))
+  {
+    attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
+                    interruptFunctionRSC2, FALLING);
+    Serial.print("Succesfully started RSC2");
+    successFlash();
+  }
+  else
+  {
+    Serial.print("Unable to start RSC2");
+    errorFlash();
+  }
 
-  // // Setup the thermocouples
-  // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-  // {
-  //   if (tcs[i].setup(3, 1000, CS_TCS_PIN[i]))
-  //   {
-  //     Serial.print("Succesfully started thermocouple TC");
-  //     Serial.println(i + 1);
-  //     successFlash();
-  //   }
-  //   else
-  //   {
-  //     Serial.print("Unable to start thermocouple TC");
-  //     Serial.println(i + 1);
-  //     errorFlash();
-  //   }
-  //  }
+  // Setup the thermocouples
+  for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+  {
+    if (tcs[i].setup(SENSOR_ATTEMPTS, 1000, CS_TCS_PIN[i]))
+    {
+      Serial.print("Succesfully started thermocouple TC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start thermocouple TC");
+      Serial.println(i + 1);
+      errorFlash();
+    }
+  }
 
   Serial.println("Setup complete.");
   successFlash();
-  
-  
+
   acquireData(adis16470, ais1120sx, rscs, tcs);
 }
 

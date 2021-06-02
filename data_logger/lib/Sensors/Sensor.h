@@ -48,8 +48,8 @@ private:
   const uint32_t CHECK_INTERVAL_MARGIN; // margin on check
   const uint32_t MEAS_INTERVAL;         // nominal interval for data measurement
 
-  const bool DR_DRIVEN; // if the sensor has a data ready line
-  bool prevDR;          // previous DR measurement
+  const bool DR_DRIVEN;      // if the sensor has a data ready line
+  volatile bool triggeredDR; // if the DR was triggered
 
   int checkBeatsSkipped; // beats that were skipped since the last check
   dueType dueMethod;     // how the measurement is due
@@ -73,7 +73,10 @@ public:
   bool isDueByTime(uint32_t currMicros);
 
   // if the sensor is due for a read because of the DR line
-  bool isDueByDR(uint32_t currMicros, bool currDR, int triggerType);
+  bool isDueByDR(uint32_t currMicros);
+
+  // function called by interrupt handler to set that DR was triggered
+  void setDRtriggered(void);
 
   // if the measurement was late
   bool isMeasurementLate(uint32_t currMicros);

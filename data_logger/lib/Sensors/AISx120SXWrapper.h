@@ -36,7 +36,7 @@ struct AISx120SXPacket
 class AISx120SXWrapper : public Sensor
 {
 private:
-  static const uint32_t MEASUREMENT_INTERVAL = 2500; // [us] (400 Hz)
+  static const uint32_t MEASUREMENT_INTERVAL = 1250; // [us] (800 Hz)
   static const uint32_t CHECK_INTERVAL =
       MEASUREMENT_INTERVAL / 10;                // [us]
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]

@@ -46,22 +46,22 @@ bool Sensor::isDueByTime(uint32_t currMicros)
   }
 }
 
-bool Sensor::isDueByDR(uint32_t currMicros, bool currDR, int triggerType)
+bool Sensor::isDueByDR(uint32_t currMicros)
 {
-  if (DR_DRIVEN) // make sure the sensor has a data ready line
+  // check if the sensor has a data ready line and it was toggled
+  if (DR_DRIVEN && triggeredDR)
   {
-    // TODO: Find a better rising/falling edge detector
-    if ((triggerType == RISING && prevDR == 0 && currDR == 1) ||
-        (triggerType == FALLING && prevDR == 1 && currDR == 0))
-    {
-      dueMethod = DUE_BY_DR; // sensor is due by DR
-      prevCheck = currMicros;
-      prevDR = currDR;
-      return true;
-    }
+    triggeredDR = false;   // reset the interrupt flag
+    dueMethod = DUE_BY_DR; // sensor is due by DR
+    prevCheck = currMicros;
+    return true;
   }
-  prevDR = currDR;
   return false;
+}
+
+void Sensor::setDRtriggered(void)
+{
+  triggeredDR = true;
 }
 
 bool Sensor::isMeasurementLate(uint32_t currMicros)

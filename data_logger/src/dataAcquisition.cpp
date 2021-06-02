@@ -55,7 +55,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     // ADIS16470
     if (adis16470.active) // check if the sensor is active
     {
-      if (adis16470.isDue(micros(), digitalRead(DR_ADIS16470_PIN))) // if due
+      if (adis16470.isDue(micros())) // if due
       {
         Serial.println("Acquiring data from the ADIS16470.");
         ADIS16470Packet packet = adis16470.getPacket(micros());
@@ -79,7 +79,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     {
       if (rscs[i].active) // check if the sensor is active
       {
-        if (rscs[i].isDue(micros(), digitalRead(DR_RSC[i]))) // sensor is due
+        if (rscs[i].isDue(micros())) // sensor is due
         {
           Serial.print("Acquiring data from RSC");
           Serial.println(i + 1);

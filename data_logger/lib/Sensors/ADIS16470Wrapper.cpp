@@ -68,9 +68,9 @@ uint8_t ADIS16470Wrapper::getSensorQty()
   return sensorQty;
 }
 
-bool ADIS16470Wrapper::isDue(uint32_t currMicros, bool currDR)
+bool ADIS16470Wrapper::isDue(uint32_t currMicros)
 {
-  if (isDueByDR(currMicros, currDR, RISING) || isDueByTime(currMicros))
+  if (isDueByDR(currMicros) || isDueByTime(currMicros))
   {
     prevMeasTime = currMicros;
     return true;
