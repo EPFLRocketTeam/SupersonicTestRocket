@@ -61,7 +61,7 @@ public:
   uint8_t getSensorQty();
 
   // check if the sensor is due for a measurement
-  bool isDue(uint32_t currMicros);
+  bool isDue(uint32_t currMicros, volatile bool &triggeredDR);
 
   // determine current reading type
   READING_T currReadType();

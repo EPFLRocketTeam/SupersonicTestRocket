@@ -62,9 +62,9 @@ uint8_t HoneywellRscWrapper::getSensorQty()
   return sensorQty;
 }
 
-bool HoneywellRscWrapper::isDue(uint32_t currMicros)
+bool HoneywellRscWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 {
-  if (isDueByDR(currMicros) || isDueByTime(currMicros))
+  if (isDueByDR(currMicros, triggeredDR) || isDueByTime(currMicros))
   {
     prevMeasTime = currMicros;
     return true;

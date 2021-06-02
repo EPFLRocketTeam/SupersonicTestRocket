@@ -73,18 +73,6 @@ const int SENSOR_ATTEMPTS = 3; // How many times to try to turn on the sensors
 
 // USER FUNCTIONS ==============================================================
 
-void interruptFunctionADIS()
-{
-  adis16470.setDRtriggered();
-}
-void interruptFunctionRSC1()
-{
-  rscs[0].setDRtriggered();
-}
-void interruptFunctionRSC2()
-{
-  rscs[1].setDRtriggered();
-}
 
 // SETUP =======================================================================
 
@@ -120,8 +108,6 @@ void setup()
   // Setup the IMU
   if (adis16470.setup(SENSOR_ATTEMPTS, 1000))
   {
-    attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
-                    interruptFunctionADIS, RISING);
     Serial.println("ADIS16470 has been set up succesfully.");
     successFlash();
   }
@@ -145,32 +131,20 @@ void setup()
   }
 
   // Setup the pressure sensors
-  // not done in a loop because interrupt functions have to be attached
-  // RSC1
-  if (rscs[0].setup(SENSOR_ATTEMPTS, 1000, F_DR_2000_SPS))
+  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
   {
-    attachInterrupt(digitalPinToInterrupt(DR_RSC[0]),
-                    interruptFunctionRSC1, FALLING);
-    Serial.print("Succesfully started RSC1");
-    successFlash();
-  }
-  else
-  {
-    Serial.print("Unable to start RSC1");
-    errorFlash();
-  }
-  // RSC2
-  if (rscs[1].setup(SENSOR_ATTEMPTS, 1000, F_DR_2000_SPS))
-  {
-    attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
-                    interruptFunctionRSC2, FALLING);
-    Serial.print("Succesfully started RSC2");
-    successFlash();
-  }
-  else
-  {
-    Serial.print("Unable to start RSC2");
-    errorFlash();
+    if (rscs[i].setup(SENSOR_ATTEMPTS, 1000, F_DR_2000_SPS))
+    {
+      Serial.print("Succesfully started RSC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start RSC");
+      Serial.println(i + 1);
+      errorFlash();
+    }
   }
 
   // Setup the thermocouples

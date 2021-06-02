@@ -7,6 +7,23 @@
 
 #include "dataAcquisition.h"
 
+// flags for the data ready triggers
+volatile bool adis16470DRflag = false;
+volatile bool rscDRflag[2] = {0};
+
+void interruptFunctionADIS()
+{
+  adis16470DRflag = true;
+}
+void interruptFunctionRSC1()
+{
+  rscDRflag[0] = true;
+}
+void interruptFunctionRSC2()
+{
+  rscDRflag[1] = true;
+}
+
 void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
                  HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs)
 {
@@ -41,6 +58,14 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
   buttonArray.deactivateEvent(stopEvent[1]);
   buttonArray.deactivateEvent(stopEvent[2]);
 
+  // attach the interrupts
+  attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
+                  interruptFunctionADIS, RISING);
+  attachInterrupt(digitalPinToInterrupt(DR_RSC[0]),
+                  interruptFunctionRSC1, FALLING);
+  attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
+                  interruptFunctionRSC2, FALLING);
+
   uint32_t prevSyncLoop = micros(); // timing for syncing
 
   // Start acquiring data
@@ -55,7 +80,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     // ADIS16470
     if (adis16470.active) // check if the sensor is active
     {
-      if (adis16470.isDue(micros())) // if due
+      if (adis16470.isDue(micros(), adis16470DRflag)) // if due
       {
         Serial.println("Acquiring data from the ADIS16470.");
         ADIS16470Packet packet = adis16470.getPacket(micros());
@@ -79,7 +104,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     {
       if (rscs[i].active) // check if the sensor is active
       {
-        if (rscs[i].isDue(micros())) // sensor is due
+        if (rscs[i].isDue(micros(), rscDRflag[i])) // sensor is due
         {
           Serial.print("Acquiring data from RSC");
           Serial.println(i + 1);
@@ -116,7 +141,6 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
       // See useful memory time when power loss with and without sync
       // rb.sync();
     }
-
 
     // Check if ringBuf is ready for writing
     // Amount of data in ringBuf.

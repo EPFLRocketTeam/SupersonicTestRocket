@@ -73,7 +73,7 @@ public:
   bool isDueByTime(uint32_t currMicros);
 
   // if the sensor is due for a read because of the DR line
-  bool isDueByDR(uint32_t currMicros);
+  bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
 
   // function called by interrupt handler to set that DR was triggered
   void setDRtriggered(void);

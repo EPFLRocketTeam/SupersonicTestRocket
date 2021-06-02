@@ -46,7 +46,7 @@ bool Sensor::isDueByTime(uint32_t currMicros)
   }
 }
 
-bool Sensor::isDueByDR(uint32_t currMicros)
+bool Sensor::isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
 {
   // check if the sensor has a data ready line and it was toggled
   if (DR_DRIVEN && triggeredDR)
