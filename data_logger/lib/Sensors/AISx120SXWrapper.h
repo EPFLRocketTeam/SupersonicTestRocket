@@ -38,7 +38,7 @@ class AISx120SXWrapper : public Sensor
 private:
   static const uint32_t MEASUREMENT_INTERVAL = 1250; // [us] (800 Hz)
   static const uint32_t CHECK_INTERVAL =
-      MEASUREMENT_INTERVAL / 10;                // [us]
+      MEASUREMENT_INTERVAL / 2;                 // [us]
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
   int16_t prevMeas[2]; // previous measurement from the sensor

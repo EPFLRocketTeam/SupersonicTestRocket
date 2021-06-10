@@ -176,6 +176,11 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
 
   } // Finished acquiring data
 
+  // detach the interrupts
+  detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
+  detachInterrupt(digitalPinToInterrupt(DR_RSC[0]));
+  detachInterrupt(digitalPinToInterrupt(DR_RSC[1]));
+
   // CLEANUP Phase
   // Write any RingBuf data to file.
   rb.sync();
