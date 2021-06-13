@@ -69,7 +69,7 @@ HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
                                                    CS_RSC_ADC_PIN[1])};
 MAX31855Wrapper tcs[4];
 
-const int SENSOR_ATTEMPTS = 3; // How many times to try to turn on the sensors
+const int SENSOR_ATTEMPTS = 5; // How many times to try to turn on the sensors
 
 // USER FUNCTIONS ==============================================================
 
