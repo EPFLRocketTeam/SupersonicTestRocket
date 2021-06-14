@@ -26,10 +26,10 @@ Sensor::~Sensor()
 
 bool Sensor::isDueByTime(uint32_t currMicros)
 {
+  // check if skipped some beats
+  checkBeatsSkipped = floor((currMicros - prevCheck) / CHECK_INTERVAL);
   if (currMicros - prevCheck > CHECK_INTERVAL + CHECK_INTERVAL_MARGIN)
   {
-    // check if skipped some beats
-    checkBeatsSkipped = floor((currMicros - prevCheck) / CHECK_INTERVAL);
     if (checkBeatsSkipped > 1)
     {
       Serial.print("WARNING! Skipped following amount of beats:");
@@ -57,11 +57,6 @@ bool Sensor::isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
     return true;
   }
   return false;
-}
-
-void Sensor::setDRtriggered(void)
-{
-  triggeredDR = true;
 }
 
 bool Sensor::isMeasurementLate(uint32_t currMicros)

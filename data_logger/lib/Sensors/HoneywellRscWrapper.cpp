@@ -77,7 +77,8 @@ bool HoneywellRscWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 
 READING_T HoneywellRscWrapper::currReadType()
 {
-  // temperature readings are requested when modulo = 0
+  // temperature readings are requested when modulo == 0
+  // therefore the next measurement (modulo == 1) is a temperature reading
   if (measurementAmountModulo == 1)
   {
     return TEMPERATURE;
@@ -90,7 +91,7 @@ READING_T HoneywellRscWrapper::currReadType()
 
 READING_T HoneywellRscWrapper::nextReadType()
 {
-  // temperature readings are requested when modulo = 0
+  // temperature readings are requested when modulo == 0
   if (measurementAmountModulo == 0)
   {
     return TEMPERATURE;

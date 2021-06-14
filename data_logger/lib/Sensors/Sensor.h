@@ -49,7 +49,6 @@ private:
   const uint32_t MEAS_INTERVAL;         // nominal interval for data measurement
 
   const bool DR_DRIVEN;      // if the sensor has a data ready line
-  volatile bool triggeredDR; // if the DR was triggered
 
   int checkBeatsSkipped; // beats that were skipped since the last check
   dueType dueMethod;     // how the measurement is due
@@ -74,9 +73,6 @@ public:
 
   // if the sensor is due for a read because of the DR line
   bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
-
-  // function called by interrupt handler to set that DR was triggered
-  void setDRtriggered(void);
 
   // if the measurement was late
   bool isMeasurementLate(uint32_t currMicros);

@@ -112,8 +112,8 @@ for k = 1:length(inFiles)
             sensorId = fread(inFile, 1, 'uint8');
             errorMessage = decodeErrorByte(fread(inFile, 1, 'uint8'));
             timestep = fread(inFile, 1, 'uint32');
-            accelX = fread(inFile, 1, 'uint16') * AIS_sensitivity;
-            accelY = fread(inFile, 1, 'uint16') * AIS_sensitivity;
+            accelX = fread(inFile, 1, 'int16') * AIS_sensitivity;
+            accelY = fread(inFile, 1, 'int16') * AIS_sensitivity;
             fprintf(AISfile, '%s, %d, %i, %i\n', errorMessage, timestep, ...
                 accelX, accelY);
         elseif (packetType == 3 && packetLength == 12) % RSC presure packet
