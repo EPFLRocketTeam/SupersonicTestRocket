@@ -7,14 +7,7 @@
 
 #include "Sensor.h"
 
-Sensor::Sensor(uint32_t checkInterval_,
-               uint32_t checkIntervalMargin_,
-               uint32_t measInterval_,
-               bool DR_driven_) : // initalizer list for constants
-                                  CHECK_INTERVAL(checkInterval_),
-                                  CHECK_INTERVAL_MARGIN(checkIntervalMargin_),
-                                  MEAS_INTERVAL(measInterval_),
-                                  DR_DRIVEN(DR_driven_)
+Sensor::Sensor()
 {
   checksumError = false;
 }
@@ -24,11 +17,30 @@ Sensor::~Sensor()
   // do stuff
 }
 
+void Sensor::setupProperties(uint32_t checkInterval_,
+                             uint32_t checkIntervalMargin_,
+                             uint32_t measInterval_, bool DR_driven_)
+{
+  CHECK_INTERVAL = checkInterval_;
+  CHECK_INTERVAL_MARGIN = checkIntervalMargin_;
+  MEAS_INTERVAL = measInterval_;
+  DR_DRIVEN = DR_driven_;
+}
+
 bool Sensor::isDueByTime(uint32_t currMicros)
 {
   // check if skipped some beats
   checkBeatsSkipped = floor((currMicros - prevCheck) / CHECK_INTERVAL);
-  if (currMicros - prevCheck > CHECK_INTERVAL + CHECK_INTERVAL_MARGIN)
+
+  uint32_t actualCheckInterval = CHECK_INTERVAL + CHECK_INTERVAL_MARGIN;
+  // if the sensor starts reading by time, we remove the margin and simply
+  // rely on the nominal checking interval
+  // this resets every time the sensor is read by DR (usual behaviour)
+  if (dueMethod == DUE_BY_TIME)
+  {
+    actualCheckInterval = CHECK_INTERVAL;
+  }
+  if (currMicros - prevCheck > actualCheckInterval)
   {
     if (checkBeatsSkipped > 1)
     {

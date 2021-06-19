@@ -21,3 +21,5 @@ extern const uint8_t CS_RS_EE_PIN[2],
     DR_RSC[2];
 // Thermocouples
 extern const uint8_t CS_TCS_PIN[4];
+// Altimax
+extern const uint8_t ALTIMAX_DR_PIN;

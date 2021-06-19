@@ -14,10 +14,7 @@ uint8_t HoneywellRscWrapper::sensorQty = 0;
 HoneywellRscWrapper::
     HoneywellRscWrapper(int DR,
                         int CS_EE,
-                        int CS_ADC) : Sensor(CHECK_INTERVAL,
-                                             MEASUREMENT_MARGIN,
-                                             MEASUREMENT_INTERVAL,
-                                             true),
+                        int CS_ADC) : Sensor(),
                                       rscObject(DR, CS_EE, CS_ADC)
 {
   sensorID = sensorQty;
@@ -31,8 +28,11 @@ HoneywellRscWrapper::~HoneywellRscWrapper()
 }
 
 bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
-                                RSC_DATA_RATE data_rate)
+                                RSC_DATA_RATE data_rate,
+                                uint32_t desiredTempPeriod)
 {
+  // Setup the timing parameters
+
   // Try to see if the RSC is working
   for (int i = 0; i < attempts; i++)
   {
@@ -44,6 +44,10 @@ bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
     if (reading != 0 && !isnan(reading)) // condition for success
     {
       active = true;
+      temp_frequency = floor(desiredTempPeriod / rscObject.calc_dr_delay());
+      setupProperties(rscObject.calc_dr_delay(), rscObject.calc_dr_delay(),
+                      rscObject.calc_dr_delay(), true);
+
       rscObject.adc_request(nextReadType());
       measurementAmountModulo += 1;
       return active;
@@ -110,12 +114,12 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
   // determine the type of measurement we are getting
   if (currReadType() == TEMPERATURE)
   {
-    meas = rscObject.get_temperature(); // get the measurement
+    meas = rscObject.get_temperature();   // get the measurement
     packetTypeNum = RSC_TEMP_PACKET_TYPE; // set the packet type
   }
   else
   {
-    meas = rscObject.get_pressure(); // get the measurement
+    meas = rscObject.get_pressure();          // get the measurement
     packetTypeNum = RSC_PRESSURE_PACKET_TYPE; // set the packet type
   }
 
@@ -124,7 +128,7 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 
   // update the measurement count
   measurementAmountModulo += 1;
-  measurementAmountModulo = measurementAmountModulo % TEMP_FREQUENCY;
+  measurementAmountModulo = measurementAmountModulo % temp_frequency;
 
   // create and write the packet
   HoneywellRSCPacket packet(getHeader(packetTypeNum,

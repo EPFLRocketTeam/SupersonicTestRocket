@@ -50,7 +50,7 @@ class ADIS16470Wrapper : public Sensor
 private:
   static const uint32_t MEASUREMENT_INTERVAL = 500;            // [us] (2000Hz)
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
-  static const uint32_t MEASUREMENT_MARGIN = 100;              // [us]
+  static const uint32_t MEASUREMENT_MARGIN = 500;              // [us]
 
   const int DR_PIN;
 

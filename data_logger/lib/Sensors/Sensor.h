@@ -25,7 +25,8 @@ enum
   AISx120SX_PACKET_TYPE,    // AISx120SX Packet
   RSC_PRESSURE_PACKET_TYPE, // Honewell RSC pressure packet
   RSC_TEMP_PACKET_TYPE,     // Honewell RSC temperature packet
-  MAX31855_PACKET_TYPE      // MAX31855 packet
+  MAX31855_PACKET_TYPE,     // MAX31855 packet
+  ALTIMAX_PACKET_TYPE       // ALTIMAX packet
 };
 typedef uint8_t packetType;
 
@@ -44,15 +45,14 @@ class Sensor
 {
 private:
   uint32_t prevCheck;                   // when sensor was last checked for data
-  const uint32_t CHECK_INTERVAL;        // how often to check for data
-  const uint32_t CHECK_INTERVAL_MARGIN; // margin on check
-  const uint32_t MEAS_INTERVAL;         // nominal interval for data measurement
+  uint32_t CHECK_INTERVAL;        // how often to check for data
+  uint32_t CHECK_INTERVAL_MARGIN; // margin to start checking by time
+  uint32_t MEAS_INTERVAL;         // nominal interval for data measurement
 
-  const bool DR_DRIVEN;      // if the sensor has a data ready line
+  bool DR_DRIVEN; // if the sensor has a data ready line
 
   int checkBeatsSkipped; // beats that were skipped since the last check
   dueType dueMethod;     // how the measurement is due
-
 protected:
   uint8_t sensorID;      // sensor's id. non-zero if identical sensors used
   bool checksumError;    // if there was a checksum erro
@@ -61,12 +61,14 @@ public:
   bool active; // if the sensor is active
 
   // constructor
-  Sensor(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
-         uint32_t measInterval_, bool DR_driven_);
+  Sensor();
 
   // destructor
   ~Sensor();
 
+  void setupProperties(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
+         uint32_t measInterval_, bool DR_driven_);
+         
   // if the sensor is due for a check because of time
   // returns 1 if it is due
   bool isDueByTime(uint32_t currMicros);

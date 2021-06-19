@@ -51,6 +51,8 @@ const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
 const uint8_t DR_RSC[2] = {15, 26};
 // Thermocouples
 const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
+// Altimax
+const uint8_t ALTIMAX_DR_PIN = 39;
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -68,11 +70,13 @@ HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
                                HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
                                                    CS_RSC_ADC_PIN[1])};
 MAX31855Wrapper tcs[4];
+// the altimax doesn't have a wrapper because I'm lazy and it's just 1 DR pin
+Sensor altimax = Sensor();
 
-const int SENSOR_ATTEMPTS = 5; // How many times to try to turn on the sensors
+const int SENSOR_SETUP_ATTEMPTS = 10;
+const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
-
 
 // SETUP =======================================================================
 
@@ -106,7 +110,7 @@ void setup()
   SPI.begin();
 
   // Setup the IMU
-  if (adis16470.setup(SENSOR_ATTEMPTS, 1000))
+  if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
   {
     Serial.println("ADIS16470 has been set up succesfully.");
     successFlash();
@@ -118,7 +122,7 @@ void setup()
   }
 
   // Setup the AIS1120SX
-  if (ais1120sx.setup(SENSOR_ATTEMPTS, 1000, _800Hz, _800Hz,
+  if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
                       false, false, false, false))
   {
     Serial.println("AIS1120SX has been set up succesfully.");
@@ -133,7 +137,8 @@ void setup()
   // Setup the pressure sensors
   for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
   {
-    if (rscs[i].setup(SENSOR_ATTEMPTS, 1000, F_DR_2000_SPS))
+    if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS,
+                      100000))
     {
       Serial.print("Succesfully started RSC");
       Serial.println(i + 1);
@@ -150,7 +155,7 @@ void setup()
   // Setup the thermocouples
   for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
   {
-    if (tcs[i].setup(SENSOR_ATTEMPTS, 1000, CS_TCS_PIN[i]))
+    if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
     {
       Serial.print("Succesfully started thermocouple TC");
       Serial.println(i + 1);
@@ -164,10 +169,14 @@ void setup()
     }
   }
 
+  // Setup the Altimax
+  altimax.setupProperties(UINT32_MAX, 0, UINT32_MAX, true);
+  pinMode(ALTIMAX_DR_PIN, INPUT_PULLDOWN);
+
   Serial.println("Setup complete.");
   successFlash();
 
-  acquireData(adis16470, ais1120sx, rscs, tcs);
+  acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
 }
 
 // LOOP ========================================================================
@@ -201,7 +210,7 @@ void loop()
         Serial.println("Will begin data acquisition as button was pressed.");
         digitalWrite(GREEN_LED_PIN, LOW);
         successFlash();
-        acquireData(adis16470, ais1120sx, rscs, tcs);
+        acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");

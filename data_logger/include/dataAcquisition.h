@@ -36,13 +36,14 @@ const int HONEYWELL_RSC_INTERVAL = 520;  // [us] (~2000Hz)
 const int HONEYWELL_RSC_MARGIN = 50;     // [us]
 const int AIS1120SX_NOM_INTERVAL = 2500; // [us] (400Hz)
 const int AIS1120SX_CHECK_INTERVAL =
-    AIS1120SX_NOM_INTERVAL / 10;                    // [us]
-const int SYNC_INTERVAL = 100 * 1000;               // [us] (100 ms)
+    AIS1120SX_NOM_INTERVAL / 10;      // [us]
+const int SYNC_INTERVAL = 100 * 1000; // [us] (100 ms)
 
 // Start to acquire data periodically from the sensors and log it in a file
 // Sets up the necessary things and then loops periodically
 void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
-                 HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs);
+                 HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs,
+                 Sensor altimax);
 
 // Check the buttons and see if loop should continue according to input.
 bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3]);

@@ -11,12 +11,11 @@
 uint8_t AISx120SXWrapper::sensorQty = 0;
 
 // constructor
-AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(CHECK_INTERVAL,
-                                                         MEASUREMENT_MARGIN,
-                                                         MEASUREMENT_INTERVAL,
-                                                         false),
+AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(),
                                                   aisObject(CS_)
 {
+  setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
+                  false);
   sensorID = sensorQty;
   sensorQty += 1;
 }

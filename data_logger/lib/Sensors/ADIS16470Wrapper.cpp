@@ -12,13 +12,12 @@ uint8_t ADIS16470Wrapper::sensorQty = 0;
 
 // constructor
 ADIS16470Wrapper::
-    ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(CHECK_INTERVAL,
-                                                       MEASUREMENT_MARGIN,
-                                                       MEASUREMENT_INTERVAL,
-                                                       true),
+    ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(),
                                                 DR_PIN(DR),
                                                 adisObject(CS, DR, RST)
 {
+  setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
+                  true);
   sensorID = sensorQty;
   sensorQty += 1;
 }

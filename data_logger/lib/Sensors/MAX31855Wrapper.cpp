@@ -11,11 +11,10 @@
 uint8_t MAX31855Wrapper::sensorQty = 0;
 
 // constructor
-MAX31855Wrapper::MAX31855Wrapper() : Sensor(CHECK_INTERVAL,
-                                            MEASUREMENT_MARGIN,
-                                            MEASUREMENT_INTERVAL,
-                                            false)
+MAX31855Wrapper::MAX31855Wrapper() : Sensor()
 {
+  setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
+                  MEASUREMENT_INTERVAL, false);
   sensorID = sensorQty;
   sensorQty += 1;
 }
