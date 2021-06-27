@@ -48,11 +48,15 @@ const uint8_t CS_AIS1120SX_PIN = 31;
 // Pressure sensors
 const uint8_t CS_RS_EE_PIN[2] = {17, 28};
 const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
-const uint8_t DR_RSC[2] = {15, 26};
+// RSC1's DR line should be on pin 15 according to the PCB, however, it was
+// manually reconnected to pin 39 on the first iteration of the PCB
+// change lines accordingly if building a new PCB from the schematics
+const uint8_t DR_RSC[2] = {39, 26};
+//const uint8_t DR_RSC[2] = {15, 26};
 // Thermocouples
 const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
 // Altimax
-const uint8_t ALTIMAX_DR_PIN = 39;
+const uint8_t ALTIMAX_DR_PIN = 33;
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -109,30 +113,30 @@ void setup()
 
   SPI.begin();
 
-  // Setup the IMU
-  if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
-  {
-    Serial.println("ADIS16470 has been set up succesfully.");
-    successFlash();
-  }
-  else
-  {
-    Serial.println("Could not set up ADIS16470.");
-    errorFlash();
-  }
+  // // Setup the IMU
+  // if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
+  // {
+  //   Serial.println("ADIS16470 has been set up succesfully.");
+  //   successFlash();
+  // }
+  // else
+  // {
+  //   Serial.println("Could not set up ADIS16470.");
+  //   errorFlash();
+  // }
 
-  // Setup the AIS1120SX
-  if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
-                      false, false, false, false))
-  {
-    Serial.println("AIS1120SX has been set up succesfully.");
-    successFlash();
-  }
-  else
-  {
-    Serial.println("Could not set up AIS1120SX.");
-    errorFlash();
-  }
+  // // Setup the AIS1120SX
+  // if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
+  //                     false, false, false, false))
+  // {
+  //   Serial.println("AIS1120SX has been set up succesfully.");
+  //   successFlash();
+  // }
+  // else
+  // {
+  //   Serial.println("Could not set up AIS1120SX.");
+  //   errorFlash();
+  // }
 
   // Setup the pressure sensors
   for (size_t i = 0; i < rscs[i].getSensorQty(); i++)

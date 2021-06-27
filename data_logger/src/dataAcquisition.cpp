@@ -141,10 +141,10 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
         if (rscs[i].isDue(micros(), rscDRflag[i])) // sensor is due
         {
           HoneywellRSCPacket packet = rscs[i].getPacket(micros());
-          Serial.print("Acquired data from RSC");
-          Serial.print(i + 1);
-          Serial.print(". Reading (PSI or degC): ");
-          Serial.println(packet.measurement);
+          // Serial.print("Acquired data from RSC");
+          // Serial.print(i + 1);
+          // Serial.print(". Reading (PSI or degC): ");
+          // Serial.println(packet.measurement);
           rb.write((const uint8_t *)&packet, sizeof(packet));
         }
       }
@@ -161,9 +161,9 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
           Serial.print("Acquired data from TC");
           Serial.print(i + 1);
           Serial.print(". Probe temp (degC) : ");
-          Serial.print(packet.probeTemperature);
+          Serial.print(packet.probeTemperature * (0.25 / 4));
           Serial.print(", Ambient temp (degC) : ");
-          Serial.println(packet.sensorTemperature);
+          Serial.println(packet.sensorTemperature * (0.0625 / 16));
           rb.write((const uint8_t *)&packet, sizeof(packet));
         }
       }
