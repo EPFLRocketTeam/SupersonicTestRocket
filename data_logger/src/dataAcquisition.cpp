@@ -75,8 +75,9 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
                   interruptFunctionAltimax, RISING);
 
   // set the last time for every check to now
-  uint32_t prevSyncLoop = micros(); // timing for syncing
-  if (adis16470.active)             // check if the sensor is active
+  uint32_t prevSyncLoop = micros();   // timing for syncing
+  uint32_t prevSerialLoop = micros(); // timing for serial monitor output
+  if (adis16470.active)               // check if the sensor is active
   {
     // checking if the sensors are due will update their check times even if we
     // don't use the boolean they return
@@ -110,62 +111,50 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
   while (checkButtons(buttonArray, stopEvent))
   {
     // ADIS16470
-    if (adis16470.active) // check if the sensor is active
+    if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
     {
-      if (adis16470.isDue(micros(), adis16470DRflag)) // if due
-      {
-        ADIS16470Packet packet = adis16470.getPacket(micros());
-        Serial.print("Acquired data from the ADIS16470. Az (g): ");
-        Serial.println(((int16_t)packet.accZ) / 800.);
-        rb.write((const uint8_t *)&packet, sizeof(packet));
-      }
+      ADIS16470Packet packet = adis16470.getPacket(micros());
+      Serial.print("Acquired data from the ADIS16470. Az (g): ");
+      Serial.println(((int16_t)packet.accZ) / 800.);
+      rb.write((const uint8_t *)&packet, sizeof(packet));
     }
 
     // AIS1120SX
-    if (ais1120sx.active) // check if the sensor is active
+    if (ais1120sx.active && ais1120sx.isDue(micros()))
     {
-      if (ais1120sx.isDue(micros())) // if due
-      {
-        AISx120SXPacket packet = ais1120sx.getPacket(micros());
-        Serial.print("Acquired data from the AIS1120SX. Ax (g): ");
-        Serial.println(((int16_t)packet.accelX) / (68. * 4));
-        rb.write((const uint8_t *)&packet, sizeof(packet));
-      }
+      AISx120SXPacket packet = ais1120sx.getPacket(micros());
+      Serial.print("Acquired data from the AIS1120SX. Ax (g): ");
+      Serial.println(((int16_t)packet.accelX) / (68. * 4));
+      rb.write((const uint8_t *)&packet, sizeof(packet));
     }
 
     // Pressure sensors
     for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
     {
-      if (rscs[i].active) // check if the sensor is active
+      if (rscs[i].active && rscs[i].isDue(micros(), rscDRflag[i]))
       {
-        if (rscs[i].isDue(micros(), rscDRflag[i])) // sensor is due
-        {
-          HoneywellRSCPacket packet = rscs[i].getPacket(micros());
-          // Serial.print("Acquired data from RSC");
-          // Serial.print(i + 1);
-          // Serial.print(". Reading (PSI or degC): ");
-          // Serial.println(packet.measurement);
-          rb.write((const uint8_t *)&packet, sizeof(packet));
-        }
+        HoneywellRSCPacket packet = rscs[i].getPacket(micros());
+        Serial.print("Acquired data from RSC");
+        Serial.print(i + 1);
+        Serial.print(". Reading (PSI or degC): ");
+        Serial.println(packet.measurement);
+        rb.write((const uint8_t *)&packet, sizeof(packet));
       }
     }
 
     // THERMOCOUPLES
     for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
     {
-      if (tcs[i].active) // check if the sensor is active
+      if (tcs[i].active && tcs[i].isDue(micros()))
       {
-        if (tcs[i].isDue(micros())) // check if sensor is due
-        {
-          MAX31855Packet packet = tcs[i].getPacket(micros());
-          Serial.print("Acquired data from TC");
-          Serial.print(i + 1);
-          Serial.print(". Probe temp (degC) : ");
-          Serial.print(packet.probeTemperature * (0.25 / 4));
-          Serial.print(", Ambient temp (degC) : ");
-          Serial.println(packet.sensorTemperature * (0.0625 / 16));
-          rb.write((const uint8_t *)&packet, sizeof(packet));
-        }
+        MAX31855Packet packet = tcs[i].getPacket(micros());
+        Serial.print("Acquired data from TC");
+        Serial.print(i + 1);
+        Serial.print(". Probe temp (degC) : ");
+        Serial.print(packet.probeTemperature * (0.25 / 4));
+        Serial.print(", Ambient temp (degC) : ");
+        Serial.println(packet.sensorTemperature * (0.0625 / 16));
+        rb.write((const uint8_t *)&packet, sizeof(packet));
       }
     }
 
@@ -189,6 +178,13 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
       // And perhaps solve the issue of unplugging during a sync? To investigate
       // See useful memory time when power loss with and without sync
       // rb.sync();
+    }
+
+    // check if it's time to output to the console
+    // this is not done with every measurement since the human eye can only
+    // see smoothly up to around 60 Hz anyways, and this is only for debugging
+    if (micros() - prevSerialLoop > SERIAL_INTERVAL)
+    {
     }
 
     // Check if ringBuf is ready for writing

@@ -141,8 +141,7 @@ void setup()
   // Setup the pressure sensors
   for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
   {
-    if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS,
-                      100000))
+    if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS, 50000))
     {
       Serial.print("Succesfully started RSC");
       Serial.println(i + 1);
