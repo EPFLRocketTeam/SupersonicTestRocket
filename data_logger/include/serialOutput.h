@@ -49,8 +49,15 @@ typedef enum
   bg_white,
 } DECORATOR_CODES;
 
+typedef enum
+{
+  cursor_end,
+  cursor_beginning,
+  entire
+} CLEAR_ARGUMENTS;
+
 // sends the specified ANSI command to the console
-void ansiCommand(uint8_t argument, COMMAND_CODES commandCode);
+void ansiCommand(COMMAND_CODES commandCode, uint8_t argument);
 
 // decodes the command code enum into the actual character required
 char decodeCommandCode(COMMAND_CODES commandCode);

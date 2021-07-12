@@ -97,6 +97,8 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
+  bool debug = false; // whether to take real data or generate some fake one
+
   // acquire data as long as button sequence is not initated
   while (checkButtons(buttonArray, stopEvent))
   {
@@ -166,15 +168,15 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
       serialPacket maxSerialPacket[tcs[0].getSensorQty()];
       for (size_t i = 0; i < rscs[0].getSensorQty(); i++)
       {
-        rscSerialPacket[i] = rscs[i].getSerialPacket();
+        rscSerialPacket[i] = rscs[i].getSerialPacket(debug);
       }
       for (size_t i = 0; i < tcs[0].getSensorQty(); i++)
       {
-        maxSerialPacket[i] = tcs[i].getSerialPacket();
+        maxSerialPacket[i] = tcs[i].getSerialPacket(debug);
       }
 
-      outputSensorData(micros(), adis16470.getSerialPacket(),
-                       ais1120sx.getSerialPacket(), rscSerialPacket,
+      outputSensorData(micros(), adis16470.getSerialPacket(debug),
+                       ais1120sx.getSerialPacket(debug), rscSerialPacket,
                        maxSerialPacket);
     }
 
