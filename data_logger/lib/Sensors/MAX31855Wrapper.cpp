@@ -11,11 +11,14 @@
 uint8_t MAX31855Wrapper::sensorQty = 0;
 
 // constructor
-MAX31855Wrapper::MAX31855Wrapper() : Sensor()
+MAX31855Wrapper::MAX31855Wrapper() : Sensor(sensorQty),
+                                     lastPacket(getHeader(
+                                         MAX31855_PACKET_TYPE,
+                                         sizeof(MAX31855Packet),
+                                         0))
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                   MEASUREMENT_INTERVAL, false);
-  sensorID = sensorQty;
   sensorQty += 1;
 }
 
@@ -77,9 +80,32 @@ uint8_t MAX31855Wrapper::getSensorQty()
 MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 {
   // create and write the packet
-  MAX31855Packet packet(getHeader(MAX31855_PACKET_TYPE,
-                                  sizeof(MAX31855Packet),
-                                  currMicros),
-                        prevProbeMeas, prevAmbientMeas);
+  lastPacket = MAX31855Packet(getHeader(MAX31855_PACKET_TYPE,
+                                        sizeof(MAX31855Packet),
+                                        currMicros),
+                              prevProbeMeas, prevAmbientMeas);
+  return lastPacket;
+}
+
+serialPacket MAX31855Wrapper::getSerialPacket(bool debug = false)
+{
+  serialPacket packet;
+  packet.errors = getErrors();
+
+  float readings[2];
+
+  if (debug)
+  {
+    readings[0] = generateFakeData(-200, 1200, micros(), 35, 2700000);
+    readings[1] = generateFakeData(-200, 1200, micros(), 25, 8700000);
+  }
+  else
+  {
+    readings[0] = lastPacket.probeTemperature;
+    readings[1] = lastPacket.sensorTemperature;
+  }
+
+  packet.readings = readings;
+
   return packet;
 }

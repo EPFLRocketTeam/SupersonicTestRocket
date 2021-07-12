@@ -67,12 +67,17 @@ void setPosition(uint8_t row, uint8_t column)
 
 void savePosition()
 {
-
   Serial.print("\u001b[{s}");
 }
 
 void recoverPosition()
 {
-
   Serial.print("\u001b[{u}");
+}
+
+void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
+                      serialPacket ais1120sxPacket, serialPacket *rscPacket,
+                      serialPacket *maxPacket)
+{
+  
 }

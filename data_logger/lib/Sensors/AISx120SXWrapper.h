@@ -19,9 +19,15 @@
 struct AISx120SXPacket
 {
   struct PacketHeader header; // 8 bytes
-  uint16_t accelX;            // 2 bytes
+  uint16_t accelX = 0;        // 2 bytes
   // following unused for the AIS1120SX but necessary for alignment
-  uint16_t accelY; // 2 bytes
+  uint16_t accelY = 0; // 2 bytes
+
+  // constructor for an empty packet
+  AISx120SXPacket(PacketHeader header_)
+  {
+    header = header_;
+  }
 
   // overloaded constructor
   AISx120SXPacket(PacketHeader header_, int16_t acceleration[2])
@@ -41,10 +47,12 @@ private:
       MEASUREMENT_INTERVAL / 2;                 // [us]
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  int16_t prevMeas[2]; // previous measurement from the sensor
+  int16_t prevMeas[2] = {0}; // previous measurement from the sensor
 
   AISx120SX aisObject;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  AISx120SXPacket lastPacket;
 
 public:
   // constructor
@@ -66,4 +74,5 @@ public:
   bool isDue(uint32_t currMicros);
 
   AISx120SXPacket getPacket(uint32_t currMicros);
+  serialPacket getSerialPacket(bool debug = false);
 };

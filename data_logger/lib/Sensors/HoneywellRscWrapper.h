@@ -21,7 +21,13 @@ struct HoneywellRSCPacket
 {
   struct PacketHeader header; // 8 bytes
   // sending as floats since the computation is hard to do after acquistion
-  float measurement; // 4 bytes
+  float measurement = 0; // 4 bytes
+
+  // constructor for an empty packet
+  HoneywellRSCPacket(PacketHeader header_)
+  {
+    header = header_;
+  }
 
   // constructor
   HoneywellRSCPacket(PacketHeader header_, float measurement_)
@@ -42,6 +48,9 @@ private:
 
   Honeywell_RSC rscObject;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  HoneywellRSCPacket lastPressurePacket;
+  HoneywellRSCPacket lastTempPacket;
 
 public:
   // constructor
@@ -67,4 +76,5 @@ public:
   READING_T nextReadType();
 
   HoneywellRSCPacket getPacket(uint32_t currMicros);
+  serialPacket getSerialPacket(bool debug = false);
 };

@@ -75,7 +75,7 @@ HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
                                                    CS_RSC_ADC_PIN[1])};
 MAX31855Wrapper tcs[4];
 // the altimax doesn't have a wrapper because I'm lazy and it's just 1 DR pin
-Sensor altimax = Sensor();
+Sensor altimax = Sensor(0);
 
 const int SENSOR_SETUP_ATTEMPTS = 10;
 const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps

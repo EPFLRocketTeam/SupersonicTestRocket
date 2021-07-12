@@ -7,7 +7,7 @@
 
 #include "Sensor.h"
 
-Sensor::Sensor()
+Sensor::Sensor(uint8_t sensorID) : SENSOR_ID(sensorID)
 {
   checksumError = false;
 }
@@ -73,36 +73,54 @@ bool Sensor::isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
 
 bool Sensor::isMeasurementLate(uint32_t currMicros)
 {
-  bool measurementLate = currMicros - prevMeasTime > 2 * MEAS_INTERVAL;
+  measurementLate = currMicros - prevMeasTime > 2 * MEAS_INTERVAL;
   return measurementLate;
+}
+
+bool *Sensor::getErrors()
+{
+  bool errors[4] = {false}; // array to store  flags of errors that occured
+
+  // first error: if a measurement beat was missed (measurement beat skipped)
+  if (measurementLate)
+  {
+    errors[0] = true;
+  }
+
+  // second error: if the acquisition loop skipped a beat
+  if (checkBeatsSkipped > 1)
+  {
+    errors[1] = true;
+  }
+
+  // third error: if DR pin didn't trigger the read
+  if (DR_DRIVEN && dueMethod != DUE_BY_DR)
+  {
+    errors[2] = true;
+  }
+
+  // fourth error: checksum error
+  if (checksumError)
+  {
+    errors[3] = true;
+  }
+
+  return errors;
 }
 
 uint8_t Sensor::getErrorCode(uint32_t currMicros)
 {
   uint8_t errorCode = 0;
 
-  // first bit: if a measurement beat was missed (measurement beat skipped)
-  if (isMeasurementLate(currMicros))
-  {
-    bitSet(errorCode, 7); // set bit to 1
-  }
+  isMeasurementLate(currMicros); // update the measurementLate variable
+  bool *errors = getErrors();
 
-  // second bit: if the acquisition loop skipped a beat
-  if (checkBeatsSkipped > 1)
+  for (size_t i = 0; i < sizeof(errors); i++)
   {
-    bitSet(errorCode, 6); // set bit to 1
-  }
-
-  // third bit: if DR pin didn't trigger the read
-  if (DR_DRIVEN && dueMethod != DUE_BY_DR)
-  {
-    bitSet(errorCode, 5); // set bit to 1
-  }
-
-  // fourth bit: checksum error
-  if (checksumError)
-  {
-    bitSet(errorCode, 4); // set bit to 1
+    if (errors[i])
+    {
+      bitSet(errorCode, 7 - i);
+    }
   }
 
   return errorCode;
@@ -115,8 +133,18 @@ PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
   PacketHeader header;
   header.packetType_ = packetType_;
   header.packetSize = packetSize_;
-  header.sensorID = sensorID;
+  header.sensorID = SENSOR_ID;
   header.errorCode = getErrorCode(currMicros);
   header.timestamp = currMicros;
   return header;
+}
+
+float Sensor::generateFakeData(float minValue, float maxValue,
+                               uint32_t currMicros,
+                               float offset = 0, uint32_t period = 5000000)
+{
+  float mid = (minValue + maxValue) / 2.;
+  float amplitude = (maxValue - minValue) / 2.;
+
+  return sin(2 * PI * currMicros / period) * amplitude + mid + offset;
 }

@@ -9,6 +9,8 @@
 
 #include <Arduino.h>
 
+#include "Sensor.h"
+
 typedef enum
 {
   decorate,
@@ -47,16 +49,6 @@ typedef enum
   bg_white,
 } DECORATOR_CODES;
 
-struct decodedPacket
-{
-  bool measSkippedBeat;
-  bool skippedBeat;
-  bool drNoTrigger;
-  bool checksumError;
-
-  float *readings;
-};
-
 // sends the specified ANSI command to the console
 void ansiCommand(uint8_t argument, COMMAND_CODES commandCode);
 
@@ -72,6 +64,6 @@ void savePosition();
 
 void recoverPosition();
 
-void outputSensorData(uint32_t currMicros, decodedPacket adis16470Packet,
-                      decodedPacket ais1120sxPacket, decodedPacket *rscPacket,
-                      decodedPacket *maxPacket);
+void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
+                      serialPacket ais1120sxPacket, serialPacket *rscPacket,
+                      serialPacket *maxPacket);

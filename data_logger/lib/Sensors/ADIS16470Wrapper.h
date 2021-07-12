@@ -21,14 +21,20 @@ struct ADIS16470Packet
   struct PacketHeader header; // 8 bytes
   // sending as uint16_t to save data space and since it's easy to convert
   // could likely send as float to save a potential headache later
-  uint16_t gyroX;       // 2 bytes
-  uint16_t gyroY;       // 2 bytes
-  uint16_t gyroZ;       // 2 bytes
-  uint16_t accX;        // 2 bytes
-  uint16_t accY;        // 2 bytes
-  uint16_t accZ;        // 2 bytes
-  uint16_t temp;        // 2 bytes
+  uint16_t gyroX = 0;   // 2 bytes
+  uint16_t gyroY = 0;   // 2 bytes
+  uint16_t gyroZ = 0;   // 2 bytes
+  uint16_t accX = 0;    // 2 bytes
+  uint16_t accY = 0;    // 2 bytes
+  uint16_t accZ = 0;    // 2 bytes
+  uint16_t temp = 0;    // 2 bytes
   uint16_t padding = 0; // 2 bytes. necessary for alignment
+
+  // constructor for an empty packet
+  ADIS16470Packet(PacketHeader header_)
+  {
+    header = header_;
+  }
 
   // constructor. takes data directly from wordBurst from the ADIS16470 library
   ADIS16470Packet(PacketHeader header_, uint16_t IMUdata[10])
@@ -56,6 +62,9 @@ private:
 
   ADIS16470 adisObject;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  ADIS16470Packet lastPacket;
+
 public:
   // constructor
   ADIS16470Wrapper(int CS, int DR, int RST);
@@ -75,4 +84,5 @@ public:
   bool verifyCheckSum(uint16_t sensorData[10]);
 
   ADIS16470Packet getPacket(uint32_t currMicros);
+  serialPacket getSerialPacket(bool debug = false);
 };

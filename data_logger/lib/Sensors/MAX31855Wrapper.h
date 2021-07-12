@@ -20,8 +20,14 @@ struct MAX31855Packet
 {
   struct PacketHeader header; // 8 bytes
   // sending as floats since the computation is hard to do after acquistion
-  int16_t probeTemperature;  // 2 bytes
-  int16_t sensorTemperature; // 2 bytes
+  int16_t probeTemperature = 0;  // 2 bytes
+  int16_t sensorTemperature = 0; // 2 bytes
+
+  // constructor for an empty packet
+  MAX31855Packet(PacketHeader header_)
+  {
+    header = header_;
+  }
 
   // constructor
   MAX31855Packet(PacketHeader header_, int16_t probeT, int16_t sensorT)
@@ -42,11 +48,13 @@ private:
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
   // previous measurements from the sensor
-  int16_t prevProbeMeas; 
-  int16_t prevAmbientMeas;
+  int16_t prevProbeMeas = 0;
+  int16_t prevAmbientMeas = 0;
 
   MAX31855_Class max31855Object;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  MAX31855Packet lastPacket;
 
 public:
   // constructor
@@ -65,4 +73,5 @@ public:
   bool isDue(uint32_t currMicros);
 
   MAX31855Packet getPacket(uint32_t currMicros);
+  serialPacket getSerialPacket(bool debug = false);
 };

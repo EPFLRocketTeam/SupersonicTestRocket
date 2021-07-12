@@ -40,35 +40,43 @@ struct PacketHeader
   uint32_t timestamp;     // 4 bytes
 };
 
+// simpler, generic packet for serial output
+struct serialPacket
+{
+  bool *errors;
+  float *readings;
+};
+
 // Generic sensor object
 class Sensor
 {
 private:
-  uint32_t prevCheck;                   // when sensor was last checked for data
+  uint32_t prevCheck;             // when sensor was last checked for data
   uint32_t CHECK_INTERVAL;        // how often to check for data
   uint32_t CHECK_INTERVAL_MARGIN; // margin to start checking by time
   uint32_t MEAS_INTERVAL;         // nominal interval for data measurement
 
   bool DR_DRIVEN; // if the sensor has a data ready line
 
+  bool measurementLate;  // if the last measurement was late
   int checkBeatsSkipped; // beats that were skipped since the last check
   dueType dueMethod;     // how the measurement is due
 protected:
-  uint8_t sensorID;      // sensor's id. non-zero if identical sensors used
-  bool checksumError;    // if there was a checksum erro
-  uint32_t prevMeasTime; // when last new measurement was made
+  const uint8_t SENSOR_ID; // sensor's id. non-zero if identical sensors used
+  bool checksumError;      // if there was a checksum erro
+  uint32_t prevMeasTime;   // when last new measurement was made
 public:
   bool active; // if the sensor is active
 
   // constructor
-  Sensor();
+  Sensor(uint8_t sensorID);
 
   // destructor
   ~Sensor();
 
   void setupProperties(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
-         uint32_t measInterval_, bool DR_driven_);
-         
+                       uint32_t measInterval_, bool DR_driven_);
+
   // if the sensor is due for a check because of time
   // returns 1 if it is due
   bool isDueByTime(uint32_t currMicros);
@@ -79,10 +87,18 @@ public:
   // if the measurement was late
   bool isMeasurementLate(uint32_t currMicros);
 
+  // takes all the errors that happened and returns a boolean array
+  bool *getErrors();
+
   // takes all the errors that happened and returns an error code
   uint8_t getErrorCode(uint32_t currMicros);
 
   // generates a packet header for the sensor
   PacketHeader getHeader(packetType packetType_, uint8_t packetSize_,
                          uint32_t currMicros);
+
+  // generate fake data when debugging the serial output without sensors
+  float generateFakeData(float minValue, float maxValue,
+                         uint32_t currMicros,
+                         float offset = 0, uint32_t period = 5000000);
 };

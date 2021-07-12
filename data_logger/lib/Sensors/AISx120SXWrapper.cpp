@@ -11,12 +11,15 @@
 uint8_t AISx120SXWrapper::sensorQty = 0;
 
 // constructor
-AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(),
-                                                  aisObject(CS_)
+AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(sensorQty),
+                                                  aisObject(CS_),
+                                                  lastPacket(getHeader(
+                                                      ADIS16470_PACKET_TYPE,
+                                                      sizeof(AISx120SXPacket),
+                                                      0))
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
                   false);
-  sensorID = sensorQty;
   sensorQty += 1;
 }
 
@@ -79,9 +82,32 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
 AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
   // create and write the packet
-  AISx120SXPacket packet(getHeader(AISx120SX_PACKET_TYPE,
-                                   sizeof(AISx120SXPacket),
-                                   currMicros),
-                         prevMeas);
+  lastPacket = AISx120SXPacket(getHeader(AISx120SX_PACKET_TYPE,
+                                         sizeof(AISx120SXPacket),
+                                         currMicros),
+                               prevMeas);
+  return lastPacket;
+}
+
+serialPacket AISx120SXWrapper::getSerialPacket(bool debug = false)
+{
+  serialPacket packet;
+  packet.errors = getErrors();
+
+  float readings[2];
+
+  if (debug)
+  {
+    readings[0] = generateFakeData(-120, 120, micros());
+    readings[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+  }
+  else
+  {
+    readings[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
+    readings[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
+  }
+
+  packet.readings = readings;
+
   return packet;
 }
