@@ -163,6 +163,8 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     // see smoothly up to around 60 Hz anyways, and this is only for debugging
     if (micros() - prevSerialLoop > SERIAL_INTERVAL)
     {
+      prevSerialLoop += SERIAL_INTERVAL;
+      //Serial.println("in print loop");
       // get the packets for the rsc and max
       serialPacket rscSerialPacket[rscs[0].getSensorQty()];
       serialPacket maxSerialPacket[tcs[0].getSensorQty()];

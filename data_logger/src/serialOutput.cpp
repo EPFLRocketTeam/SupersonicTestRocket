@@ -77,7 +77,15 @@ void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
                       serialPacket ais1120sxPacket, serialPacket *rscPacket,
                       serialPacket *maxPacket)
 {
-  ansiCommand(clear_screen, entire);
+  
+  Serial.print("\u001b[2J"); // clear screen
+  Serial.print("\u001b[H"); // cursor to home
+  // unsigned char resetScreen[] = {27, '[', '2', 'J'};
+  // Serial.write(resetScreen, 4);
+  // unsigned char moveHome[] = {27, '[', 'H'};
+  // Serial.write(moveHome, 3);
+  //Serial.print("\u001b[2J");
+  //ansiCommand(clear_screen, entire);
 
   Serial.println("HERMES Ground Station Monitor");
   Serial.print("  > Time (s): ");
@@ -118,7 +126,7 @@ void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
   Serial.println(ais1120sxPacket.readings[1]);
   Serial.println("");
 
-  for (size_t i = 0; i < sizeof(rscPacket); i++)
+  for (size_t i = 0; i < 2; i++)
   {
     Serial.print("RSC");
     Serial.print(i);

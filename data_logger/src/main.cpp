@@ -88,7 +88,7 @@ void setup()
 {
   // Open serial communications and give some time for the port to open
   // Not waiting on the port in case the device is not connected to USB
-  Serial.begin(9600);
+  Serial.begin(115200);
   for (size_t i = 0; i < 10; i++)
   {
     if (Serial.available())
@@ -100,6 +100,19 @@ void setup()
       delay(1000);
     }
   }
+
+  // Serial.println("hello");
+  // delay(5000);
+  
+  // Serial.print("\u001b[2J"); // clear screen
+  // Serial.print("\u001b[H"); // cursor to home
+  // Serial.println("goodbyte");
+  // delay(5000);
+  // Serial.print("\u001b[2J"); // clear screen
+  // Serial.print("\u001b[H"); // cursor to home
+  // Serial.println("goodbyte");
+  // Serial.println("ciaooo");
+  // delay(5000);
 
   // Set up I/O
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -138,39 +151,39 @@ void setup()
   //   errorFlash();
   // }
 
-  // Setup the pressure sensors
-  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
-  {
-    if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS, 50000))
-    {
-      Serial.print("Succesfully started RSC");
-      Serial.println(i + 1);
-      successFlash();
-    }
-    else
-    {
-      Serial.print("Unable to start RSC");
-      Serial.println(i + 1);
-      errorFlash();
-    }
-  }
+  // // Setup the pressure sensors
+  // for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+  // {
+  //   if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS, 50000))
+  //   {
+  //     Serial.print("Succesfully started RSC");
+  //     Serial.println(i + 1);
+  //     successFlash();
+  //   }
+  //   else
+  //   {
+  //     Serial.print("Unable to start RSC");
+  //     Serial.println(i + 1);
+  //     errorFlash();
+  //   }
+  // }
 
-  // Setup the thermocouples
-  for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-  {
-    if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
-    {
-      Serial.print("Succesfully started thermocouple TC");
-      Serial.println(i + 1);
-      successFlash();
-    }
-    else
-    {
-      Serial.print("Unable to start thermocouple TC");
-      Serial.println(i + 1);
-      errorFlash();
-    }
-  }
+  // // Setup the thermocouples
+  // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+  // {
+  //   if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
+  //   {
+  //     Serial.print("Succesfully started thermocouple TC");
+  //     Serial.println(i + 1);
+  //     successFlash();
+  //   }
+  //   else
+  //   {
+  //     Serial.print("Unable to start thermocouple TC");
+  //     Serial.println(i + 1);
+  //     errorFlash();
+  //   }
+  // }
 
   // Setup the Altimax
   altimax.setupProperties(UINT32_MAX, 0, UINT32_MAX, true);
