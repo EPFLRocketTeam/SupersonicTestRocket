@@ -157,22 +157,17 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 serialPacket HoneywellRscWrapper::getSerialPacket(bool debug = false)
 {
   serialPacket packet;
-  packet.errors = getErrors();
-
-  float readings[2];
-
   if (debug)
   {
-    readings[0] = generateFakeData(0, 2, micros(),14);
-    readings[1] = generateFakeData(-200, 1200, micros(), 25, 3800000);
+    packet.readings[0] = generateFakeData(0, 2, micros(), 14);
+    packet.readings[1] = generateFakeData(-200, 1200, micros(), 25, 3800000);
   }
   else
   {
-    readings[0] = lastPressurePacket.measurement;
-    readings[1] = lastTempPacket.measurement;
+    memcpy(packet.errors, getErrors(), sizeof(packet.errors));
+    packet.readings[0] = lastPressurePacket.measurement;
+    packet.readings[1] = lastTempPacket.measurement;
   }
-
-  packet.readings = readings;
 
   return packet;
 }

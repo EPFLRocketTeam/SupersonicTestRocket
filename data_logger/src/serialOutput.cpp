@@ -80,6 +80,10 @@ void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
   
   Serial.print("\u001b[2J"); // clear screen
   Serial.print("\u001b[H"); // cursor to home
+
+  
+  // Serial.println(sizeof(rscPacket));
+  // Serial.println(sizeof(maxPacket));
   // unsigned char resetScreen[] = {27, '[', '2', 'J'};
   // Serial.write(resetScreen, 4);
   // unsigned char moveHome[] = {27, '[', 'H'};
@@ -94,10 +98,13 @@ void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
 
   Serial.println("SENSORS");
 
-  Serial.print("ADIS16470");
+  Serial.print("ADIS16470: ");
   Serial.print(adis16470Packet.errors[0]);
+  Serial.print(", ");
   Serial.print(adis16470Packet.errors[1]);
+  Serial.print(", ");
   Serial.print(adis16470Packet.errors[2]);
+  Serial.print(", ");
   Serial.println(adis16470Packet.errors[3]);
   Serial.print("  > GyroX (deg/s): ");
   Serial.println(adis16470Packet.readings[0]);

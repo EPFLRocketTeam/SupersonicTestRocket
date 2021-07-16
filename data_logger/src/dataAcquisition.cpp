@@ -149,7 +149,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     if (micros() - prevSyncLoop > SYNC_INTERVAL)
     {
       prevSyncLoop += SYNC_INTERVAL;
-      Serial.println("Syncing data.");
+      // Serial.println("Syncing data.");
       // Serial.println(micros());
       // TODO: See if better to have with or without syncing.
       // Without syncing seems to write to file anyway since it's preallocated
@@ -177,6 +177,9 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
         maxSerialPacket[i] = tcs[i].getSerialPacket(debug);
       }
 
+      Serial.println(sizeof(rscSerialPacket));
+      Serial.println(sizeof(maxSerialPacket));
+      Serial.println(rscSerialPacket[0].readings[0]);
       outputSensorData(micros(), adis16470.getSerialPacket(debug),
                        ais1120sx.getSerialPacket(debug), rscSerialPacket,
                        maxSerialPacket);

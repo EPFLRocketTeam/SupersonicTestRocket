@@ -126,64 +126,64 @@ void setup()
 
   SPI.begin();
 
-  // // Setup the IMU
-  // if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
-  // {
-  //   Serial.println("ADIS16470 has been set up succesfully.");
-  //   successFlash();
-  // }
-  // else
-  // {
-  //   Serial.println("Could not set up ADIS16470.");
-  //   errorFlash();
-  // }
+  // Setup the IMU
+  if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
+  {
+    Serial.println("ADIS16470 has been set up succesfully.");
+    successFlash();
+  }
+  else
+  {
+    Serial.println("Could not set up ADIS16470.");
+    errorFlash();
+  }
 
-  // // Setup the AIS1120SX
-  // if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
-  //                     false, false, false, false))
-  // {
-  //   Serial.println("AIS1120SX has been set up succesfully.");
-  //   successFlash();
-  // }
-  // else
-  // {
-  //   Serial.println("Could not set up AIS1120SX.");
-  //   errorFlash();
-  // }
+  // Setup the AIS1120SX
+  if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
+                      false, false, false, false))
+  {
+    Serial.println("AIS1120SX has been set up succesfully.");
+    successFlash();
+  }
+  else
+  {
+    Serial.println("Could not set up AIS1120SX.");
+    errorFlash();
+  }
 
-  // // Setup the pressure sensors
-  // for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
-  // {
-  //   if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS, 50000))
-  //   {
-  //     Serial.print("Succesfully started RSC");
-  //     Serial.println(i + 1);
-  //     successFlash();
-  //   }
-  //   else
-  //   {
-  //     Serial.print("Unable to start RSC");
-  //     Serial.println(i + 1);
-  //     errorFlash();
-  //   }
-  // }
+  // Setup the pressure sensors
+  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+  {
+    if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS, 50000))
+    {
+      Serial.print("Succesfully started RSC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start RSC");
+      Serial.println(i + 1);
+      errorFlash();
+    }
+  }
 
-  // // Setup the thermocouples
-  // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-  // {
-  //   if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
-  //   {
-  //     Serial.print("Succesfully started thermocouple TC");
-  //     Serial.println(i + 1);
-  //     successFlash();
-  //   }
-  //   else
-  //   {
-  //     Serial.print("Unable to start thermocouple TC");
-  //     Serial.println(i + 1);
-  //     errorFlash();
-  //   }
-  // }
+  // Setup the thermocouples
+  for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+  {
+    if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
+    {
+      Serial.print("Succesfully started thermocouple TC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start thermocouple TC");
+      Serial.println(i + 1);
+      errorFlash();
+    }
+  }
 
   // Setup the Altimax
   altimax.setupProperties(UINT32_MAX, 0, UINT32_MAX, true);

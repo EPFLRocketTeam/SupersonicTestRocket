@@ -90,22 +90,18 @@ MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 serialPacket MAX31855Wrapper::getSerialPacket(bool debug = false)
 {
   serialPacket packet;
-  packet.errors = getErrors();
-
-  float readings[2];
 
   if (debug)
   {
-    readings[0] = generateFakeData(-200, 1200, micros(), 35, 2700000);
-    readings[1] = generateFakeData(-200, 1200, micros(), 25, 8700000);
+    packet.readings[0] = generateFakeData(-200, 1200, micros(), 35, 2700000);
+    packet.readings[1] = generateFakeData(-200, 1200, micros(), 25, 8700000);
   }
   else
   {
-    readings[0] = lastPacket.probeTemperature;
-    readings[1] = lastPacket.sensorTemperature;
+    memcpy(packet.errors, getErrors(), sizeof(packet.errors));
+    packet.readings[0] = lastPacket.probeTemperature;
+    packet.readings[1] = lastPacket.sensorTemperature;
   }
-
-  packet.readings = readings;
 
   return packet;
 }

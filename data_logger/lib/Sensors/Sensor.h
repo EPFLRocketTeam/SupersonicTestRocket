@@ -43,8 +43,10 @@ struct PacketHeader
 // simpler, generic packet for serial output
 struct serialPacket
 {
-  bool *errors;
-  float *readings;
+  bool errors[5];
+  // TODO: serialPacket has a defined size since I'm lazy to do it with pointers
+  // this is not very memory efficient...
+  float readings[7];
 };
 
 // Generic sensor object

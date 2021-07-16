@@ -92,22 +92,18 @@ AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 serialPacket AISx120SXWrapper::getSerialPacket(bool debug = false)
 {
   serialPacket packet;
-  packet.errors = getErrors();
-
-  float readings[2];
 
   if (debug)
   {
-    readings[0] = generateFakeData(-120, 120, micros());
-    readings[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+    packet.readings[0] = generateFakeData(-120, 120, micros());
+    packet.readings[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
   }
   else
   {
-    readings[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
-    readings[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
+    memcpy(packet.errors,  getErrors(), sizeof(packet.errors));
+    packet.readings[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
+    packet.readings[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
   }
-
-  packet.readings = readings;
 
   return packet;
 }
