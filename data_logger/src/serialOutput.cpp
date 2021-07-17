@@ -52,11 +52,9 @@ void setPosition(uint8_t row, uint8_t column)
 
 void printErrors(bool errors[ERROR_TYPE_NUM])
 {
-  Serial.print("\tErrors\t\t");
   for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
   {
     Serial.print("\t\t");
-    Serial.print(errors[i]);
     if (errors[i])
     { // there is an error
       decorateText("ERROR", ERROR_STYLE, ERROR_STYLE_LENGTH);
@@ -69,12 +67,41 @@ void printErrors(bool errors[ERROR_TYPE_NUM])
   Serial.println("");
 }
 
+float calcMach(float staticPressure, float totalPressure)
+{
+  float mach = sqrt((2 / (gamma_ - 1)) * (pow(staticPressure / totalPressure,
+                                              (1 - gamma_) / gamma_) -
+                                          1));
+  return mach;
+}
+
+float calcStaticTemperature(float mach, float totalTemperature)
+{
+  float staticTemperature = (totalTemperature + C_K_offset) /
+                            (1 + (gamma_ - 1) / 2 * pow(mach, 2));
+
+  return staticTemperature;
+}
+
+float calcAirspeed(float mach, float staticTemperature)
+{
+  float speedOfSound = sqrt(gamma_ * R * staticTemperature);
+  float airspeed = speedOfSound * mach;
+
+  return airspeed;
+}
+
 void outputSensorData(uint32_t currMicros,
                       ADIS16470SerialPacket adis16470Packet,
                       AISx120SXSerialPacket ais1120sxPacket,
                       HoneywellRSCSerialPacket *rscPacket,
                       MAX31855SerialPacket *maxPacket)
 {
+  float mach = calcMach(rscPacket[0].pressure, rscPacket[1].pressure);
+  float staticTemperature =
+      calcStaticTemperature(mach, maxPacket[TAT_TC].probeTemperature);
+  float airspeed = calcAirspeed(mach, staticTemperature);
+
   ansiCommand(clear_screen, entire);
   setPosition(0, 0);
 
@@ -92,9 +119,13 @@ void outputSensorData(uint32_t currMicros,
 
   Serial.print("\tTime (s):\t\t");
   Serial.println(currMicros / 1000000., 3);
+  Serial.print("\tMach (-):\t\t");
+  Serial.println(mach, 3);
+  Serial.print("\tAirspeed (m/s):\t\t");
+  Serial.println(airspeed, 3);
   Serial.println("");
 
-  decorateText("ADIS16470\n", HEADER_STYLE, HEADER_STYLE_LENGTH);
+  decorateText("ADIS16470\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
   printErrors(adis16470Packet.errors);
   Serial.print("\tGyroX (deg/s):\t\t");
   Serial.println(adis16470Packet.gyros[0]);
@@ -111,7 +142,7 @@ void outputSensorData(uint32_t currMicros,
   Serial.print("\tTemp (degC):\t\t");
   Serial.println(adis16470Packet.temp);
 
-  decorateText("AIS1120SX\n", HEADER_STYLE, HEADER_STYLE_LENGTH);
+  decorateText("AIS1120SX\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
   printErrors(ais1120sxPacket.errors);
   Serial.print("\tAccelX (g):\t\t");
   Serial.println(ais1120sxPacket.acc[0]);
@@ -125,7 +156,7 @@ void outputSensorData(uint32_t currMicros,
     itoa(i, buffer, 10);
     decorateText("RSC", HEADER_STYLE, HEADER_STYLE_LENGTH);
     decorateText(buffer, HEADER_STYLE, HEADER_STYLE_LENGTH);
-    Serial.println("");
+    Serial.print("\t\t\t");
     printErrors(rscPacket[i].errors);
     Serial.print("\tPressure (PSI):\t\t");
     Serial.println(rscPacket[i].pressure);
@@ -140,7 +171,7 @@ void outputSensorData(uint32_t currMicros,
     itoa(i, buffer, 10);
     decorateText("MAX", HEADER_STYLE, HEADER_STYLE_LENGTH);
     decorateText(buffer, HEADER_STYLE, HEADER_STYLE_LENGTH);
-    Serial.println("");
+    Serial.print("\t\t\t");
     printErrors(maxPacket[i].errors);
     Serial.print("\tProbe temp (degC):\t");
     Serial.println(maxPacket[i].probeTemperature);

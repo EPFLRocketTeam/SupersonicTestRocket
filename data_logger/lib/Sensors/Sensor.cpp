@@ -77,8 +77,6 @@ bool Sensor::isMeasurementLate(uint32_t currMicros)
   return measurementLate;
 }
 
-// if the measurement was late. should be redefined in inherited classes
-// to properly define what it means to be invalid
 bool Sensor::isMeasurementInvalid()
 {
   return false;
@@ -86,37 +84,19 @@ bool Sensor::isMeasurementInvalid()
 
 bool *Sensor::getErrors()
 {
-  bool errors[ERROR_TYPE_NUM] = {false}; // array of flags of errors that occured
+  // array of flags of errors that occured
+  static bool errors[ERROR_TYPE_NUM] = {false};
 
   // first error: if a measurement beat was missed (measurement beat skipped)
-  if (measurementLate)
-  {
-    errors[0] = true;
-  }
-
+  errors[0] = measurementLate;
   // second error: if the acquisition loop skipped a beat
-  if (checkBeatsSkipped > 1)
-  {
-    errors[1] = true;
-  }
-
+  errors[1] = checkBeatsSkipped > 1;
   // third error: if DR pin didn't trigger the read
-  if (DR_DRIVEN && dueMethod != DUE_BY_DR)
-  {
-    errors[2] = true;
-  }
-
+  errors[2] = DR_DRIVEN && dueMethod != DUE_BY_DR;
   // fourth error: checksum error
-  if (checksumError)
-  {
-    errors[3] = true;
-  }
-
+  errors[3] = checksumError;
   // fifth error: invalid measurement
-  if (isMeasurementInvalid())
-  {
-    errors[4] = false;
-  }
+  errors[4] = isMeasurementInvalid();
 
   return errors;
 }

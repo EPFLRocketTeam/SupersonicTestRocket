@@ -83,8 +83,9 @@ public:
   // to properly define what it means to be invalid
   bool isMeasurementLate(uint32_t currMicros);
 
-  // if the measurement is invalid
-  bool isMeasurementInvalid();
+  // if the measurement is invalid. should be redefined in inherited classes
+  // to properly define what it means to be invalid
+  virtual bool isMeasurementInvalid();
 
   // takes all the errors that happened and returns a boolean array
   bool *getErrors();

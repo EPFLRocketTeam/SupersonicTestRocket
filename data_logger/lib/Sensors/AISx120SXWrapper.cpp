@@ -79,6 +79,16 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
   return returnVal;
 }
 
+bool AISx120SXWrapper::isMeasurementInvalid()
+{
+  if (lastSerialPacket.acc[0] > ACC_MAX || lastSerialPacket.acc[0] < ACC_MIN ||
+      lastSerialPacket.acc[1] > ACC_MAX || lastSerialPacket.acc[1] < ACC_MIN)
+  {
+    return true;
+  }
+  return false;
+}
+
 AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
   // create and write the packet
@@ -91,19 +101,17 @@ AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 
 AISx120SXSerialPacket AISx120SXWrapper::getSerialPacket(bool debug = false)
 {
-  AISx120SXSerialPacket packet;
-
   if (debug)
   {
-    packet.acc[0] = generateFakeData(-120, 120, micros());
-    packet.acc[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+    lastSerialPacket.acc[0] = generateFakeData(-120, 120, micros());
+    lastSerialPacket.acc[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
   }
   else
   {
-    memcpy(packet.errors,  getErrors(), sizeof(ERROR_TYPE_NUM));
-    packet.acc[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
-    packet.acc[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
+    lastSerialPacket.acc[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
+    lastSerialPacket.acc[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
   }
+  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
 
-  return packet;
+  return lastSerialPacket;
 }

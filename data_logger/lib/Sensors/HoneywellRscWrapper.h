@@ -38,7 +38,8 @@ struct HoneywellRSCPacket
 };
 
 // packet with the data decoded in floats and appropriately scaled already
-struct HoneywellRSCSerialPacket {
+struct HoneywellRSCSerialPacket
+{
   bool errors[ERROR_TYPE_NUM] = {0};
   float pressure;
   float temp;
@@ -53,9 +54,16 @@ private:
   int temp_frequency;
   int measurementAmountModulo = 0; // modulo of how many measurements were made
 
+  // sensor min/max values for error checking
+  float pressureMax = 15;
+  float pressureMin = 0;
+  static const float TEMP_MAX = 85;
+  static const float TEMP_MIN = -40;
+
   Honeywell_RSC rscObject;
   static uint8_t sensorQty; // how many sensors of this type exist
 
+  HoneywellRSCSerialPacket lastSerialPacket;
   HoneywellRSCPacket lastPressurePacket;
   HoneywellRSCPacket lastTempPacket;
 
@@ -75,6 +83,9 @@ public:
 
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros, volatile bool &triggeredDR);
+
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
 
   // determine current reading type
   READING_T currReadType();

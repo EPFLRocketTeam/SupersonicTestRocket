@@ -39,7 +39,8 @@ struct AISx120SXPacket
 };
 
 // packet with the data decoded in floats and appropriately scaled already
-struct AISx120SXSerialPacket {
+struct AISx120SXSerialPacket
+{
   bool errors[ERROR_TYPE_NUM] = {0};
   float acc[2] = {0};
 };
@@ -53,11 +54,15 @@ private:
       MEASUREMENT_INTERVAL / 2;                 // [us]
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  int16_t prevMeas[2] = {0}; // previous measurement from the sensor
+  // sensor min/max values for error checking
+  static const float ACC_MAX = 120;
+  static const float ACC_MIN = -120;
 
   AISx120SX aisObject;
   static uint8_t sensorQty; // how many sensors of this type exist
 
+  int16_t prevMeas[2] = {0}; // previous measurement from the sensor
+  AISx120SXSerialPacket lastSerialPacket;
   AISx120SXPacket lastPacket;
 
 public:
@@ -78,6 +83,9 @@ public:
 
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros);
+
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
 
   AISx120SXPacket getPacket(uint32_t currMicros);
   AISx120SXSerialPacket getSerialPacket(bool debug = false);

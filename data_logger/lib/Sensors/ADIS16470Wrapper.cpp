@@ -93,6 +93,34 @@ bool ADIS16470Wrapper::verifyCheckSum(uint16_t sensorData[10])
   return !checksumError;
 }
 
+// if the measurement is invalid
+bool ADIS16470Wrapper::isMeasurementInvalid()
+{
+  bool allZeros = true; // if all values are equal to zero
+
+  for (size_t i = 0; i < 3; i++)
+  {
+    allZeros = allZeros && lastSerialPacket.gyros[i] == 0; //  if gyro zero
+    allZeros = allZeros && lastSerialPacket.acc[i] == 0;   // if pressure zero
+    if (lastSerialPacket.gyros[i] > GYRO_MAX ||
+        lastSerialPacket.gyros[i] < GYRO_MIN)
+    {
+      return true;
+    }
+    if (lastSerialPacket.acc[i] > ACC_MAX || lastSerialPacket.acc[i] < ACC_MIN)
+    {
+      return true;
+    }
+  }
+  allZeros = allZeros && lastSerialPacket.temp == 0; // check if zero
+  if (lastSerialPacket.temp > TEMP_MAX || lastSerialPacket.temp < TEMP_MIN)
+  {
+    return true;
+  }
+
+  return allZeros;
+}
+
 ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
 {
   // acquire the data
@@ -111,29 +139,29 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
 
 ADIS16470SerialPacket ADIS16470Wrapper::getSerialPacket(bool debug = false)
 {
-  ADIS16470SerialPacket packet;
-
   if (debug)
   {
-    packet.gyros[0] = generateFakeData(-2000, 2000, micros());
-    packet.gyros[1] = generateFakeData(-2000, 2000, micros(), 500, 4800000);
-    packet.gyros[2] = generateFakeData(-2000, 2000, micros(), -200, 5200000);
-    packet.acc[0] = generateFakeData(-40, 40, micros());
-    packet.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
-    packet.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
-    packet.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
+    lastSerialPacket.gyros[0] = generateFakeData(-2000, 2000, micros());
+    lastSerialPacket.gyros[1] = generateFakeData(-2000, 2000, micros(),
+                                                 500, 4800000);
+    lastSerialPacket.gyros[2] = generateFakeData(-2000, 2000, micros(),
+                                                 -200, 5200000);
+    lastSerialPacket.acc[0] = generateFakeData(-40, 40, micros());
+    lastSerialPacket.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
+    lastSerialPacket.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
+    lastSerialPacket.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
   }
   else
   {
-    memcpy(packet.errors, getErrors(), sizeof(ERROR_TYPE_NUM));
-    packet.gyros[0] = ((int16_t)lastPacket.gyroX) * 0.1;
-    packet.gyros[1] = ((int16_t)lastPacket.gyroY) * 0.1;
-    packet.gyros[2] = ((int16_t)lastPacket.gyroZ) * 0.1;
-    packet.acc[0] = ((int16_t)lastPacket.accX) * 0.00125;
-    packet.acc[1] = ((int16_t)lastPacket.accY) * 0.00125;
-    packet.acc[2] = ((int16_t)lastPacket.accZ) * 0.00125;
-    packet.temp = ((int16_t)lastPacket.temp * 0.1);
+    lastSerialPacket.gyros[0] = ((int16_t)lastPacket.gyroX) * 0.1;
+    lastSerialPacket.gyros[1] = ((int16_t)lastPacket.gyroY) * 0.1;
+    lastSerialPacket.gyros[2] = ((int16_t)lastPacket.gyroZ) * 0.1;
+    lastSerialPacket.acc[0] = ((int16_t)lastPacket.accX) * 0.00125;
+    lastSerialPacket.acc[1] = ((int16_t)lastPacket.accY) * 0.00125;
+    lastSerialPacket.acc[2] = ((int16_t)lastPacket.accZ) * 0.00125;
+    lastSerialPacket.temp = ((int16_t)lastPacket.temp * 0.1);
   }
+  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
 
-  return packet;
+  return lastSerialPacket;
 }

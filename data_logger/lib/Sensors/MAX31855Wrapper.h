@@ -55,13 +55,19 @@ private:
       MEASUREMENT_INTERVAL / 10;                // [us] (2000Hz)
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  // previous measurements from the sensor
-  int16_t prevProbeMeas = 0;
-  int16_t prevAmbientMeas = 0;
+  // sensor min/max values for error checking
+  static const float PROBE_MAX = 1372;
+  static const float PROBE_MIN = -270;
+  static const float AMBIENT_MAX = 125;
+  static const float AMBIENT_MIN = -55;
 
   MAX31855_Class max31855Object;
   static uint8_t sensorQty; // how many sensors of this type exist
 
+  // previous measurements from the sensor
+  int16_t prevProbeMeas = 0;
+  int16_t prevAmbientMeas = 0;
+  MAX31855SerialPacket lastSerialPacket;
   MAX31855Packet lastPacket;
 
 public:
@@ -79,6 +85,9 @@ public:
 
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros);
+
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
 
   MAX31855Packet getPacket(uint32_t currMicros);
   MAX31855SerialPacket getSerialPacket(bool debug = false);

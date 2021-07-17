@@ -8,6 +8,7 @@
 #pragma once
 #include <Arduino.h>
 
+#include "globalVariables.h"
 #include "ADIS16470Wrapper.h"
 #include "AISx120SXWrapper.h"
 #include "HoneywellRscWrapper.h"
@@ -79,6 +80,11 @@ void decorateText(const char *text, const DECORATOR_CODES *decoratorCodes,
 void setPosition(uint8_t row, uint8_t column);
 
 void printErrors(bool errors[ERROR_TYPE_NUM]);
+
+// functions to calculate flow properties with isentropic relations
+float calcMach(float staticPressure, float totalPressure);
+float calcStaticTemperature(float mach, float totalTemperature);
+float calcAirspeed(float mach, float staticTemperature);
 
 void outputSensorData(uint32_t currMicros,
                       ADIS16470SerialPacket adis16470Packet,

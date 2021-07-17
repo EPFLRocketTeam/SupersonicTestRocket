@@ -67,12 +67,21 @@ private:
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
   static const uint32_t MEASUREMENT_MARGIN = 500;              // [us]
 
+  // sensor min/max values for error checking
+  static const float GYRO_MAX = 2000;
+  static const float GYRO_MIN = -2000;
+  static const float ACC_MAX = 40;
+  static const float ACC_MIN = -40;
+  static const float TEMP_MAX = 85;
+  static const float TEMP_MIN = -25;
+
   const int DR_PIN;
 
   ADIS16470 adisObject;
   static uint8_t sensorQty; // how many sensors of this type exist
 
   ADIS16470Packet lastPacket;
+  ADIS16470SerialPacket lastSerialPacket;
 
 public:
   // constructor
@@ -91,6 +100,9 @@ public:
 
   // check if the checksum matches
   bool verifyCheckSum(uint16_t sensorData[10]);
+
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
 
   ADIS16470Packet getPacket(uint32_t currMicros);
   ADIS16470SerialPacket getSerialPacket(bool debug = false);

@@ -44,6 +44,9 @@ bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
   for (int i = 0; i < attempts; i++)
   {
     rscObject.init(data_rate); // initialize the object
+
+    pressureMin = rscObject.pressure_minimum();
+    pressureMax = rscObject.pressure_range() + pressureMin;
     // try to make a dummy measurement
     rscObject.adc_request(PRESSURE);
     delay(50);
@@ -84,6 +87,18 @@ bool HoneywellRscWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
   {
     return false;
   }
+}
+
+bool HoneywellRscWrapper::isMeasurementInvalid()
+{
+  if (lastSerialPacket.pressure > pressureMax ||
+      lastSerialPacket.pressure < pressureMin ||
+      lastSerialPacket.temp > TEMP_MAX ||
+      lastSerialPacket.temp < TEMP_MIN)
+  {
+    return true;
+  }
+  return false;
 }
 
 READING_T HoneywellRscWrapper::currReadType()
@@ -156,19 +171,19 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 
 HoneywellRSCSerialPacket HoneywellRscWrapper::getSerialPacket(bool debug = false)
 {
-  HoneywellRSCSerialPacket packet;
   if (debug)
   {
-    packet.pressure = generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
-    packet.temp = generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID,
-                                   3800000);
+    lastSerialPacket.pressure =
+        generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
+    lastSerialPacket.temp =
+        generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000);
   }
   else
   {
-    memcpy(packet.errors, getErrors(), sizeof(ERROR_TYPE_NUM));
-    packet.pressure = lastPressurePacket.measurement;
-    packet.temp = lastTempPacket.measurement;
+    lastSerialPacket.pressure = lastPressurePacket.measurement;
+    lastSerialPacket.temp = lastTempPacket.measurement;
   }
+  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
 
-  return packet;
+  return lastSerialPacket;
 }

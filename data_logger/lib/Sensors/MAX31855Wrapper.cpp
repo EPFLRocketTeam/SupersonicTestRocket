@@ -47,6 +47,11 @@ bool MAX31855Wrapper::setup(int attempts, int delayDuration, uint8_t CS)
   return active; // setup was not succesful
 }
 
+uint8_t MAX31855Wrapper::getSensorQty()
+{
+  return sensorQty;
+}
+
 bool MAX31855Wrapper::isDue(uint32_t currMicros)
 {
   bool returnVal = false;
@@ -72,9 +77,16 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros)
   return returnVal;
 }
 
-uint8_t MAX31855Wrapper::getSensorQty()
+bool MAX31855Wrapper::isMeasurementInvalid()
 {
-  return sensorQty;
+  if (lastSerialPacket.probeTemperature > PROBE_MAX ||
+      lastSerialPacket.probeTemperature < PROBE_MIN ||
+      lastSerialPacket.sensorTemperature > AMBIENT_MAX ||
+      lastSerialPacket.sensorTemperature < AMBIENT_MIN)
+  {
+    return true;
+  }
+  return false;
 }
 
 MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
@@ -89,21 +101,19 @@ MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 
 MAX31855SerialPacket MAX31855Wrapper::getSerialPacket(bool debug = false)
 {
-  MAX31855SerialPacket packet;
-
   if (debug)
   {
-    packet.probeTemperature = generateFakeData(-200, 1200, micros(),
-                                               35 * SENSOR_ID, 2700000);
-    packet.sensorTemperature = generateFakeData(-200, 1200, micros(),
-                                                25 * SENSOR_ID, 8700000);
+    lastSerialPacket.probeTemperature =
+        generateFakeData(-200, 1200, micros(), 35 * SENSOR_ID, 2700000);
+    lastSerialPacket.sensorTemperature =
+        generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 8700000);
   }
   else
   {
-    memcpy(packet.errors, getErrors(), sizeof(ERROR_TYPE_NUM));
-    packet.probeTemperature = lastPacket.probeTemperature;
-    packet.sensorTemperature = lastPacket.sensorTemperature;
+    lastSerialPacket.probeTemperature = lastPacket.probeTemperature;
+    lastSerialPacket.sensorTemperature = lastPacket.sensorTemperature;
   }
+  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
 
-  return packet;
+  return lastSerialPacket;
 }
