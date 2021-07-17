@@ -154,19 +154,20 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
   }
 }
 
-serialPacket HoneywellRscWrapper::getSerialPacket(bool debug = false)
+HoneywellRSCSerialPacket HoneywellRscWrapper::getSerialPacket(bool debug = false)
 {
-  serialPacket packet;
+  HoneywellRSCSerialPacket packet;
   if (debug)
   {
-    packet.readings[0] = generateFakeData(0, 2, micros(), 14);
-    packet.readings[1] = generateFakeData(-200, 1200, micros(), 25, 3800000);
+    packet.pressure = generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
+    packet.temp = generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID,
+                                   3800000);
   }
   else
   {
-    memcpy(packet.errors, getErrors(), sizeof(packet.errors));
-    packet.readings[0] = lastPressurePacket.measurement;
-    packet.readings[1] = lastTempPacket.measurement;
+    memcpy(packet.errors, getErrors(), sizeof(ERROR_TYPE_NUM));
+    packet.pressure = lastPressurePacket.measurement;
+    packet.temp = lastTempPacket.measurement;
   }
 
   return packet;

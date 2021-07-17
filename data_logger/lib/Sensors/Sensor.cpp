@@ -44,9 +44,9 @@ bool Sensor::isDueByTime(uint32_t currMicros)
   {
     if (checkBeatsSkipped > 1)
     {
-      Serial.print("WARNING! Skipped following amount of beats:");
-      Serial.println(checkBeatsSkipped - 1);
-      Serial.println("Consider lowering frequency.");
+      // Serial.print("WARNING! Skipped following amount of beats:");
+      // Serial.println(checkBeatsSkipped - 1);
+      // Serial.println("Consider lowering frequency.");
     }
     prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
     dueMethod = DUE_BY_TIME;                         // sensor is due by time
@@ -77,9 +77,16 @@ bool Sensor::isMeasurementLate(uint32_t currMicros)
   return measurementLate;
 }
 
+// if the measurement was late. should be redefined in inherited classes
+// to properly define what it means to be invalid
+bool Sensor::isMeasurementInvalid()
+{
+  return false;
+}
+
 bool *Sensor::getErrors()
 {
-  bool errors[4] = {false}; // array to store  flags of errors that occured
+  bool errors[ERROR_TYPE_NUM] = {false}; // array of flags of errors that occured
 
   // first error: if a measurement beat was missed (measurement beat skipped)
   if (measurementLate)
@@ -103,6 +110,12 @@ bool *Sensor::getErrors()
   if (checksumError)
   {
     errors[3] = true;
+  }
+
+  // fifth error: invalid measurement
+  if (isMeasurementInvalid())
+  {
+    errors[4] = false;
   }
 
   return errors;

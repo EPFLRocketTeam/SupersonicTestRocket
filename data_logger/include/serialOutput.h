@@ -6,23 +6,27 @@
  */
 
 #pragma once
-
 #include <Arduino.h>
 
-#include "Sensor.h"
+#include "ADIS16470Wrapper.h"
+#include "AISx120SXWrapper.h"
+#include "HoneywellRscWrapper.h"
+#include "MAX31855Wrapper.h"
 
 typedef enum
 {
-  decorate,
-  up,
-  down,
-  right,
-  left,
-  next_line,
-  prev_line,
-  set_column,
-  clear_screen,
-  clear_line
+  decorate = 109,        // m
+  up = 65,               // A
+  down,                  // B
+  right,                 // C
+  left,                  // D
+  next_line,             // E
+  prev_line,             // F
+  set_column,            // G
+  clear_screen = 74,     // J
+  clear_line,            // K
+  save_position = 115,   // s
+  recover_position = 117 // u
 } COMMAND_CODES;
 
 typedef enum
@@ -51,26 +55,33 @@ typedef enum
 
 typedef enum
 {
-  cursor_end,
-  cursor_beginning,
-  entire
+  cursor_end = 48,  // 0
+  cursor_beginning, // 1
+  entire            // 2
 } CLEAR_ARGUMENTS;
 
+const static uint8_t HEADER_STYLE_LENGTH = 3;
+const static DECORATOR_CODES HEADER_STYLE[HEADER_STYLE_LENGTH] =
+    {bold, underline, magenta};
+const static uint8_t ERROR_STYLE_LENGTH = 2;
+const static DECORATOR_CODES ERROR_STYLE[ERROR_STYLE_LENGTH] = {bold, bg_red};
+
 // sends the specified ANSI command to the console
-void ansiCommand(COMMAND_CODES commandCode, uint8_t argument);
+void ansiCommand(COMMAND_CODES commandCode, char argument);
 
 // decodes the command code enum into the actual character required
 char decodeCommandCode(COMMAND_CODES commandCode);
 
 // decorates the given text with the given decorators
-void decorateText(char *text, DECORATOR_CODES *decoratorCodes);
+void decorateText(const char *text, const DECORATOR_CODES *decoratorCodes,
+                  uint8_t decoratorQty);
 
 void setPosition(uint8_t row, uint8_t column);
 
-void savePosition();
+void printErrors(bool errors[ERROR_TYPE_NUM]);
 
-void recoverPosition();
-
-void outputSensorData(uint32_t currMicros, serialPacket adis16470Packet,
-                      serialPacket ais1120sxPacket, serialPacket *rscPacket,
-                      serialPacket *maxPacket);
+void outputSensorData(uint32_t currMicros,
+                      ADIS16470SerialPacket adis16470Packet,
+                      AISx120SXSerialPacket ais1120sxPacket,
+                      HoneywellRSCSerialPacket *rscPacket,
+                      MAX31855SerialPacket *maxPacket);

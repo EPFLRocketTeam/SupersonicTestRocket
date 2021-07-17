@@ -40,14 +40,7 @@ struct PacketHeader
   uint32_t timestamp;     // 4 bytes
 };
 
-// simpler, generic packet for serial output
-struct serialPacket
-{
-  bool errors[5];
-  // TODO: serialPacket has a defined size since I'm lazy to do it with pointers
-  // this is not very memory efficient...
-  float readings[7];
-};
+const uint8_t ERROR_TYPE_NUM = 5; // type of errors available
 
 // Generic sensor object
 class Sensor
@@ -86,8 +79,12 @@ public:
   // if the sensor is due for a read because of the DR line
   bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
 
-  // if the measurement was late
+  // if the measurement was late. should be redefined in inherited classes
+  // to properly define what it means to be invalid
   bool isMeasurementLate(uint32_t currMicros);
+
+  // if the measurement is invalid
+  bool isMeasurementInvalid();
 
   // takes all the errors that happened and returns a boolean array
   bool *getErrors();

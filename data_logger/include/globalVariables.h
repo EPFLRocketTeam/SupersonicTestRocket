@@ -2,6 +2,10 @@
 
 #include <Arduino.h>
 
+// debugging mode
+// for now it's just whether to take real data or generate some fake one
+extern const bool DEBUG;
+
 // Pinout ----------------------------------------------------------------------
 // I/O
 extern const uint8_t GREEN_LED_PIN,

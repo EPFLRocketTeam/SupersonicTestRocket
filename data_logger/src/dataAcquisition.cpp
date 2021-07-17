@@ -97,8 +97,6 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
-  bool debug = false; // whether to take real data or generate some fake one
-
   // acquire data as long as button sequence is not initated
   while (checkButtons(buttonArray, stopEvent))
   {
@@ -166,22 +164,19 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
       prevSerialLoop += SERIAL_INTERVAL;
       //Serial.println("in print loop");
       // get the packets for the rsc and max
-      serialPacket rscSerialPacket[rscs[0].getSensorQty()];
-      serialPacket maxSerialPacket[tcs[0].getSensorQty()];
+      HoneywellRSCSerialPacket rscSerialPacket[rscs[0].getSensorQty()];
+      MAX31855SerialPacket maxSerialPacket[tcs[0].getSensorQty()];
       for (size_t i = 0; i < rscs[0].getSensorQty(); i++)
       {
-        rscSerialPacket[i] = rscs[i].getSerialPacket(debug);
+        rscSerialPacket[i] = rscs[i].getSerialPacket(DEBUG);
       }
       for (size_t i = 0; i < tcs[0].getSensorQty(); i++)
       {
-        maxSerialPacket[i] = tcs[i].getSerialPacket(debug);
+        maxSerialPacket[i] = tcs[i].getSerialPacket(DEBUG);
       }
 
-      Serial.println(sizeof(rscSerialPacket));
-      Serial.println(sizeof(maxSerialPacket));
-      Serial.println(rscSerialPacket[0].readings[0]);
-      outputSensorData(micros(), adis16470.getSerialPacket(debug),
-                       ais1120sx.getSerialPacket(debug), rscSerialPacket,
+      outputSensorData(micros(), adis16470.getSerialPacket(DEBUG),
+                       ais1120sx.getSerialPacket(DEBUG), rscSerialPacket,
                        maxSerialPacket);
     }
 

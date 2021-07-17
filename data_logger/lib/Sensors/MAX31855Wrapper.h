@@ -38,6 +38,14 @@ struct MAX31855Packet
   }
 };
 
+// packet with the data decoded in floats and appropriately scaled already
+struct MAX31855SerialPacket
+{
+  bool errors[ERROR_TYPE_NUM] = {0};
+  float probeTemperature;
+  float sensorTemperature;
+};
+
 // Wrapper for the MAX31855 class
 class MAX31855Wrapper : public Sensor
 {
@@ -73,5 +81,5 @@ public:
   bool isDue(uint32_t currMicros);
 
   MAX31855Packet getPacket(uint32_t currMicros);
-  serialPacket getSerialPacket(bool debug = false);
+  MAX31855SerialPacket getSerialPacket(bool debug = false);
 };

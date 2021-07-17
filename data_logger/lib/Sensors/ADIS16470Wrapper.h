@@ -50,6 +50,15 @@ struct ADIS16470Packet
   }
 };
 
+// packet with the data decoded in floats and appropriately scaled already
+struct ADIS16470SerialPacket
+{
+  bool errors[ERROR_TYPE_NUM] = {0};
+  float gyros[3] = {0};
+  float acc[3] = {0};
+  float temp = 0;
+};
+
 // Wrapper for the ADIS16470 class
 class ADIS16470Wrapper : public Sensor
 {
@@ -84,5 +93,5 @@ public:
   bool verifyCheckSum(uint16_t sensorData[10]);
 
   ADIS16470Packet getPacket(uint32_t currMicros);
-  serialPacket getSerialPacket(bool debug = false);
+  ADIS16470SerialPacket getSerialPacket(bool debug = false);
 };

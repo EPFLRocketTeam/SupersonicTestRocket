@@ -37,6 +37,13 @@ struct HoneywellRSCPacket
   }
 };
 
+// packet with the data decoded in floats and appropriately scaled already
+struct HoneywellRSCSerialPacket {
+  bool errors[ERROR_TYPE_NUM] = {0};
+  float pressure;
+  float temp;
+};
+
 // Wrapper for the AISx120SX class
 class HoneywellRscWrapper : public Sensor
 {
@@ -76,5 +83,5 @@ public:
   READING_T nextReadType();
 
   HoneywellRSCPacket getPacket(uint32_t currMicros);
-  serialPacket getSerialPacket(bool debug = false);
+  HoneywellRSCSerialPacket getSerialPacket(bool debug = false);
 };

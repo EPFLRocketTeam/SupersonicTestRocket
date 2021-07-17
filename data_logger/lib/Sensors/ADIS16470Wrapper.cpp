@@ -102,7 +102,6 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
   verifyCheckSum(wordBurstData);
 
   // create and write the packet
-
   lastPacket = ADIS16470Packet(getHeader(ADIS16470_PACKET_TYPE,
                                          sizeof(ADIS16470Packet),
                                          currMicros),
@@ -110,30 +109,30 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
   return lastPacket;
 }
 
-serialPacket ADIS16470Wrapper::getSerialPacket(bool debug = false)
+ADIS16470SerialPacket ADIS16470Wrapper::getSerialPacket(bool debug = false)
 {
-  serialPacket packet;
+  ADIS16470SerialPacket packet;
 
   if (debug)
   {
-    packet.readings[0] = generateFakeData(-2000, 2000, micros());
-    packet.readings[1] = generateFakeData(-2000, 2000, micros(), 500, 4800000);
-    packet.readings[2] = generateFakeData(-2000, 2000, micros(), -200, 5200000);
-    packet.readings[3] = generateFakeData(-40, 40, micros());
-    packet.readings[4] = generateFakeData(-40, 40, micros(), 0, 4850000);
-    packet.readings[5] = generateFakeData(-40, 40, micros(), 1, 5250000);
-    packet.readings[6] = generateFakeData(-5, 5, micros(), 23, 5000000);
+    packet.gyros[0] = generateFakeData(-2000, 2000, micros());
+    packet.gyros[1] = generateFakeData(-2000, 2000, micros(), 500, 4800000);
+    packet.gyros[2] = generateFakeData(-2000, 2000, micros(), -200, 5200000);
+    packet.acc[0] = generateFakeData(-40, 40, micros());
+    packet.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
+    packet.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
+    packet.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
   }
   else
   {
-    memcpy(packet.errors,  getErrors(), sizeof(packet.errors));
-    packet.readings[0] = ((int16_t)lastPacket.gyroX) * 0.1;
-    packet.readings[1] = ((int16_t)lastPacket.gyroY) * 0.1;
-    packet.readings[2] = ((int16_t)lastPacket.gyroZ) * 0.1;
-    packet.readings[3] = ((int16_t)lastPacket.accX) * 0.00125;
-    packet.readings[4] = ((int16_t)lastPacket.accY) * 0.00125;
-    packet.readings[5] = ((int16_t)lastPacket.accZ) * 0.00125;
-    packet.readings[6] = ((int16_t)lastPacket.temp);
+    memcpy(packet.errors, getErrors(), sizeof(ERROR_TYPE_NUM));
+    packet.gyros[0] = ((int16_t)lastPacket.gyroX) * 0.1;
+    packet.gyros[1] = ((int16_t)lastPacket.gyroY) * 0.1;
+    packet.gyros[2] = ((int16_t)lastPacket.gyroZ) * 0.1;
+    packet.acc[0] = ((int16_t)lastPacket.accX) * 0.00125;
+    packet.acc[1] = ((int16_t)lastPacket.accY) * 0.00125;
+    packet.acc[2] = ((int16_t)lastPacket.accZ) * 0.00125;
+    packet.temp = ((int16_t)lastPacket.temp * 0.1);
   }
 
   return packet;

@@ -89,20 +89,20 @@ AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
   return lastPacket;
 }
 
-serialPacket AISx120SXWrapper::getSerialPacket(bool debug = false)
+AISx120SXSerialPacket AISx120SXWrapper::getSerialPacket(bool debug = false)
 {
-  serialPacket packet;
+  AISx120SXSerialPacket packet;
 
   if (debug)
   {
-    packet.readings[0] = generateFakeData(-120, 120, micros());
-    packet.readings[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+    packet.acc[0] = generateFakeData(-120, 120, micros());
+    packet.acc[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
   }
   else
   {
-    memcpy(packet.errors,  getErrors(), sizeof(packet.errors));
-    packet.readings[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
-    packet.readings[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
+    memcpy(packet.errors,  getErrors(), sizeof(ERROR_TYPE_NUM));
+    packet.acc[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
+    packet.acc[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
   }
 
   return packet;

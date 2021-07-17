@@ -38,6 +38,12 @@ struct AISx120SXPacket
   }
 };
 
+// packet with the data decoded in floats and appropriately scaled already
+struct AISx120SXSerialPacket {
+  bool errors[ERROR_TYPE_NUM] = {0};
+  float acc[2] = {0};
+};
+
 // Wrapper for the AISx120SX class
 class AISx120SXWrapper : public Sensor
 {
@@ -74,5 +80,5 @@ public:
   bool isDue(uint32_t currMicros);
 
   AISx120SXPacket getPacket(uint32_t currMicros);
-  serialPacket getSerialPacket(bool debug = false);
+  AISx120SXSerialPacket getSerialPacket(bool debug = false);
 };
