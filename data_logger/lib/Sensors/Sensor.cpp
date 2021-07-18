@@ -108,7 +108,7 @@ uint8_t Sensor::getErrorCode(uint32_t currMicros)
   isMeasurementLate(currMicros); // update the measurementLate variable
   bool *errors = getErrors();
 
-  for (size_t i = 0; i < sizeof(errors); i++)
+  for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
   {
     if (errors[i])
     {
@@ -117,6 +117,20 @@ uint8_t Sensor::getErrorCode(uint32_t currMicros)
   }
 
   return errorCode;
+}
+
+// takes an error code and transforms it into a booleana array
+bool *decodeErrorCode(uint8_t errorCode)
+{
+  // array of flags of errors that occured
+  static bool errors[ERROR_TYPE_NUM] = {false};
+
+  for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
+  {
+    errors[i] = bitRead(errorCode, 7 - i);
+  }
+
+  return errors;
 }
 
 // generates a packet header for the sensor
@@ -134,7 +148,7 @@ PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
 
 float Sensor::generateFakeData(float minValue, float maxValue,
                                uint32_t currMicros,
-                               float offset = 0, uint32_t period = 5000000)
+                               float offset, uint32_t period)
 {
   float mid = (minValue + maxValue) / 2.;
   float amplitude = (maxValue - minValue) / 2.;

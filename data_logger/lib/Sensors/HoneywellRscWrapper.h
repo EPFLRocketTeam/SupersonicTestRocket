@@ -23,26 +23,17 @@ struct HoneywellRSCPacket
   // sending as floats since the computation is hard to do after acquistion
   float measurement = 0; // 4 bytes
 
-  // constructor for an empty packet
+  // empty constructor
+  HoneywellRSCPacket()
+  {
+    // do nothing
+  }
+
+  // constructor for a packet with only a header
   HoneywellRSCPacket(PacketHeader header_)
   {
     header = header_;
   }
-
-  // constructor
-  HoneywellRSCPacket(PacketHeader header_, float measurement_)
-  {
-    header = header_;
-    measurement = measurement_;
-  }
-};
-
-// packet with the data decoded in floats and appropriately scaled already
-struct HoneywellRSCSerialPacket
-{
-  bool errors[ERROR_TYPE_NUM] = {0};
-  float pressure;
-  float temp;
 };
 
 // Wrapper for the AISx120SX class
@@ -63,7 +54,6 @@ private:
   Honeywell_RSC rscObject;
   static uint8_t sensorQty; // how many sensors of this type exist
 
-  HoneywellRSCSerialPacket lastSerialPacket;
   HoneywellRSCPacket lastPressurePacket;
   HoneywellRSCPacket lastTempPacket;
 
@@ -94,5 +84,6 @@ public:
   READING_T nextReadType();
 
   HoneywellRSCPacket getPacket(uint32_t currMicros);
-  HoneywellRSCSerialPacket getSerialPacket(bool debug = false);
+  HoneywellRSCPacket *getSerialPackets(uint32_t currMicros,
+                                       bool debug = false);
 };

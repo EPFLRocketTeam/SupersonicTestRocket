@@ -67,51 +67,41 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
     int16_t *rawMeas;
     rawMeas = aisObject.readAccel();
 
-    if (prevMeas[0] != rawMeas[0] || prevMeas[1] != rawMeas[1]) // data is new
+    if (lastPacket.accel[0] != rawMeas[0] * SENSITIVITY ||
+        lastPacket.accel[1] != rawMeas[1] * SENSITIVITY) // data is new
     {
       returnVal = true;
       prevMeasTime = currMicros;
     }
     // copy new measurements into the old ones
-    prevMeas[0] = rawMeas[0];
-    prevMeas[1] = rawMeas[1];
+    lastPacket.accel[0] = rawMeas[0] * SENSITIVITY;
+    lastPacket.accel[1] = rawMeas[1] * SENSITIVITY;
   }
   return returnVal;
 }
 
 bool AISx120SXWrapper::isMeasurementInvalid()
 {
-  if (lastSerialPacket.acc[0] > ACC_MAX || lastSerialPacket.acc[0] < ACC_MIN ||
-      lastSerialPacket.acc[1] > ACC_MAX || lastSerialPacket.acc[1] < ACC_MIN)
+  if (lastPacket.accel[0] > ACC_MAX || lastPacket.accel[0] < ACC_MIN ||
+      lastPacket.accel[1] > ACC_MAX || lastPacket.accel[1] < ACC_MIN)
   {
     return true;
   }
   return false;
 }
 
-AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
+AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros, bool debug)
 {
-  // create and write the packet
-  lastPacket = AISx120SXPacket(getHeader(AISx120SX_PACKET_TYPE,
-                                         sizeof(AISx120SXPacket),
-                                         currMicros),
-                               prevMeas);
-  return lastPacket;
-}
-
-AISx120SXSerialPacket AISx120SXWrapper::getSerialPacket(bool debug)
-{
+  // update the error on the packet
+  lastPacket.header = getHeader(AISx120SX_PACKET_TYPE,
+                                sizeof(AISx120SXPacket),
+                                currMicros);
   if (debug)
   {
-    lastSerialPacket.acc[0] = generateFakeData(-120, 120, micros());
-    lastSerialPacket.acc[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+    lastPacket.accel[0] = generateFakeData(-120, 120, micros());
+    lastPacket.accel[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
   }
-  else
-  {
-    lastSerialPacket.acc[0] = ((int16_t)lastPacket.accelX) / (68. * 4);
-    lastSerialPacket.acc[1] = ((int16_t)lastPacket.accelY) / (68. * 4);
-  }
-  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
+  // when not debugging readings are updated in isDue()
 
-  return lastSerialPacket;
+  return lastPacket;
 }

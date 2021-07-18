@@ -18,32 +18,21 @@
 
 struct MAX31855Packet
 {
-  struct PacketHeader header; // 8 bytes
-  // sending as floats since the computation is hard to do after acquistion
-  int16_t probeTemperature = 0;  // 2 bytes
-  int16_t sensorTemperature = 0; // 2 bytes
+  struct PacketHeader header;  // 8 bytes
+  float probeTemperature = 0;  // 4 bytes
+  float sensorTemperature = 0; // 4 bytes
 
   // constructor for an empty packet
+  MAX31855Packet()
+  {
+    // do nothing
+  }
+
+  // constructor for an packet with only header
   MAX31855Packet(PacketHeader header_)
   {
     header = header_;
   }
-
-  // constructor
-  MAX31855Packet(PacketHeader header_, int16_t probeT, int16_t sensorT)
-  {
-    header = header_;
-    probeTemperature = probeT;
-    sensorTemperature = sensorT;
-  }
-};
-
-// packet with the data decoded in floats and appropriately scaled already
-struct MAX31855SerialPacket
-{
-  bool errors[ERROR_TYPE_NUM] = {0};
-  float probeTemperature;
-  float sensorTemperature;
 };
 
 // Wrapper for the MAX31855 class
@@ -55,9 +44,11 @@ private:
       MEASUREMENT_INTERVAL / 10;                // [us] (2000Hz)
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  // sensor min/max values for error checking
+  // sensor properties for error checking and conversions
+  static constexpr float PROBE_SENSITIVITY = 0.25 / 4.; // [degC/LSB]
   static constexpr float PROBE_MAX = 1372;
   static constexpr float PROBE_MIN = -270;
+  static constexpr float AMBIENT_SENSITIVITY = 0.0625 / 16.; // [degC/LSB]
   static constexpr float AMBIENT_MAX = 125;
   static constexpr float AMBIENT_MIN = -55;
 
@@ -65,9 +56,6 @@ private:
   static uint8_t sensorQty; // how many sensors of this type exist
 
   // previous measurements from the sensor
-  int16_t prevProbeMeas = 0;
-  int16_t prevAmbientMeas = 0;
-  MAX31855SerialPacket lastSerialPacket;
   MAX31855Packet lastPacket;
 
 public:
@@ -89,6 +77,5 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  MAX31855Packet getPacket(uint32_t currMicros);
-  MAX31855SerialPacket getSerialPacket(bool debug = false);
+  MAX31855Packet getPacket(uint32_t currMicros, bool debug = false);
 };

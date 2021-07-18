@@ -81,6 +81,12 @@ HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
 MAX31855Wrapper tcs[4];
 // the altimax doesn't have a wrapper because I'm lazy and it's just 1 DR pin
 Sensor altimax = Sensor(0);
+// TODO: Put all sensors in an array and then all functions can simply loop
+// through the array. Requires important overhaul of sensor class and virtual
+// functions that are overidden in the derived wrapper classes.
+// const uint8_t NUM_SENSORS = 9;
+// Sensor *sensorArray[NUM_SENSORS] = {&adis16470, &ais1120sx, rscs,
+//                                     tcs, &altimax};
 
 const int SENSOR_SETUP_ATTEMPTS = 10;
 const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
@@ -174,6 +180,7 @@ void setup()
   Serial.println("Setup complete.");
   successFlash();
 
+  delay(5000);
   acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
 }
 

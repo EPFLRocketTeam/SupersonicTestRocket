@@ -91,10 +91,10 @@ bool HoneywellRscWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 
 bool HoneywellRscWrapper::isMeasurementInvalid()
 {
-  if (lastSerialPacket.pressure > pressureMax ||
-      lastSerialPacket.pressure < pressureMin ||
-      lastSerialPacket.temp > TEMP_MAX ||
-      lastSerialPacket.temp < TEMP_MIN)
+  if (lastPressurePacket.measurement > pressureMax ||
+      lastPressurePacket.measurement < pressureMin ||
+      lastTempPacket.measurement > TEMP_MAX ||
+      lastTempPacket.measurement < TEMP_MIN)
   {
     return true;
   }
@@ -130,16 +130,13 @@ READING_T HoneywellRscWrapper::nextReadType()
 
 HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
-  packetType packetTypeNum;
-
   // determine the type of measurement we are getting
   if (currReadType() == TEMPERATURE)
   {
-    packetTypeNum = RSC_TEMP_PACKET_TYPE; // set the packet type
-    lastTempPacket = HoneywellRSCPacket(getHeader(packetTypeNum,
-                                                  sizeof(HoneywellRSCPacket),
-                                                  currMicros),
-                                        rscObject.get_temperature());
+    lastTempPacket.measurement = rscObject.get_temperature();
+    lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
+                                      sizeof(HoneywellRSCPacket),
+                                      currMicros);
 
     // request the next data from the adc
     rscObject.adc_request(nextReadType());
@@ -151,12 +148,10 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
   }
   else
   {
-    packetTypeNum = RSC_PRESSURE_PACKET_TYPE; // set the packet type
-    lastPressurePacket = HoneywellRSCPacket(
-        getHeader(packetTypeNum,
-                  sizeof(HoneywellRSCPacket),
-                  currMicros),
-        rscObject.get_pressure());
+    lastPressurePacket.measurement = rscObject.get_pressure();
+    lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
+                                          sizeof(HoneywellRSCPacket),
+                                          currMicros);
 
     // request the next data from the adc
     rscObject.adc_request(nextReadType());
@@ -168,21 +163,26 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
   }
 }
 
-HoneywellRSCSerialPacket HoneywellRscWrapper::getSerialPacket(bool debug)
+HoneywellRSCPacket *HoneywellRscWrapper::getSerialPackets(
+    uint32_t currMicros, bool debug)
 {
   if (debug)
   {
-    lastSerialPacket.pressure =
+    lastPressurePacket.measurement =
         generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
-    lastSerialPacket.temp =
+    lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
+                                          sizeof(HoneywellRSCPacket),
+                                          currMicros);
+    lastTempPacket.measurement =
         generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000);
+    lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
+                                      sizeof(HoneywellRSCPacket),
+                                      currMicros);
   }
-  else
-  {
-    lastSerialPacket.pressure = lastPressurePacket.measurement;
-    lastSerialPacket.temp = lastTempPacket.measurement;
-  }
-  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
 
-  return lastSerialPacket;
+  static HoneywellRSCPacket Packets[2];
+  Packets[0] = lastPressurePacket;
+  Packets[1] = lastTempPacket;
+
+  return Packets;
 }

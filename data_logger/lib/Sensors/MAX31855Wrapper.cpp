@@ -62,16 +62,18 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros)
     rawMeas = max31855Object.readRaw();
     if (!max31855Object.fault()) // if no error
     {
-      int16_t probeT = max31855Object.rawToProbe(rawMeas);
-      int16_t ambientT = max31855Object.rawToAmbient(rawMeas);
-      if (prevProbeMeas != probeT || prevAmbientMeas != ambientT) // data is new
+      float probeT = max31855Object.rawToProbe(rawMeas) * PROBE_SENSITIVITY;
+      float ambientT = max31855Object.rawToAmbient(rawMeas) *
+                       AMBIENT_SENSITIVITY;
+      if (lastPacket.probeTemperature != probeT ||
+          lastPacket.sensorTemperature != ambientT) // data is new
       {
         prevMeasTime = currMicros;
         returnVal = true;
       }
       // update the last measurements
-      prevProbeMeas = probeT;
-      prevAmbientMeas = ambientT;
+      lastPacket.probeTemperature = probeT;
+      lastPacket.sensorTemperature = ambientT;
     }
   }
   return returnVal;
@@ -79,41 +81,31 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros)
 
 bool MAX31855Wrapper::isMeasurementInvalid()
 {
-  if (lastSerialPacket.probeTemperature > PROBE_MAX ||
-      lastSerialPacket.probeTemperature < PROBE_MIN ||
-      lastSerialPacket.sensorTemperature > AMBIENT_MAX ||
-      lastSerialPacket.sensorTemperature < AMBIENT_MIN)
+  if (lastPacket.probeTemperature > PROBE_MAX ||
+      lastPacket.probeTemperature < PROBE_MIN ||
+      lastPacket.sensorTemperature > AMBIENT_MAX ||
+      lastPacket.sensorTemperature < AMBIENT_MIN)
   {
     return true;
   }
   return false;
 }
 
-MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
+MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros, bool debug)
 {
-  // create and write the packet
-  lastPacket = MAX31855Packet(getHeader(MAX31855_PACKET_TYPE,
-                                        sizeof(MAX31855Packet),
-                                        currMicros),
-                              prevProbeMeas, prevAmbientMeas);
-  return lastPacket;
-}
-
-MAX31855SerialPacket MAX31855Wrapper::getSerialPacket(bool debug)
-{
+  // update the error on the packet
+  lastPacket.header = getHeader(MAX31855_PACKET_TYPE,
+                                sizeof(MAX31855Packet),
+                                currMicros);
+                               
   if (debug)
   {
-    lastSerialPacket.probeTemperature =
+    lastPacket.probeTemperature =
         generateFakeData(-200, 1200, micros(), 35 * SENSOR_ID, 2700000);
-    lastSerialPacket.sensorTemperature =
+    lastPacket.sensorTemperature =
         generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 8700000);
   }
-  else
-  {
-    lastSerialPacket.probeTemperature = lastPacket.probeTemperature;
-    lastSerialPacket.sensorTemperature = lastPacket.sensorTemperature;
-  }
-  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
+  // when not debugging readings are updated in isDue()
 
-  return lastSerialPacket;
+  return lastPacket;
 }

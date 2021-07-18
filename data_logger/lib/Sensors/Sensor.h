@@ -20,13 +20,16 @@ typedef enum
 // define packet type numbering
 enum
 {
-  NO_PACKET,                // no packet. indicated EOF
-  ADIS16470_PACKET_TYPE,    // ADIS16470 Packet
-  AISx120SX_PACKET_TYPE,    // AISx120SX Packet
-  RSC_PRESSURE_PACKET_TYPE, // Honewell RSC pressure packet
-  RSC_TEMP_PACKET_TYPE,     // Honewell RSC temperature packet
-  MAX31855_PACKET_TYPE,     // MAX31855 packet
-  ALTIMAX_PACKET_TYPE       // ALTIMAX packet
+  NO_PACKET,                     // no packet. indicates EOF
+  ADIS16470_PACKET_ARCHIVE_TYPE, // ADIS16470 Archived Packet
+  AISx120SX_PACKET_ARCHIVE_TYPE, // AISx120SX Archived Packet
+  RSC_PRESSURE_PACKET_TYPE,      // Honewell RSC pressure packet
+  RSC_TEMP_PACKET_TYPE,          // Honewell RSC temperature packet
+  MAX31855_PACKET_ARCHIVE_TYPE,  // MAX31855 Archived packet
+  ALTIMAX_PACKET_TYPE,           // ALTIMAX packet
+  ADIS16470_PACKET_TYPE,         // ADIS16470 Packet
+  AISx120SX_PACKET_TYPE,         // AISx120SX Packet
+  MAX31855_PACKET_TYPE           // MAX31855 packet
 };
 typedef uint8_t packetType;
 
@@ -92,6 +95,9 @@ public:
 
   // takes all the errors that happened and returns an error code
   uint8_t getErrorCode(uint32_t currMicros);
+
+  // takes an error code and transforms it into a booleana array
+  bool * decodeErrorCode(uint8_t errorCode);
 
   // generates a packet header for the sensor
   PacketHeader getHeader(packetType packetType_, uint8_t packetSize_,

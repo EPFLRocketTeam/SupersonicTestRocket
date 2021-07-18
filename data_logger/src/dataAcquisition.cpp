@@ -103,14 +103,13 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     // ADIS16470
     if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
     {
-      rb.write((const uint8_t *)&adis16470.getPacket(micros()),
+      rb.write((const uint8_t *)&adis16470.getPacket(micros(), DEBUG),
                sizeof(ADIS16470Packet));
     }
-
     // AIS1120SX
     if (ais1120sx.active && ais1120sx.isDue(micros()))
     {
-      rb.write((const uint8_t *)&ais1120sx.getPacket(micros()),
+      rb.write((const uint8_t *)&ais1120sx.getPacket(micros(), DEBUG),
                sizeof(AISx120SXPacket));
     }
 
@@ -129,7 +128,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     {
       if (tcs[i].active && tcs[i].isDue(micros()))
       {
-        rb.write((const uint8_t *)&tcs[i].getPacket(micros()),
+        rb.write((const uint8_t *)&tcs[i].getPacket(micros(), DEBUG),
                  sizeof(MAX31855Packet));
       }
     }
@@ -162,22 +161,21 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     if (micros() - prevSerialLoop > SERIAL_INTERVAL)
     {
       prevSerialLoop += SERIAL_INTERVAL;
-      //Serial.println("in print loop");
       // get the packets for the rsc and max
-      HoneywellRSCSerialPacket rscSerialPacket[rscs[0].getSensorQty()];
-      MAX31855SerialPacket maxSerialPacket[tcs[0].getSensorQty()];
+      HoneywellRSCPacket rscPackets[rscs[0].getSensorQty() * 2] = {};
+      MAX31855Packet maxPackets[tcs[0].getSensorQty()] = {};
       for (size_t i = 0; i < rscs[0].getSensorQty(); i++)
       {
-        rscSerialPacket[i] = rscs[i].getSerialPacket(DEBUG);
+        rscPackets[2 * i] = rscs[i].getSerialPackets(micros(), DEBUG)[0];
+        rscPackets[2 * i + 1] = rscs[i].getSerialPackets(micros(), DEBUG)[1];
       }
       for (size_t i = 0; i < tcs[0].getSensorQty(); i++)
       {
-        maxSerialPacket[i] = tcs[i].getSerialPacket(DEBUG);
+        maxPackets[i] = tcs[i].getPacket(micros(), DEBUG);
       }
-
-      outputSensorData(micros(), adis16470.getSerialPacket(DEBUG),
-                       ais1120sx.getSerialPacket(DEBUG), rscSerialPacket,
-                       maxSerialPacket);
+      outputSensorData(micros(), adis16470.getPacket(micros(), DEBUG),
+                       ais1120sx.getPacket(micros(), DEBUG), rscPackets,
+                       maxPackets);
     }
 
     // Check if ringBuf is ready for writing

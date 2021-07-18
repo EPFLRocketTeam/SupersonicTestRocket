@@ -100,20 +100,20 @@ bool ADIS16470Wrapper::isMeasurementInvalid()
 
   for (size_t i = 0; i < 3; i++)
   {
-    allZeros = allZeros && lastSerialPacket.gyros[i] == 0; //  if gyro zero
-    allZeros = allZeros && lastSerialPacket.acc[i] == 0;   // if pressure zero
-    if (lastSerialPacket.gyros[i] > GYRO_MAX ||
-        lastSerialPacket.gyros[i] < GYRO_MIN)
+    allZeros = allZeros && lastPacket.gyros[i] == 0; //  if gyro zero
+    allZeros = allZeros && lastPacket.acc[i] == 0;   // if pressure zero
+    if (lastPacket.gyros[i] > GYRO_MAX ||
+        lastPacket.gyros[i] < GYRO_MIN)
     {
       return true;
     }
-    if (lastSerialPacket.acc[i] > ACC_MAX || lastSerialPacket.acc[i] < ACC_MIN)
+    if (lastPacket.acc[i] > ACC_MAX || lastPacket.acc[i] < ACC_MIN)
     {
       return true;
     }
   }
-  allZeros = allZeros && lastSerialPacket.temp == 0; // check if zero
-  if (lastSerialPacket.temp > TEMP_MAX || lastSerialPacket.temp < TEMP_MIN)
+  allZeros = allZeros && lastPacket.temp == 0; // check if zero
+  if (lastPacket.temp > TEMP_MAX || lastPacket.temp < TEMP_MIN)
   {
     return true;
   }
@@ -121,47 +121,39 @@ bool ADIS16470Wrapper::isMeasurementInvalid()
   return allZeros;
 }
 
-ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
-{
-  // acquire the data
-  uint16_t *wordBurstData;
-  wordBurstData = adisObject.wordBurst(); // Read data and insert into array
-
-  verifyCheckSum(wordBurstData);
-
-  // create and write the packet
-  lastPacket = ADIS16470Packet(getHeader(ADIS16470_PACKET_TYPE,
-                                         sizeof(ADIS16470Packet),
-                                         currMicros),
-                               wordBurstData);
-  return lastPacket;
-}
-
-ADIS16470SerialPacket ADIS16470Wrapper::getSerialPacket(bool debug)
+ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros, bool debug)
 {
   if (debug)
   {
-    lastSerialPacket.gyros[0] = generateFakeData(-2000, 2000, micros());
-    lastSerialPacket.gyros[1] = generateFakeData(-2000, 2000, micros(),
-                                                 500, 4800000);
-    lastSerialPacket.gyros[2] = generateFakeData(-2000, 2000, micros(),
-                                                 -200, 5200000);
-    lastSerialPacket.acc[0] = generateFakeData(-40, 40, micros());
-    lastSerialPacket.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
-    lastSerialPacket.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
-    lastSerialPacket.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
+    lastPacket.gyros[0] = generateFakeData(-2000, 2000, micros());
+    lastPacket.gyros[1] = generateFakeData(-2000, 2000, micros(),
+                                           500, 4800000);
+    lastPacket.gyros[2] = generateFakeData(-2000, 2000, micros(),
+                                           -200, 5200000);
+    lastPacket.acc[0] = generateFakeData(-40, 40, micros());
+    lastPacket.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
+    lastPacket.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
+    lastPacket.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
   }
   else
   {
-    lastSerialPacket.gyros[0] = ((int16_t)lastPacket.gyroX) * 0.1;
-    lastSerialPacket.gyros[1] = ((int16_t)lastPacket.gyroY) * 0.1;
-    lastSerialPacket.gyros[2] = ((int16_t)lastPacket.gyroZ) * 0.1;
-    lastSerialPacket.acc[0] = ((int16_t)lastPacket.accX) * 0.00125;
-    lastSerialPacket.acc[1] = ((int16_t)lastPacket.accY) * 0.00125;
-    lastSerialPacket.acc[2] = ((int16_t)lastPacket.accZ) * 0.00125;
-    lastSerialPacket.temp = ((int16_t)lastPacket.temp * 0.1);
-  }
-  memcpy(lastSerialPacket.errors, getErrors(), ERROR_TYPE_NUM);
+    // acquire the data
+    uint16_t *wordBurstData;
+    wordBurstData = adisObject.wordBurst(); // Read data and insert into array
+    verifyCheckSum(wordBurstData);
 
-  return lastSerialPacket;
+    lastPacket.gyros[0] = ((int16_t) wordBurstData[1]) * GYRO_SENSITIVITY;
+    lastPacket.gyros[1] = ((int16_t) wordBurstData[2]) * GYRO_SENSITIVITY;
+    lastPacket.gyros[2] = ((int16_t) wordBurstData[3]) * GYRO_SENSITIVITY;
+    lastPacket.acc[0] = ((int16_t) wordBurstData[4]) * ACC_SENSITIVITY;
+    lastPacket.acc[1] = ((int16_t) wordBurstData[5]) * ACC_SENSITIVITY;
+    lastPacket.acc[2] = ((int16_t) wordBurstData[6]) * ACC_SENSITIVITY;
+    lastPacket.temp = ((int16_t) wordBurstData[7]) * TEMP_SENSITIVITY;
+  }
+  // check for errors and create the header
+  lastPacket.header = getHeader(ADIS16470_PACKET_TYPE,
+                                sizeof(ADIS16470Packet),
+                                currMicros);
+
+  return lastPacket;
 }

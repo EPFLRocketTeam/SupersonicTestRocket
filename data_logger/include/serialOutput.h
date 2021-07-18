@@ -81,10 +81,10 @@ void decorateText(const char *text, const DECORATOR_CODES *decoratorCodes,
 
 void setPosition(uint8_t row, uint8_t column);
 
-void printErrors(bool errors[ERROR_TYPE_NUM]);
+void printErrors(uint8_t errorCode);
 
 void outputSensorData(uint32_t currMicros,
-                      ADIS16470SerialPacket adis16470Packet,
-                      AISx120SXSerialPacket ais1120sxPacket,
-                      HoneywellRSCSerialPacket *rscPacket,
-                      MAX31855SerialPacket *maxPacket);
+                      ADIS16470Packet adis16470Packet,
+                      AISx120SXPacket ais1120sxPacket,
+                      HoneywellRSCPacket *rscPacket,
+                      MAX31855Packet *maxPacket);
