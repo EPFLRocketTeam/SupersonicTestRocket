@@ -179,8 +179,7 @@ void setup()
 
   Serial.println("Setup complete.");
   successFlash();
-
-  delay(5000);
+  
   acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
 }
 

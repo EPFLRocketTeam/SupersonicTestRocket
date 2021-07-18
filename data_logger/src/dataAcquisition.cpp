@@ -174,8 +174,9 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
         maxPackets[i] = tcs[i].getPacket(micros(), DEBUG);
       }
       outputSensorData(micros(), adis16470.getPacket(micros(), DEBUG),
-                       ais1120sx.getPacket(micros(), DEBUG), rscPackets,
-                       maxPackets);
+                       ais1120sx.getPacket(micros(), DEBUG),
+                       rscPackets, rscs[0].getSensorQty(),
+                       maxPackets, tcs[0].getSensorQty());
     }
 
     // Check if ringBuf is ready for writing

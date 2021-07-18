@@ -87,4 +87,6 @@ void outputSensorData(uint32_t currMicros,
                       ADIS16470Packet adis16470Packet,
                       AISx120SXPacket ais1120sxPacket,
                       HoneywellRSCPacket *rscPacket,
-                      MAX31855Packet *maxPacket);
+                      uint8_t rscQty,
+                      MAX31855Packet *maxPacket,
+                      uint8_t maxQty);

@@ -71,7 +71,9 @@ void outputSensorData(uint32_t currMicros,
                       ADIS16470Packet adis16470Packet,
                       AISx120SXPacket ais1120sxPacket,
                       HoneywellRSCPacket *rscPacket,
-                      MAX31855Packet *maxPacket)
+                      uint8_t rscQty,
+                      MAX31855Packet *maxPacket,
+                      uint8_t maxQty)
 {
   float mach = calcMachFromPressure(rscPacket[2 * staticRSC].measurement,
                                     rscPacket[2 * totalRSC].measurement);
@@ -82,30 +84,31 @@ void outputSensorData(uint32_t currMicros,
 
   ansiCommand(clear_screen, entire);
   setPosition(0, 0);
+
   Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
   ansiCommand(clear_line, cursor_beginning);
   setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  Serial.write((const uint8_t *)&ais1120sxPacket, sizeof(ais1120sxPacket));
   ansiCommand(clear_line, cursor_beginning);
   setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
-  ansiCommand(clear_line, cursor_beginning);
-  setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
-  ansiCommand(clear_line, cursor_beginning);
-  setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
-  ansiCommand(clear_line, cursor_beginning);
-  setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
-  ansiCommand(clear_line, cursor_beginning);
-  setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
-  ansiCommand(clear_line, cursor_beginning);
-  setPosition(0, 0);
-  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
-  ansiCommand(clear_line, cursor_beginning);
-  setPosition(0, 0);
+
+  for (size_t i = 0; i < rscQty; i++)
+  {
+    Serial.write((const uint8_t *)&rscPacket[2 * i], sizeof(rscPacket[2 * i]));
+    ansiCommand(clear_line, cursor_beginning);
+    setPosition(0, 0);
+    Serial.write((const uint8_t *)&rscPacket[2 * i + 1],
+                 sizeof(rscPacket[2 * i]));
+    ansiCommand(clear_line, cursor_beginning);
+    setPosition(0, 0);
+  }
+  
+  for (size_t i = 0; i < maxQty; i++)
+  {
+    Serial.write((const uint8_t *)&maxPacket[i], sizeof(maxPacket[i]));
+    ansiCommand(clear_line, cursor_beginning);
+    setPosition(0, 0);
+  }
 
   decorateText("HERMES Ground Station Monitor\n", HEADER_STYLE,
                HEADER_STYLE_LENGTH);
@@ -154,7 +157,7 @@ void outputSensorData(uint32_t currMicros,
   Serial.println(ais1120sxPacket.accel[1]);
   Serial.println("");
 
-  for (size_t i = 0; i < 2; i++)
+  for (size_t i = 0; i < rscQty; i++)
   {
     char buffer[4];
     itoa(i, buffer, 10);
@@ -169,7 +172,7 @@ void outputSensorData(uint32_t currMicros,
   }
   Serial.println("");
 
-  for (size_t i = 0; i < sizeof(maxPacket); i++)
+  for (size_t i = 0; i < maxQty; i++)
   {
     char buffer[4];
     itoa(i, buffer, 10);
