@@ -137,7 +137,7 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
   return lastPacket;
 }
 
-ADIS16470SerialPacket ADIS16470Wrapper::getSerialPacket(bool debug = false)
+ADIS16470SerialPacket ADIS16470Wrapper::getSerialPacket(bool debug)
 {
   if (debug)
   {

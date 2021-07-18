@@ -67,42 +67,45 @@ void printErrors(bool errors[ERROR_TYPE_NUM])
   Serial.println("");
 }
 
-float calcMach(float staticPressure, float totalPressure)
-{
-  float mach = sqrt((2 / (gamma_ - 1)) * (pow(staticPressure / totalPressure,
-                                              (1 - gamma_) / gamma_) -
-                                          1));
-  return mach;
-}
-
-float calcStaticTemperature(float mach, float totalTemperature)
-{
-  float staticTemperature = (totalTemperature + C_K_offset) /
-                            (1 + (gamma_ - 1) / 2 * pow(mach, 2));
-
-  return staticTemperature;
-}
-
-float calcAirspeed(float mach, float staticTemperature)
-{
-  float speedOfSound = sqrt(gamma_ * R * staticTemperature);
-  float airspeed = speedOfSound * mach;
-
-  return airspeed;
-}
-
 void outputSensorData(uint32_t currMicros,
                       ADIS16470SerialPacket adis16470Packet,
                       AISx120SXSerialPacket ais1120sxPacket,
                       HoneywellRSCSerialPacket *rscPacket,
                       MAX31855SerialPacket *maxPacket)
 {
-  float mach = calcMach(rscPacket[0].pressure, rscPacket[1].pressure);
+  float mach = calcMachFromPressure(rscPacket[staticRSC].pressure,
+                                    rscPacket[totalRSC].pressure);
   float staticTemperature =
       calcStaticTemperature(mach, maxPacket[TAT_TC].probeTemperature);
   float airspeed = calcAirspeed(mach, staticTemperature);
+  float altitude = calcAltitude(rscPacket[staticRSC].pressure * PSI_TO_PA);
 
   ansiCommand(clear_screen, entire);
+  setPosition(0, 0);
+
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
+  setPosition(0, 0);
+  Serial.write((const uint8_t *)&adis16470Packet, sizeof(adis16470Packet));
+  ansiCommand(clear_line, cursor_beginning);
   setPosition(0, 0);
 
   decorateText("HERMES Ground Station Monitor\n", HEADER_STYLE,
@@ -119,6 +122,8 @@ void outputSensorData(uint32_t currMicros,
 
   Serial.print("\tTime (s):\t\t");
   Serial.println(currMicros / 1000000., 3);
+  Serial.print("\tAltitude (m):\t\t");
+  Serial.println(altitude, 3);
   Serial.print("\tMach (-):\t\t");
   Serial.println(mach, 3);
   Serial.print("\tAirspeed (m/s):\t\t");
@@ -165,6 +170,8 @@ void outputSensorData(uint32_t currMicros,
   }
   Serial.println("");
 
+
+
   for (size_t i = 0; i < sizeof(maxPacket); i++)
   {
     char buffer[4];
@@ -178,4 +185,9 @@ void outputSensorData(uint32_t currMicros,
     Serial.print("\tAmbient temp (degC):\t");
     Serial.println(maxPacket[i].sensorTemperature);
   }
+  Serial.println("");
+
+  
+  ansiCommand(up, 1);
+  ansiCommand(clear_screen, cursor_end);
 }

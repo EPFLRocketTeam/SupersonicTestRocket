@@ -56,10 +56,10 @@ private:
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
   // sensor min/max values for error checking
-  static const float PROBE_MAX = 1372;
-  static const float PROBE_MIN = -270;
-  static const float AMBIENT_MAX = 125;
-  static const float AMBIENT_MIN = -55;
+  static constexpr float PROBE_MAX = 1372;
+  static constexpr float PROBE_MIN = -270;
+  static constexpr float AMBIENT_MAX = 125;
+  static constexpr float AMBIENT_MIN = -55;
 
   MAX31855_Class max31855Object;
   static uint8_t sensorQty; // how many sensors of this type exist

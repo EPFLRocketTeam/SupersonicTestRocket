@@ -68,12 +68,12 @@ private:
   static const uint32_t MEASUREMENT_MARGIN = 500;              // [us]
 
   // sensor min/max values for error checking
-  static const float GYRO_MAX = 2000;
-  static const float GYRO_MIN = -2000;
-  static const float ACC_MAX = 40;
-  static const float ACC_MIN = -40;
-  static const float TEMP_MAX = 85;
-  static const float TEMP_MIN = -25;
+  static constexpr float GYRO_MAX = 2000;
+  static constexpr float GYRO_MIN = -2000;
+  static constexpr float ACC_MAX = 40;
+  static constexpr float ACC_MIN = -40;
+  static constexpr float TEMP_MAX = 85;
+  static constexpr float TEMP_MIN = -25;
 
   const int DR_PIN;
 

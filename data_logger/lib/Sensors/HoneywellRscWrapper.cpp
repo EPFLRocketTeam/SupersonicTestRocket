@@ -130,7 +130,6 @@ READING_T HoneywellRscWrapper::nextReadType()
 
 HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
-  float meas;
   packetType packetTypeNum;
 
   // determine the type of measurement we are getting
@@ -169,7 +168,7 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
   }
 }
 
-HoneywellRSCSerialPacket HoneywellRscWrapper::getSerialPacket(bool debug = false)
+HoneywellRSCSerialPacket HoneywellRscWrapper::getSerialPacket(bool debug)
 {
   if (debug)
   {

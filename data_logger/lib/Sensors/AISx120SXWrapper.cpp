@@ -99,7 +99,7 @@ AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
   return lastPacket;
 }
 
-AISx120SXSerialPacket AISx120SXWrapper::getSerialPacket(bool debug = false)
+AISx120SXSerialPacket AISx120SXWrapper::getSerialPacket(bool debug)
 {
   if (debug)
   {

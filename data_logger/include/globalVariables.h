@@ -6,10 +6,6 @@
 // for now it's just whether to take real data or generate some fake one
 extern const bool DEBUG;
 
-extern const float gamma_;     // heat capacity ratio
-extern const float R;          // gas constant
-extern const float C_K_offset; // difference between celcius and kelvins
-
 // Pinout ----------------------------------------------------------------------
 // I/O
 extern const uint8_t GREEN_LED_PIN,
@@ -24,6 +20,8 @@ extern const uint8_t DR_ADIS16470_PIN,
 // AIS1120SX
 extern const uint8_t CS_AIS1120SX_PIN;
 // Pressure sensors
+extern const uint8_t staticRSC;
+extern const uint8_t totalRSC;
 extern const uint8_t CS_RS_EE_PIN[2],
     CS_RSC_ADC_PIN[2],
     DR_RSC[2];

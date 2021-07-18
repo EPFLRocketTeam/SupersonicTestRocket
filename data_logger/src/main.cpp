@@ -34,10 +34,6 @@
 
 const bool DEBUG = true;
 
-const float gamma_ = 1.4;
-const float R = 287;
-const float C_K_offset = 273.15;
-
 // Pins ------------------------------------------------------------------------
 // I/O
 const uint8_t GREEN_LED_PIN = 7,
@@ -52,6 +48,8 @@ const uint8_t DR_ADIS16470_PIN = 24,
 // AIS1120SX
 const uint8_t CS_AIS1120SX_PIN = 31;
 // Pressure sensors
+const uint8_t staticRSC = 0;
+const uint8_t totalRSC = 1;
 const uint8_t CS_RS_EE_PIN[2] = {17, 28};
 const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
 // RSC1's DR line should be on pin 15 according to the PCB, however, it was

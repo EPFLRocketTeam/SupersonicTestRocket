@@ -55,8 +55,8 @@ private:
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
   // sensor min/max values for error checking
-  static const float ACC_MAX = 120;
-  static const float ACC_MIN = -120;
+  static constexpr float ACC_MAX = 120;
+  static constexpr float ACC_MIN = -120;
 
   AISx120SX aisObject;
   static uint8_t sensorQty; // how many sensors of this type exist

@@ -57,8 +57,8 @@ private:
   // sensor min/max values for error checking
   float pressureMax = 15;
   float pressureMin = 0;
-  static const float TEMP_MAX = 85;
-  static const float TEMP_MIN = -40;
+  static constexpr float TEMP_MAX = 85;
+  static constexpr float TEMP_MIN = -40;
 
   Honeywell_RSC rscObject;
   static uint8_t sensorQty; // how many sensors of this type exist

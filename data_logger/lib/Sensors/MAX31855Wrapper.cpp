@@ -99,7 +99,7 @@ MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
   return lastPacket;
 }
 
-MAX31855SerialPacket MAX31855Wrapper::getSerialPacket(bool debug = false)
+MAX31855SerialPacket MAX31855Wrapper::getSerialPacket(bool debug)
 {
   if (debug)
   {
