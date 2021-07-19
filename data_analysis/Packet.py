@@ -19,6 +19,7 @@ class PacketType:
     packetID: int
     bytesSignature: str
     columnNames: List[str]
+    filename: str = "out"
     sensitivities: np.ndarray = np.array([])
     packetLength: int = 0
     
@@ -56,23 +57,26 @@ ADIS16470_archivedPacket = PacketType(1, '<hhhhhhhh',
                                       ["gyroX (deg/s)", "gyroY (deg/s)",
                                        "gyroZ (deg/s)", "accX (g)", "accY (g)",
                                        "accZ (g)", "temperature (degC)",
-                                       "padding"],
+                                       "padding"], "ADIS16470",
                                       np.array([0.1, 0.1, 0.1,
                                                 1/800, 1/800, 1/800, 0.1, 1]))
 AISx120SX_archivedPacket = PacketType(2, '<hh', ["accX (g)","accY (g)"],
+                                      "AISx120SX",
                                       np.array([1/(68*4), 1/(68*4)]))
-RSC_pressurePacket = PacketType(3, '<f', ["pressure (PSI)"])
-RSC_tempPacket = PacketType(4, '<f', ["temperature (degC)"])
+RSC_pressurePacket = PacketType(3, '<f', ["pressure (PSI)"], "RSC_pressure")
+RSC_tempPacket = PacketType(4, '<f', ["temperature (degC)"], "RSC_temp")
 MAX_archivedPacket = PacketType(5, '<hh', ["probeTemp (degC)",
                                            "ambientTemp (degC)"],
-                                np.array([0.25/4, 0.0625/16]))
+                                "MAX", np.array([0.25/4, 0.0625/16]))
 Altimax_Packet = PacketType(6, '<', [])
 ADIS16470_Packet = PacketType(7, '<fffffff', ["gyroX (deg/s)", "gyroY (deg/s)",
                                               "gyroZ (deg/s)", "accX (g)",
                                               "accY (g)", "accZ (g)",
-                                              "temperature (degC)"])
-AISx120SX_Packet = PacketType(8, '<ff', ["accX (g)","accY (g)"])
-MAX_Packet = PacketType(9, '<ff', ["probeTemp (degC)", "ambientTemp (degC)"])
+                                              "temperature (degC)"],
+                              "ADIS16470")
+AISx120SX_Packet = PacketType(8, '<ff', ["accX (g)","accY (g)"], "AISx120SX")
+MAX_Packet = PacketType(9, '<ff', ["probeTemp (degC)", "ambientTemp (degC)"],
+                        "MAX")
 
 errorNames = ["measLate", "skippedBeat", "drNoTrigger", "checksumError",
               "measInvalid", "placeholder", "placeholder", "placeholder"]
@@ -201,7 +205,7 @@ def unpackPackets(buffer):
 
     Returns
     -------
-    df : Pandas DataFrame
+    df : pandas DataFrame
         DataFrame containing the unpacked mixed data.
 
     """
@@ -237,12 +241,12 @@ def splitPacketsDataFrame(df):
 
     Parameters
     ----------
-    df : Pandas DataFrame
+    df : pandas DataFrame
         DataFrame containing the unpacked mixed data.
 
     Returns
     -------
-    dfs : 2D Dictionary containing Pandas DataFrames
+    dfs : 2D Dictionary containing pandas DataFrames
         The DataFrames are returned in a 2D dictionary.
         The first key corresponds to the packet type.
         The second key corresponds to the sensor ID.
@@ -280,4 +284,3 @@ def splitPacketsDataFrame(df):
             dfs[packetType][sensorID] = dfCleaned
             
     return dfs
-            
