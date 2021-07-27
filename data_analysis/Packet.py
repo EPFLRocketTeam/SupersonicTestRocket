@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
+""" Modules to decode C structure packets into usable data in Python
+    Contains a PacketType dataclass in which the existing legal C structures
+    are defined and modules which will decode these packets in pandas
+    DataFrames that can easily be used within Python.
 Created on Mon Jul 19 18:06:57 2021
 
 @author: newbi
@@ -162,7 +165,8 @@ def unpackPacketData(buffer, packetType):
 
 def unpackSinglePacket(buffer):
     """ Takes a C structure packet and unpacks it into a tuple
-            Only reads a single packet and stops afterwards
+            Only reads a single packet and stops afterwards.
+            Does not perform any sensitivity scaling.
     
 
     Parameters
@@ -191,7 +195,7 @@ def unpackSinglePacket(buffer):
     packetData = unpackPacketData(buffer, packetType)
     return packetType, packetLength, sensorID, errors, timestamp, packetData
     
-def unpackPackets(buffer):
+def unpackMultiplePackets(buffer):
     """ Unpacks multiple C structure packets into a dataframe
         Take in bytes datatype with one or many C structure packets in it
         according to the defined PacketTypes. Processed them and unpacks all
@@ -207,31 +211,47 @@ def unpackPackets(buffer):
     -------
     df : pandas DataFrame
         DataFrame containing the unpacked mixed data.
+    errorFlag : boolean
+        Whether an error occured or not.
 
     """
     
+    errorFlag = False
     cursor = 0
     dataEntries = []
     
     while (cursor < len(buffer)):
-        packetType, packetLength, sensorID, errors, timestamp =\
-            unpackHeader(buffer[cursor: cursor + headerPacket.packetLength])
-        unpackedPacket = unpackPacketData(
-            buffer[cursor:cursor+packetLength], packetType)
-        
-        dataEntries.append([packetType,
-                            packetLength,
-                            sensorID,
-                            errors,
-                            timestamp,
-                            unpackedPacket])
+        try:
+            packetType, packetLength, sensorID, errors, timestamp =\
+                unpackHeader(buffer[cursor: cursor + headerPacket.packetLength])
+            unpackedPacket = unpackPacketData(
+                buffer[cursor:cursor+packetLength], packetType)
+            
+            dataEntries.append([packetType,
+                                packetLength,
+                                sensorID,
+                                errors,
+                                timestamp,
+                                unpackedPacket])
+        except Warning:
+            print("    An empty packet was encountered. "
+                  "The unpacking process is stopping.")
+            errorFlag = True
+            break
+        except ValueError:
+            print("    An incorrectly sized packet was encountered. "
+                  "The unpacking process is stopping.")
+            errorFlag = True
+            break
         
         cursor += packetLength
         
+    print("    Converting data into a pandas DataFrame.")
     df = pd.DataFrame(dataEntries,
                       columns = headerPacket.columnNames + ["data"])
+    print("    Finished converting data.")
     
-    return df
+    return (df, errorFlag)
 
 
 def splitPacketsDataFrame(df):
@@ -255,11 +275,12 @@ def splitPacketsDataFrame(df):
     """
     
     assert np.array_equal(df.columns, headerPacket.columnNames + ["data"]), (
-        "Wrong dataframe type received.")
+        "    Wrong dataframe type received.")
     
     dfs = {}
     
     for packetType in df["packetType"].unique():
+        print(f"    Splitting {packetType=} into its own DataFrame.")
         dfPacketType = df.loc[df["packetType"] == packetType]
         
         dfs[packetType] = {}
@@ -276,6 +297,7 @@ def splitPacketsDataFrame(df):
             data = pd.DataFrame(dfSensorID["data"].values.tolist(),
                                   dfSensorID.index)
             data.columns = PacketType._registry[packetType].columnNames
+            data = data * PacketType._registry[packetType].sensitivities
             data = data.drop("padding", 1, errors='ignore')
                         
             dfCleaned = pd.concat([dfSensorID["timestamp (us)"],
