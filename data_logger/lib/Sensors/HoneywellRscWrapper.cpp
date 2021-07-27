@@ -14,8 +14,9 @@ uint8_t HoneywellRscWrapper::sensorQty = 0;
 HoneywellRscWrapper::
     HoneywellRscWrapper(int DR,
                         int CS_EE,
-                        int CS_ADC) : Sensor(sensorQty),
-                                      rscObject(DR, CS_EE, CS_ADC),
+                        int CS_ADC,
+                        int SPI_BUS) : Sensor(sensorQty),
+                                      rscObject(DR, CS_EE, CS_ADC, SPI_BUS),
                                       lastPressurePacket(getHeader(
                                           RSC_PRESSURE_PACKET_TYPE,
                                           sizeof(HoneywellRSCPacket),
@@ -26,6 +27,7 @@ HoneywellRscWrapper::
                                           0))
 {
   sensorQty += 1;
+  active = false;
 }
 
 // destructor
@@ -179,6 +181,7 @@ HoneywellRSCPacket *HoneywellRscWrapper::getSerialPackets(
                                       sizeof(HoneywellRSCPacket),
                                       currMicros);
   }
+
 
   static HoneywellRSCPacket Packets[2];
   Packets[0] = lastPressurePacket;

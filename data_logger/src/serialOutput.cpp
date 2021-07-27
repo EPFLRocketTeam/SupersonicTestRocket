@@ -16,7 +16,7 @@ void ansiCommand(COMMAND_CODES commandCode, char argument)
   {
     Serial.write(argument);
   }
-  else if (commandCode != save_position && commandCode != recover_position)
+else if (commandCode != save_position && commandCode != recover_position)
   {
     char argBuffer[4];
     itoa(argument, argBuffer, 10);
@@ -116,7 +116,7 @@ void outputSensorData(uint32_t currMicros,
   decorateText("\t\t\t\t\t\t\t\tErrors\n", HEADER_STYLE, HEADER_STYLE_LENGTH);
   decorateText("\tVariable", HEADER_STYLE, HEADER_STYLE_LENGTH);
   decorateText("\t\tValue", HEADER_STYLE, HEADER_STYLE_LENGTH);
-  decorateText("\tMeas late", HEADER_STYLE, HEADER_STYLE_LENGTH);
+  decorateText("\t\tMeas late", HEADER_STYLE, HEADER_STYLE_LENGTH);
   decorateText("\tBeat skipped", HEADER_STYLE, HEADER_STYLE_LENGTH);
   decorateText("\tDR not ready", HEADER_STYLE, HEADER_STYLE_LENGTH);
   decorateText("\tChecksum error", HEADER_STYLE, HEADER_STYLE_LENGTH);
@@ -132,7 +132,7 @@ void outputSensorData(uint32_t currMicros,
   Serial.println(airspeed, 3);
   Serial.println("");
 
-  decorateText("ADIS16470\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
+  decorateText("ADIS16470\t\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
   printErrors(adis16470Packet.header.errorCode);
   Serial.print("\tGyroX (deg/s):\t\t");
   Serial.println(adis16470Packet.gyros[0]);
@@ -149,7 +149,7 @@ void outputSensorData(uint32_t currMicros,
   Serial.print("\tTemp (degC):\t\t");
   Serial.println(adis16470Packet.temp);
 
-  decorateText("AIS1120SX\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
+  decorateText("AIS1120SX\t\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
   printErrors(ais1120sxPacket.header.errorCode);
   Serial.print("\tAccelX (g):\t\t");
   Serial.println(ais1120sxPacket.accel[0]);
@@ -163,7 +163,7 @@ void outputSensorData(uint32_t currMicros,
     itoa(i, buffer, 10);
     decorateText("RSC", HEADER_STYLE, HEADER_STYLE_LENGTH);
     decorateText(buffer, HEADER_STYLE, HEADER_STYLE_LENGTH);
-    Serial.print("\t\t\t");
+    Serial.print("\t\t\t\t");
     printErrors(rscPacket[i].header.errorCode);
     Serial.print("\tPressure (PSI):\t\t");
     Serial.println(rscPacket[2 * i].measurement);
@@ -178,7 +178,6 @@ void outputSensorData(uint32_t currMicros,
     itoa(i, buffer, 10);
     decorateText("MAX", HEADER_STYLE, HEADER_STYLE_LENGTH);
     decorateText(buffer, HEADER_STYLE, HEADER_STYLE_LENGTH);
-    Serial.print("\t\t\t");
     printErrors(maxPacket[i].header.errorCode);
     Serial.print("\tProbe temp (degC):\t");
     Serial.println(maxPacket[i].probeTemperature);

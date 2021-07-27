@@ -20,6 +20,7 @@ MAX31855Wrapper::MAX31855Wrapper() : Sensor(sensorQty),
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                   MEASUREMENT_INTERVAL, false);
   sensorQty += 1;
+  active = false;
 }
 
 // destructor

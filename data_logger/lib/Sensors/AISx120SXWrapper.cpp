@@ -21,6 +21,7 @@ AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(sensorQty),
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
                   false);
   sensorQty += 1;
+  active = false;
 }
 
 // destructor

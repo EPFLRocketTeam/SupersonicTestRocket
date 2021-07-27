@@ -32,7 +32,7 @@
 
 // DEFINE VARIABLES ============================================================
 
-const bool DEBUG = true;
+const bool DEBUG = false;
 
 // Pins ------------------------------------------------------------------------
 // I/O
@@ -75,9 +75,9 @@ ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
                            RST_ADIS16470_PIN);
 AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN);
 HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
-                                                   CS_RSC_ADC_PIN[0]),
+                                                   CS_RSC_ADC_PIN[0], 0),
                                HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
-                                                   CS_RSC_ADC_PIN[1])};
+                                                   CS_RSC_ADC_PIN[1], 0)};
 MAX31855Wrapper tcs[4];
 // the altimax doesn't have a wrapper because I'm lazy and it's just 1 DR pin
 Sensor altimax = Sensor(0);
@@ -88,7 +88,7 @@ Sensor altimax = Sensor(0);
 // Sensor *sensorArray[NUM_SENSORS] = {&adis16470, &ais1120sx, rscs,
 //                                     tcs, &altimax};
 
-const int SENSOR_SETUP_ATTEMPTS = 10;
+const int SENSOR_SETUP_ATTEMPTS = 1;
 const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
@@ -112,6 +112,8 @@ void setup()
   if (!DEBUG)
   {
     SPI.begin();
+    SPI1.begin();
+    // SPI1.setSCK(20);
 
     // Setup the IMU
     if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
@@ -141,7 +143,8 @@ void setup()
     // Setup the pressure sensors
     for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
     {
-      if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, F_DR_2000_SPS, 50000))
+      if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY,
+                        F_DR_2000_SPS, 50000))
       {
         Serial.print("Succesfully started RSC");
         Serial.println(i + 1);
@@ -179,7 +182,7 @@ void setup()
 
   Serial.println("Setup complete.");
   successFlash();
-  
+
   acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
 }
 

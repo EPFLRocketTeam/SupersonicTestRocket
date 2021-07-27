@@ -40,7 +40,7 @@ private:
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
   // sensor properties for error checking and conversions
-  static constexpr float SENSITIVITY = 2;//1 / (68 * 4.); // [g/LSB]
+  static constexpr float SENSITIVITY = 1 / (68 * 4.); // [g/LSB]
   static constexpr float ACC_MAX = 120;
   static constexpr float ACC_MIN = -120;
 

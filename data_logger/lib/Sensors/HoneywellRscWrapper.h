@@ -59,7 +59,7 @@ private:
 
 public:
   // constructor
-  HoneywellRscWrapper(int DR, int CS_EE, int CS_ADC);
+  HoneywellRscWrapper(int DR, int CS_EE, int CS_ADC, int SPI_BUS);
 
   // destructor
   ~HoneywellRscWrapper();

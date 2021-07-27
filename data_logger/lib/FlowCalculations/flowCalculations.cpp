@@ -33,7 +33,8 @@ float calcAirspeed(float mach, float staticTemperature)
 
 float calcAltitude(float pressure)
 {
-  float altitude = - log(pressure / STANDARD_PRESSURE) / ALTITUDE_CONSTANT;
-  
+  float altitude = -log(pressure / STANDARD_PRESSURE) *
+                   R * STANDARD_TEMP / G0;
+
   return altitude;
 }

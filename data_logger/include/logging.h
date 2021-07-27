@@ -18,7 +18,7 @@
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
 
 // Size to log 64 byte lines at 2000Hz for more than sixty minutes.
-#define LOG_FILE_SIZE 64 * 2000 * 60 * 1
+#define LOG_FILE_SIZE 64 * 2000 * 60 * 60
 // Space to hold 64 byte lines at 2000Hz for more than 1s.
 #define RING_BUF_CAPACITY 64 * 2000 * 1
 // Counter for the logging file name

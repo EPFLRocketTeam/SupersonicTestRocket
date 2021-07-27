@@ -23,6 +23,7 @@ ADIS16470Wrapper::
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
                   true);
   sensorQty += 1;
+  active = false;
 }
 
 // destructor
@@ -135,7 +136,7 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros, bool debug)
     lastPacket.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
     lastPacket.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
   }
-  else
+  else if (active)
   {
     // acquire the data
     uint16_t *wordBurstData;
