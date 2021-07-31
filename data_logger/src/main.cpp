@@ -88,7 +88,7 @@ Sensor altimax = Sensor(0);
 // Sensor *sensorArray[NUM_SENSORS] = {&adis16470, &ais1120sx, rscs,
 //                                     tcs, &altimax};
 
-const int SENSOR_SETUP_ATTEMPTS = 1;
+const int SENSOR_SETUP_ATTEMPTS = 7;
 const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
@@ -158,22 +158,22 @@ void setup()
       }
     }
 
-    // Setup the thermocouples
-    for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-    {
-      if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
-      {
-        Serial.print("Succesfully started thermocouple TC");
-        Serial.println(i + 1);
-        successFlash();
-      }
-      else
-      {
-        Serial.print("Unable to start thermocouple TC");
-        Serial.println(i + 1);
-        errorFlash();
-      }
-    }
+    // // Setup the thermocouples
+    // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+    // {
+    //   if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
+    //   {
+    //     Serial.print("Succesfully started thermocouple TC");
+    //     Serial.println(i + 1);
+    //     successFlash();
+    //   }
+    //   else
+    //   {
+    //     Serial.print("Unable to start thermocouple TC");
+    //     Serial.println(i + 1);
+    //     errorFlash();
+    //   }
+    // }
   }
 
   // Setup the Altimax

@@ -40,6 +40,9 @@ class Dashboard:
                              ylabel=r"$Temperature, T\ [^\circ C]$"))
         plt.subplots_adjust(left=0.05, right=0.95)
         
+    def plotData(self):
+        pass
+        
         
 if __name__ == "__main__":
     DSB = Dashboard()

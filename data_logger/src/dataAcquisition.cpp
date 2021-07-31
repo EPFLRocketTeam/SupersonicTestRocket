@@ -97,13 +97,24 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
+  int errorCount = 0;
   // acquire data as long as button sequence is not initated
   while (checkButtons(buttonArray, stopEvent))
   {
     // ADIS16470
     if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
     {
-      rb.write((const uint8_t *)&adis16470.getPacket(micros(), DEBUG),
+      ADIS16470Packet packet = adis16470.getPacket(micros(), DEBUG);
+      if (packet.header.errorCode)
+      {
+        errorCount ++;
+        if (errorCount == 1000)
+        {
+          digitalWrite(RED_LED_PIN, HIGH);
+        } 
+      }
+
+      rb.write((const uint8_t *)&packet,
                sizeof(ADIS16470Packet));
     }
     // AIS1120SX

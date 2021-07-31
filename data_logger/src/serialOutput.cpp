@@ -16,7 +16,7 @@ void ansiCommand(COMMAND_CODES commandCode, char argument)
   {
     Serial.write(argument);
   }
-else if (commandCode != save_position && commandCode != recover_position)
+  else if (commandCode != save_position && commandCode != recover_position)
   {
     char argBuffer[4];
     itoa(argument, argBuffer, 10);
@@ -102,7 +102,7 @@ void outputSensorData(uint32_t currMicros,
     ansiCommand(clear_line, cursor_beginning);
     setPosition(0, 0);
   }
-  
+
   for (size_t i = 0; i < maxQty; i++)
   {
     Serial.write((const uint8_t *)&maxPacket[i], sizeof(maxPacket[i]));
@@ -134,6 +134,9 @@ void outputSensorData(uint32_t currMicros,
 
   decorateText("ADIS16470\t\t\t", HEADER_STYLE, HEADER_STYLE_LENGTH);
   printErrors(adis16470Packet.header.errorCode);
+  if (bitRead(adis16470Packet.header.errorCode,3)) {
+    Serial.println("\a");
+  }
   Serial.print("\tGyroX (deg/s):\t\t");
   Serial.println(adis16470Packet.gyros[0]);
   Serial.print("\tGyroY (deg/s):\t\t");
@@ -164,7 +167,7 @@ void outputSensorData(uint32_t currMicros,
     decorateText("RSC", HEADER_STYLE, HEADER_STYLE_LENGTH);
     decorateText(buffer, HEADER_STYLE, HEADER_STYLE_LENGTH);
     Serial.print("\t\t\t\t");
-    printErrors(rscPacket[i].header.errorCode);
+    printErrors(rscPacket[2 * i].header.errorCode);
     Serial.print("\tPressure (PSI):\t\t");
     Serial.println(rscPacket[2 * i].measurement);
     Serial.print("\tTemperature (degC):\t");

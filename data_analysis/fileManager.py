@@ -162,7 +162,9 @@ def processAndSaveData(rawLogDirName_ = rawLogDirName,
         # go through each sensor
         for packetType in dfs.keys():
             for sensorID in dfs[packetType].keys():
-                print(f"    Saving {packetType=}, {sensorID=} in a CSV.")
+                print(f"    Saving {packetType=} "
+                      f"({PacketType._registry[packetType].filename}), "
+                      f"{sensorID=} in a CSV.")
                 outFileName = (f"{PacketType._registry[packetType].filename}_"
                                f"{sensorID}.csv")
                 fullFileName = os.path.join(outDirName, outFileName)
