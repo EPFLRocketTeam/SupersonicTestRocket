@@ -43,7 +43,7 @@ struct PacketHeader
   uint32_t timestamp;     // 4 bytes
 };
 
-const uint8_t ERROR_TYPE_NUM = 5; // type of errors available
+const uint8_t ERROR_TYPE_NUM = 6; // type of errors available
 
 // Generic sensor object
 class Sensor
@@ -56,6 +56,7 @@ private:
 
   bool DR_DRIVEN; // if the sensor has a data ready line
 
+  bool errorLatch;       // flag that latches on whenever an error occurs
   bool measurementLate;  // if the last measurement was late
   int checkBeatsSkipped; // beats that were skipped since the last check
   dueType dueMethod;     // how the measurement is due
@@ -82,8 +83,7 @@ public:
   // if the sensor is due for a read because of the DR line
   bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
 
-  // if the measurement was late. should be redefined in inherited classes
-  // to properly define what it means to be invalid
+  // if the measurement was late
   bool isMeasurementLate(uint32_t currMicros);
 
   // if the measurement is invalid. should be redefined in inherited classes
@@ -96,8 +96,8 @@ public:
   // takes all the errors that happened and returns an error code
   uint8_t getErrorCode(uint32_t currMicros);
 
-  // takes an error code and transforms it into a booleana array
-  bool * decodeErrorCode(uint8_t errorCode);
+  // takes an error code and transforms it into a boolean array
+  bool *decodeErrorCode(uint8_t errorCode);
 
   // generates a packet header for the sensor
   PacketHeader getHeader(packetType packetType_, uint8_t packetSize_,

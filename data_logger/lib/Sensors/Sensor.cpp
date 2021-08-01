@@ -9,7 +9,11 @@
 
 Sensor::Sensor(uint8_t sensorID) : SENSOR_ID(sensorID)
 {
+  prevCheck = 0;
+  errorLatch = false;
+  measurementLate = false;
   checksumError = false;
+  prevMeasTime = 0;
 }
 
 Sensor::~Sensor()
@@ -44,9 +48,10 @@ bool Sensor::isDueByTime(uint32_t currMicros)
   {
     if (checkBeatsSkipped > 1)
     {
-      // Serial.print("WARNING! Skipped following amount of beats:");
-      // Serial.println(checkBeatsSkipped - 1);
-      // Serial.println("Consider lowering frequency.");
+      // char buffer[161];
+      // sprintf(buffer, "WARNING! Skipped following amount of beats:"
+      //                 "%u. Consider lowering frequency.",
+      //         checkBeatsSkipped - 1);
     }
     prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
     dueMethod = DUE_BY_TIME;                         // sensor is due by time
@@ -74,6 +79,9 @@ bool Sensor::isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
 bool Sensor::isMeasurementLate(uint32_t currMicros)
 {
   measurementLate = currMicros - prevMeasTime > 2 * MEAS_INTERVAL;
+  // first measurement shouldn't register as late. in this case prevMeasTime
+  // should be zero
+  measurementLate = measurementLate & prevMeasTime;
   return measurementLate;
 }
 
@@ -97,6 +105,17 @@ bool *Sensor::getErrors()
   errors[3] = checksumError;
   // fifth error: invalid measurement
   errors[4] = isMeasurementInvalid();
+
+  // 6th error: error latch
+  if (!errorLatch)
+  {
+    // only update the error latch if it isn't set already
+    for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
+    {
+      errorLatch = errorLatch | errors[i];
+    }
+  }
+  errors[5] = errorLatch;
 
   return errors;
 }

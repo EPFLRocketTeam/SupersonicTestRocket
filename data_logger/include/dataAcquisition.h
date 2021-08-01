@@ -43,9 +43,11 @@ const int SERIAL_INTERVAL = 20 * 1000; // [us] (50 Hz)
 
 // Start to acquire data periodically from the sensors and log it in a file
 // Sets up the necessary things and then loops periodically
-void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
+void acquireData(SerialMonitor monitor,
+                 ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
                  HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs,
                  Sensor altimax);
 
 // Check the buttons and see if loop should continue according to input.
-bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3]);
+bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3],
+                  SerialMonitor monitor);

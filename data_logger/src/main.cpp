@@ -32,7 +32,7 @@
 
 // DEFINE VARIABLES ============================================================
 
-const bool DEBUG = false;
+const bool DEBUG = true;
 
 // Pins ------------------------------------------------------------------------
 // I/O
@@ -69,6 +69,8 @@ const int ACQ_STATE = 1;                // State to turn on acquisition
 const int ACQ_NEXT_STATE = 0;           // Next state to turn on
 const uint32_t ACQ_WINDOW_START = 1000; // [ms]
 const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
+// Serial monitor
+SerialMonitor monitor = SerialMonitor();
 
 // Create the sensor wrapper objects -------------------------------------------
 ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
@@ -97,6 +99,7 @@ const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
 
 void setup()
 {
+  delay(5000);
   // Serial communication is started before setup on the Teensy
 
   // Set up I/O
@@ -106,7 +109,7 @@ void setup()
   pinMode(BUTTON1_PIN, INPUT);
   digitalWrite(GREEN_LED_PIN, LOW); // turn off LED in case
   digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
-  Serial.println("I/O has been set up");
+  monitor.writeMessage("I/O has been set up", micros(), true);
   successFlash(); // visual feedback setup is happening
 
   if (!DEBUG)
@@ -118,12 +121,13 @@ void setup()
     // Setup the IMU
     if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
     {
-      Serial.println("ADIS16470 has been set up succesfully.");
+      monitor.writeMessage("ADIS16470 has been set up succesfully.",
+                           micros(), true);
       successFlash();
     }
     else
     {
-      Serial.println("Could not set up ADIS16470.");
+      monitor.writeMessage("Could not set up ADIS16470.", micros(), true);
       errorFlash();
     }
 
@@ -131,12 +135,15 @@ void setup()
     if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
                         false, false, false, false))
     {
-      Serial.println("AIS1120SX has been set up succesfully.");
+
+      monitor.writeMessage("AIS1120SX has been set up succesfully.",
+                           micros(), true);
       successFlash();
     }
     else
     {
-      Serial.println("Could not set up AIS1120SX.");
+
+      monitor.writeMessage("Could not set up AIS1120SX.", micros(), true);
       errorFlash();
     }
 
@@ -146,44 +153,48 @@ void setup()
       if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY,
                         F_DR_2000_SPS, 50000))
       {
-        Serial.print("Succesfully started RSC");
-        Serial.println(i + 1);
+        char buffer[161];
+        sprintf(buffer, "Succesfully started RSC%u", i);
+        monitor.writeMessage(buffer, micros(), true);
         successFlash();
       }
       else
       {
-        Serial.print("Unable to start RSC");
-        Serial.println(i + 1);
+        char buffer[161];
+        sprintf(buffer, "Unable to start RSC%u", i);
+        monitor.writeMessage(buffer, micros(), true);
         errorFlash();
       }
     }
 
-    // // Setup the thermocouples
-    // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-    // {
-    //   if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
-    //   {
-    //     Serial.print("Succesfully started thermocouple TC");
-    //     Serial.println(i + 1);
-    //     successFlash();
-    //   }
-    //   else
-    //   {
-    //     Serial.print("Unable to start thermocouple TC");
-    //     Serial.println(i + 1);
-    //     errorFlash();
-    //   }
-    // }
+    // Setup the thermocouples
+    for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+    {
+      if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
+      {
+        char buffer[161];
+        sprintf(buffer, "Succesfully started TC%u", i);
+        monitor.writeMessage(buffer, micros(), true);
+        successFlash();
+      }
+      else
+      {
+        char buffer[161];
+        sprintf(buffer, "Unable to start TC%u", i);
+        monitor.writeMessage(buffer, micros(), true);
+        errorFlash();
+      }
+    }
   }
 
   // Setup the Altimax
   altimax.setupProperties(UINT32_MAX, 0, UINT32_MAX, true);
   pinMode(ALTIMAX_DR_PIN, INPUT_PULLDOWN);
 
-  Serial.println("Setup complete.");
+  monitor.writeMessage("Setup complete!", micros(), true);
   successFlash();
 
-  acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
+  acquireData(monitor, adis16470, ais1120sx, rscs, tcs, altimax);
 }
 
 // LOOP ========================================================================
@@ -214,21 +225,26 @@ void loop()
       case NONE:
         break;
       case GOOD_TRANSITION:
-        Serial.println("Will begin data acquisition as button was pressed.");
+        monitor.writeMessage("Will begin data acquisition "
+                             "as button was pressed.",
+                             micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         successFlash();
-        acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
+        acquireData(monitor, adis16470, ais1120sx, rscs, tcs, altimax);
         break;
       case BAD_TRANSITION:
-        Serial.println("Button not pressed properly. Not doing anything.");
+        monitor.writeMessage("Button not pressed properly. Not doing anything.",
+                             micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         break;
       case WINDOW_START:
-        Serial.println("Within window to start data acquisition.");
+        monitor.writeMessage("Within window to start data acquisition.",
+                             micros(), true);
         digitalWrite(GREEN_LED_PIN, HIGH);
         break;
       case WINDOW_END:
-        Serial.println("Left window to start data acquisition.");
+        monitor.writeMessage("Left window to start data acquisition.",
+                             micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         break;
       }
