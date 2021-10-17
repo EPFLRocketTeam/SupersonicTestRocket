@@ -55,8 +55,8 @@ const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
 // RSC1's DR line should be on pin 15 according to the PCB, however, it was
 // manually reconnected to pin 39 on the first iteration of the PCB
 // change lines accordingly if building a new PCB from the schematics
-const uint8_t DR_RSC[2] = {39, 26};
-//const uint8_t DR_RSC[2] = {15, 26};
+//const uint8_t DR_RSC[2] = {39, 26};
+const uint8_t DR_RSC[2] = {15, 26};
 // Thermocouples
 const uint8_t TAT_TC = 3;
 const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
@@ -75,7 +75,7 @@ ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
                            RST_ADIS16470_PIN);
 AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN);
 HoneywellRscWrapper rscs[2] = {HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
-                                                   CS_RSC_ADC_PIN[0], 0),
+                                                   CS_RSC_ADC_PIN[0], 1),
                                HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
                                                    CS_RSC_ADC_PIN[1], 0)};
 MAX31855Wrapper tcs[4];
@@ -141,7 +141,7 @@ void setup()
     }
 
     // Setup the pressure sensors
-    for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+    for (size_t i = 1; i < rscs[i].getSensorQty(); i++)
     {
       if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY,
                         F_DR_2000_SPS, 50000))
@@ -158,22 +158,22 @@ void setup()
       }
     }
 
-    // // Setup the thermocouples
-    // for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-    // {
-    //   if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
-    //   {
-    //     Serial.print("Succesfully started thermocouple TC");
-    //     Serial.println(i + 1);
-    //     successFlash();
-    //   }
-    //   else
-    //   {
-    //     Serial.print("Unable to start thermocouple TC");
-    //     Serial.println(i + 1);
-    //     errorFlash();
-    //   }
-    // }
+    // Setup the thermocouples
+    for (size_t i = 0; i < 3; i++)
+    {
+      if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
+      {
+        Serial.print("Succesfully started thermocouple TC");
+        Serial.println(i + 1);
+        successFlash();
+      }
+      else
+      {
+        Serial.print("Unable to start thermocouple TC");
+        Serial.println(i + 1);
+        errorFlash();
+      }
+    }
   }
 
   // Setup the Altimax
