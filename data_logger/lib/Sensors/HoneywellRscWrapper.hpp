@@ -14,7 +14,7 @@
 #include <Honeywell_RSC.h>
 
 // User-defined headers
-#include "Sensor.h"
+#include "Sensor.hpp"
 
 // packet for both temperature and pressure packets
 struct HoneywellRSCPacket
@@ -84,6 +84,5 @@ public:
   READING_T nextReadType();
 
   HoneywellRSCPacket getPacket(uint32_t currMicros);
-  HoneywellRSCPacket *getSerialPackets(uint32_t currMicros,
-                                       bool debug = false);
+  HoneywellRSCPacket *getSerialPackets(uint32_t currMicros);
 };

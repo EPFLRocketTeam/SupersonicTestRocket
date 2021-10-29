@@ -14,7 +14,7 @@
 #include <ADIS16470.h>
 
 // User-defined headers
-#include "Sensor.h"
+#include "Sensor.hpp"
 
 struct ADIS16470Packet
 {
@@ -77,5 +77,5 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  ADIS16470Packet getPacket(uint32_t currMicros, bool debug = false);
+  ADIS16470Packet getPacket(uint32_t currMicros);
 };

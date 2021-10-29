@@ -1,5 +1,5 @@
 /*
- * dataAcquisition.h
+ * dataAcquisition.hpp
  *
  *  Created on: 2021-04-22
  *      Author: Joshua Cayetano-Emond
@@ -15,16 +15,16 @@
 #include <RingBuf.h>
 
 // user headers
-#include "globalVariables.h"
-#include "logging.h"
+#include "globalVariables.hpp"
+#include "logging.hpp"
 #include "PushButtonArray.h"
-#include "io.h"
-#include "serialOutput.h"
+#include "io.hpp"
+#include "serialOutput.hpp"
 //    Sensors
-#include "ADIS16470Wrapper.h"
-#include "AISx120SXWrapper.h"
-#include "HoneywellRscWrapper.h"
-#include "MAX31855Wrapper.h"
+#include "ADIS16470Wrapper.hpp"
+#include "AISx120SXWrapper.hpp"
+#include "HoneywellRscWrapper.hpp"
+#include "MAX31855Wrapper.hpp"
 
 // Button events settings
 const int STOP_STATES[3] = {1, 0, 2};                     // States to stop

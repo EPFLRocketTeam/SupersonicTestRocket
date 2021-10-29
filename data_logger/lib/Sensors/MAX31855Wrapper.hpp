@@ -14,7 +14,7 @@
 #include <MAX31855.h>
 
 // User-defined headers
-#include "Sensor.h"
+#include "Sensor.hpp"
 
 struct MAX31855Packet
 {
@@ -77,5 +77,5 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  MAX31855Packet getPacket(uint32_t currMicros, bool debug = false);
+  MAX31855Packet getPacket(uint32_t currMicros);
 };

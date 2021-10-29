@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "MAX31855Wrapper.h"
+#include "MAX31855Wrapper.hpp"
 
 // initialize the sensor count
 uint8_t MAX31855Wrapper::sensorQty = 0;
@@ -92,21 +92,22 @@ bool MAX31855Wrapper::isMeasurementInvalid()
   return false;
 }
 
-MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros, bool debug)
+MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
   lastPacket.header = getHeader(MAX31855_PACKET_TYPE,
                                 sizeof(MAX31855Packet),
                                 currMicros);
-                               
-  if (debug)
-  {
-    lastPacket.probeTemperature =
-        generateFakeData(-200, 1200, micros(), 35 * SENSOR_ID, 2700000);
-    lastPacket.sensorTemperature =
-        generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 8700000);
-  }
-  // when not debugging readings are updated in isDue()
+
+#ifdef DEBUG
+
+  lastPacket.probeTemperature =
+      generateFakeData(-200, 1200, micros(), 35 * SENSOR_ID, 2700000);
+  lastPacket.sensorTemperature =
+      generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 8700000);
+
+// when not debugging readings are updated in isDue()
+#endif
 
   return lastPacket;
 }

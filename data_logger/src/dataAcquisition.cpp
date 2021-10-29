@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "dataAcquisition.h"
+#include "dataAcquisition.hpp"
 
 // flags for the data ready triggers
 volatile bool adis16470DRflag = false;
@@ -104,14 +104,14 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     // ADIS16470
     if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
     {
-      ADIS16470Packet packet = adis16470.getPacket(micros(), DEBUG);
+      ADIS16470Packet packet = adis16470.getPacket(micros());
       if (packet.header.errorCode)
       {
-        errorCount ++;
+        errorCount++;
         if (errorCount == 1000)
         {
           digitalWrite(RED_LED_PIN, HIGH);
-        } 
+        }
       }
 
       rb.write((const uint8_t *)&packet,
@@ -120,7 +120,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     // AIS1120SX
     if (ais1120sx.active && ais1120sx.isDue(micros()))
     {
-      rb.write((const uint8_t *)&ais1120sx.getPacket(micros(), DEBUG),
+      rb.write((const uint8_t *)&ais1120sx.getPacket(micros()),
                sizeof(AISx120SXPacket));
     }
 
@@ -139,7 +139,7 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     {
       if (tcs[i].active && tcs[i].isDue(micros()))
       {
-        rb.write((const uint8_t *)&tcs[i].getPacket(micros(), DEBUG),
+        rb.write((const uint8_t *)&tcs[i].getPacket(micros()),
                  sizeof(MAX31855Packet));
       }
     }
@@ -177,15 +177,15 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
       MAX31855Packet maxPackets[tcs[0].getSensorQty()] = {};
       for (size_t i = 0; i < rscs[0].getSensorQty(); i++)
       {
-        rscPackets[2 * i] = rscs[i].getSerialPackets(micros(), DEBUG)[0];
-        rscPackets[2 * i + 1] = rscs[i].getSerialPackets(micros(), DEBUG)[1];
+        rscPackets[2 * i] = rscs[i].getSerialPackets(micros())[0];
+        rscPackets[2 * i + 1] = rscs[i].getSerialPackets(micros())[1];
       }
       for (size_t i = 0; i < tcs[0].getSensorQty(); i++)
       {
-        maxPackets[i] = tcs[i].getPacket(micros(), DEBUG);
+        maxPackets[i] = tcs[i].getPacket(micros());
       }
-      outputSensorData(micros(), adis16470.getPacket(micros(), DEBUG),
-                       ais1120sx.getPacket(micros(), DEBUG),
+      outputSensorData(micros(), adis16470.getPacket(micros()),
+                       ais1120sx.getPacket(micros()),
                        rscPackets, rscs[0].getSensorQty(),
                        maxPackets, tcs[0].getSensorQty());
     }

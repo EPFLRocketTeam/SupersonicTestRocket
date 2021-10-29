@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "Sensor.h"
+#include "Sensor.hpp"
 
 Sensor::Sensor(uint8_t sensorID) : SENSOR_ID(sensorID)
 {

@@ -1,5 +1,5 @@
 /*
- * io.h
+ * io.hpp
  *
  *  Created on: 2021-04-24
  *      Author: Joshua Cayetano-Emond
@@ -7,7 +7,7 @@
 #pragma once
 #include <Arduino.h>
 
-#include "globalVariables.h"
+#include "globalVariables.hpp"
 
 const int SUCCESS_FLASH_DURATION = 500;
 const int ERROR_FLASH_DURATION = 1500;

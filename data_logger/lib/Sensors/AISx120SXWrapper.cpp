@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "AISx120SXWrapper.h"
+#include "AISx120SXWrapper.hpp"
 
 // initialize the sensor count
 uint8_t AISx120SXWrapper::sensorQty = 0;
@@ -91,18 +91,17 @@ bool AISx120SXWrapper::isMeasurementInvalid()
   return false;
 }
 
-AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros, bool debug)
+AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
   lastPacket.header = getHeader(AISx120SX_PACKET_TYPE,
                                 sizeof(AISx120SXPacket),
                                 currMicros);
-  if (debug)
-  {
-    lastPacket.accel[0] = generateFakeData(-120, 120, micros());
-    lastPacket.accel[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
-  }
-  // when not debugging readings are updated in isDue()
+#ifdef DEBUG
+  lastPacket.accel[0] = generateFakeData(-120, 120, micros());
+  lastPacket.accel[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+// when not debugging readings are updated in isDue()
+#endif
 
   return lastPacket;
 }

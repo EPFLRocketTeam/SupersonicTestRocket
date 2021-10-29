@@ -4,7 +4,9 @@
 
 // debugging mode
 // for now it's just whether to take real data or generate some fake one
-extern const bool DEBUG;
+
+// CHANGE : Use preprocessor instruction instead (in main.cpp directly)
+//#define DEBUG
 
 // Pinout ----------------------------------------------------------------------
 // I/O

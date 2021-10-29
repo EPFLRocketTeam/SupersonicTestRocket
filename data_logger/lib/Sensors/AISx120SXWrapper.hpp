@@ -14,7 +14,7 @@
 #include <AISx120SX.h>
 
 // User-defined headers
-#include "Sensor.h"
+#include "Sensor.hpp"
 
 struct AISx120SXPacket
 {
@@ -71,5 +71,5 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  AISx120SXPacket getPacket(uint32_t currMicros, bool debug);
+  AISx120SXPacket getPacket(uint32_t currMicros);
 };

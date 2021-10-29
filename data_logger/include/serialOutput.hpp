@@ -1,5 +1,5 @@
 /*
- * serialOutput.h
+ * serialOutput.hpp
  *
  *  Created on: 2021-07-11
  *      Author: Joshua Cayetano-Emond
@@ -8,13 +8,13 @@
 #pragma once
 #include <Arduino.h>
 
-#include "globalVariables.h"
+#include "globalVariables.hpp"
 #include "flowCalculations.h"
 
-#include "ADIS16470Wrapper.h"
-#include "AISx120SXWrapper.h"
-#include "HoneywellRscWrapper.h"
-#include "MAX31855Wrapper.h"
+#include "ADIS16470Wrapper.hpp"
+#include "AISx120SXWrapper.hpp"
+#include "HoneywellRscWrapper.hpp"
+#include "MAX31855Wrapper.hpp"
 
 typedef enum
 {

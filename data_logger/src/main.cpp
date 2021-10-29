@@ -20,19 +20,20 @@
 #include <SPI.h>
 
 // User-defined headers
-#include "globalVariables.h"
+#include "globalVariables.hpp"
 #include "PushButtonArray.h"
-#include "dataAcquisition.h"
-#include "io.h"
+#include "dataAcquisition.hpp"
+#include "io.hpp"
 //    Sensors
-#include "ADIS16470Wrapper.h"
-#include "AISx120SXWrapper.h"
-#include "HoneywellRscWrapper.h"
-#include "MAX31855Wrapper.h"
+#include "ADIS16470Wrapper.hpp"
+#include "AISx120SXWrapper.hpp"
+#include "HoneywellRscWrapper.hpp"
+#include "MAX31855Wrapper.hpp"
 
 // DEFINE VARIABLES ============================================================
 
-const bool DEBUG = false;
+#define DEBUG
+//const bool DEBUG = false;
 
 // Pins ------------------------------------------------------------------------
 // I/O
@@ -109,72 +110,71 @@ void setup()
   Serial.println("I/O has been set up");
   successFlash(); // visual feedback setup is happening
 
-  if (!DEBUG)
+#ifdef DEBUG
+  SPI.begin();
+  SPI1.begin();
+  // SPI1.setSCK(20);
+
+  // Setup the IMU
+  if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
   {
-    SPI.begin();
-    SPI1.begin();
-    // SPI1.setSCK(20);
+    Serial.println("ADIS16470 has been set up succesfully.");
+    successFlash();
+  }
+  else
+  {
+    Serial.println("Could not set up ADIS16470.");
+    errorFlash();
+  }
 
-    // Setup the IMU
-    if (adis16470.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
+  // Setup the AIS1120SX
+  if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
+                      false, false, false, false))
+  {
+    Serial.println("AIS1120SX has been set up succesfully.");
+    successFlash();
+  }
+  else
+  {
+    Serial.println("Could not set up AIS1120SX.");
+    errorFlash();
+  }
+
+  // Setup the pressure sensors
+  for (size_t i = 1; i < rscs[i].getSensorQty(); i++)
+  {
+    if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY,
+                      F_DR_2000_SPS, 50000))
     {
-      Serial.println("ADIS16470 has been set up succesfully.");
+      Serial.print("Succesfully started RSC");
+      Serial.println(i + 1);
       successFlash();
     }
     else
     {
-      Serial.println("Could not set up ADIS16470.");
+      Serial.print("Unable to start RSC");
+      Serial.println(i + 1);
       errorFlash();
-    }
-
-    // Setup the AIS1120SX
-    if (ais1120sx.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, _800Hz, _800Hz,
-                        false, false, false, false))
-    {
-      Serial.println("AIS1120SX has been set up succesfully.");
-      successFlash();
-    }
-    else
-    {
-      Serial.println("Could not set up AIS1120SX.");
-      errorFlash();
-    }
-
-    // Setup the pressure sensors
-    for (size_t i = 1; i < rscs[i].getSensorQty(); i++)
-    {
-      if (rscs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY,
-                        F_DR_2000_SPS, 50000))
-      {
-        Serial.print("Succesfully started RSC");
-        Serial.println(i + 1);
-        successFlash();
-      }
-      else
-      {
-        Serial.print("Unable to start RSC");
-        Serial.println(i + 1);
-        errorFlash();
-      }
-    }
-
-    // Setup the thermocouples
-    for (size_t i = 0; i < 3; i++)
-    {
-      if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
-      {
-        Serial.print("Succesfully started thermocouple TC");
-        Serial.println(i + 1);
-        successFlash();
-      }
-      else
-      {
-        Serial.print("Unable to start thermocouple TC");
-        Serial.println(i + 1);
-        errorFlash();
-      }
     }
   }
+
+  // Setup the thermocouples
+  for (size_t i = 0; i < 3; i++)
+  {
+    if (tcs[i].setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY, CS_TCS_PIN[i]))
+    {
+      Serial.print("Succesfully started thermocouple TC");
+      Serial.println(i + 1);
+      successFlash();
+    }
+    else
+    {
+      Serial.print("Unable to start thermocouple TC");
+      Serial.println(i + 1);
+      errorFlash();
+    }
+  }
+#endif
 
   // Setup the Altimax
   altimax.setupProperties(UINT32_MAX, 0, UINT32_MAX, true);

@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "io.h"
+#include "io.hpp"
 
 void flashLED(uint8_t pinNumber, int flashDuration)
 {
