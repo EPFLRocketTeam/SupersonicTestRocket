@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "HoneywellRscWrapper.h"
+#include "HoneywellRscWrapper.hpp"
 
 // initialize the sensor count
 uint8_t HoneywellRscWrapper::sensorQty = 0;
@@ -16,15 +16,15 @@ HoneywellRscWrapper::
                         int CS_EE,
                         int CS_ADC,
                         int SPI_BUS) : Sensor(sensorQty),
-                                      rscObject(DR, CS_EE, CS_ADC, SPI_BUS),
-                                      lastPressurePacket(getHeader(
-                                          RSC_PRESSURE_PACKET_TYPE,
-                                          sizeof(HoneywellRSCPacket),
-                                          0)),
-                                      lastTempPacket(getHeader(
-                                          RSC_TEMP_PACKET_TYPE,
-                                          sizeof(HoneywellRSCPacket),
-                                          0))
+                                       rscObject(DR, CS_EE, CS_ADC, SPI_BUS),
+                                       lastPressurePacket(getHeader(
+                                           RSC_PRESSURE_PACKET_TYPE,
+                                           sizeof(HoneywellRSCPacket),
+                                           0)),
+                                       lastTempPacket(getHeader(
+                                           RSC_TEMP_PACKET_TYPE,
+                                           sizeof(HoneywellRSCPacket),
+                                           0))
 {
   sensorQty += 1;
   active = false;
@@ -165,23 +165,20 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
   }
 }
 
-HoneywellRSCPacket *HoneywellRscWrapper::getSerialPackets(
-    uint32_t currMicros, bool debug)
+HoneywellRSCPacket *HoneywellRscWrapper::getSerialPackets(uint32_t currMicros)
 {
-  if (debug)
-  {
-    lastPressurePacket.measurement =
-        generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
-    lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
-                                          sizeof(HoneywellRSCPacket),
-                                          currMicros);
-    lastTempPacket.measurement =
-        generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000);
-    lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
-                                      sizeof(HoneywellRSCPacket),
-                                      currMicros);
-  }
-
+#ifdef DEBUG
+  lastPressurePacket.measurement =
+      generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
+  lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
+                                        sizeof(HoneywellRSCPacket),
+                                        currMicros);
+  lastTempPacket.measurement =
+      generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000);
+  lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
+                                    sizeof(HoneywellRSCPacket),
+                                    currMicros);
+#endif
 
   static HoneywellRSCPacket Packets[2];
   Packets[0] = lastPressurePacket;
