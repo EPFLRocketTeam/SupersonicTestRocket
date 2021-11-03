@@ -15,7 +15,7 @@ R = 287
 GAMMA = 1.4
 
 # variables for paths
-root_path = "./data/decodedData/cernier_supersonic_09_10_2021"
+root_path = "./data/logs/decodedData/cernier_supersonic_09_10_2021"
 altimax_subpath = "Cernier_Launch_[08.11.21].xlsx"
 or_data_path = "OR_cernier_09_10_2021.csv"
 
@@ -119,3 +119,5 @@ ax.plot(or_data["Vertical velocity (m/s)"][:cutoff_index_or] / a,
 ax.set_xlabel("Mach number, M [-]")
 ax.set_ylabel("Pressure, p [Pa]")
 ax.legend()
+
+plt.show()

@@ -1,12 +1,13 @@
 # standard imports
 import numpy as np
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from sklearn.linear_model import LinearRegression
 
 # variables
-data_file_path = "./data.csv"
+data_file_path = "../data/simulations/hermes2_mission_profile_study.csv"
 marker_symbols = ("o", "x", "<", ">")
 linestyles = ("-", ":", "--", "-.")
 
