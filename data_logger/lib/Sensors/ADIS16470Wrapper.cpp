@@ -12,15 +12,18 @@ uint8_t ADIS16470Wrapper::sensorQty = 0;
 
 // constructor
 ADIS16470Wrapper::
-    ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(CHECK_INTERVAL,
-                                                       MEASUREMENT_MARGIN,
-                                                       MEASUREMENT_INTERVAL,
-                                                       true),
+    ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(sensorQty),
                                                 DR_PIN(DR),
-                                                adisObject(CS, DR, RST)
+                                                adisObject(CS, DR, RST),
+                                                lastPacket(getHeader(
+                                                    ADIS16470_PACKET_TYPE,
+                                                    sizeof(ADIS16470Packet),
+                                                    0))
 {
-  sensorID = sensorQty;
+  setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
+                  true);
   sensorQty += 1;
+  active = false;
 }
 
 // destructor
@@ -91,19 +94,67 @@ bool ADIS16470Wrapper::verifyCheckSum(uint16_t sensorData[10])
   return !checksumError;
 }
 
-ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
+// if the measurement is invalid
+bool ADIS16470Wrapper::isMeasurementInvalid()
 {
-  // acquire the data
-  uint16_t *wordBurstData;
-  wordBurstData = adisObject.wordBurst(); // Read data and insert into array
+  bool allZeros = true; // if all values are equal to zero
 
-  verifyCheckSum(wordBurstData);
+  for (size_t i = 0; i < 3; i++)
+  {
+    allZeros = allZeros && lastPacket.gyros[i] == 0; //  if gyro zero
+    allZeros = allZeros && lastPacket.acc[i] == 0;   // if pressure zero
+    if (lastPacket.gyros[i] > GYRO_MAX ||
+        lastPacket.gyros[i] < GYRO_MIN)
+    {
+      return true;
+    }
+    if (lastPacket.acc[i] > ACC_MAX || lastPacket.acc[i] < ACC_MIN)
+    {
+      return true;
+    }
+  }
+  allZeros = allZeros && lastPacket.temp == 0; // check if zero
+  if (lastPacket.temp > TEMP_MAX || lastPacket.temp < TEMP_MIN)
+  {
+    return true;
+  }
 
-  // create and write the packet
+  return allZeros;
+}
 
-  ADIS16470Packet packet(getHeader(ADIS16470_PACKET_TYPE,
-                                   sizeof(ADIS16470Packet),
-                                   currMicros),
-                         wordBurstData);
-  return packet;
+ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros, bool debug)
+{
+  if (debug)
+  {
+    lastPacket.gyros[0] = generateFakeData(-2000, 2000, micros());
+    lastPacket.gyros[1] = generateFakeData(-2000, 2000, micros(),
+                                           500, 4800000);
+    lastPacket.gyros[2] = generateFakeData(-2000, 2000, micros(),
+                                           -200, 5200000);
+    lastPacket.acc[0] = generateFakeData(-40, 40, micros());
+    lastPacket.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
+    lastPacket.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
+    lastPacket.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
+  }
+  else if (active)
+  {
+    // acquire the data
+    uint16_t *wordBurstData;
+    wordBurstData = adisObject.wordBurst(); // Read data and insert into array
+    verifyCheckSum(wordBurstData);
+
+    lastPacket.gyros[0] = ((int16_t) wordBurstData[1]) * GYRO_SENSITIVITY;
+    lastPacket.gyros[1] = ((int16_t) wordBurstData[2]) * GYRO_SENSITIVITY;
+    lastPacket.gyros[2] = ((int16_t) wordBurstData[3]) * GYRO_SENSITIVITY;
+    lastPacket.acc[0] = ((int16_t) wordBurstData[4]) * ACC_SENSITIVITY;
+    lastPacket.acc[1] = ((int16_t) wordBurstData[5]) * ACC_SENSITIVITY;
+    lastPacket.acc[2] = ((int16_t) wordBurstData[6]) * ACC_SENSITIVITY;
+    lastPacket.temp = ((int16_t) wordBurstData[7]) * TEMP_SENSITIVITY;
+  }
+  // check for errors and create the header
+  lastPacket.header = getHeader(ADIS16470_PACKET_TYPE,
+                                sizeof(ADIS16470Packet),
+                                currMicros);
+
+  return lastPacket;
 }

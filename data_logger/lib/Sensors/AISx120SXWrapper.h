@@ -19,16 +19,14 @@
 struct AISx120SXPacket
 {
   struct PacketHeader header; // 8 bytes
-  uint16_t accelX;            // 2 bytes
-  // following unused for the AIS1120SX but necessary for alignment
-  uint16_t accelY; // 2 bytes
+  float accel[2] = {0};           // 4 bytes
+  // following unused for the AIS1120SX but included for AIS2120SX
+  //float accelY = 0; // 4 bytes
 
-  // overloaded constructor
-  AISx120SXPacket(PacketHeader header_, int16_t acceleration[2])
+  // constructor for an empty packet
+  AISx120SXPacket(PacketHeader header_)
   {
     header = header_;
-    accelX = acceleration[0];
-    accelY = acceleration[1];
   }
 };
 
@@ -41,10 +39,15 @@ private:
       MEASUREMENT_INTERVAL / 2;                 // [us]
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  int16_t prevMeas[2]; // previous measurement from the sensor
+  // sensor properties for error checking and conversions
+  static constexpr float SENSITIVITY = 1 / (68 * 4.); // [g/LSB]
+  static constexpr float ACC_MAX = 120;
+  static constexpr float ACC_MIN = -120;
 
   AISx120SX aisObject;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  AISx120SXPacket lastPacket;
 
 public:
   // constructor
@@ -65,5 +68,8 @@ public:
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros);
 
-  AISx120SXPacket getPacket(uint32_t currMicros);
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
+
+  AISx120SXPacket getPacket(uint32_t currMicros, bool debug);
 };

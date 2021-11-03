@@ -18,17 +18,20 @@
 
 struct MAX31855Packet
 {
-  struct PacketHeader header; // 8 bytes
-  // sending as floats since the computation is hard to do after acquistion
-  int16_t probeTemperature;  // 2 bytes
-  int16_t sensorTemperature; // 2 bytes
+  struct PacketHeader header;  // 8 bytes
+  float probeTemperature = 0;  // 4 bytes
+  float sensorTemperature = 0; // 4 bytes
 
-  // constructor
-  MAX31855Packet(PacketHeader header_, int16_t probeT, int16_t sensorT)
+  // constructor for an empty packet
+  MAX31855Packet()
+  {
+    // do nothing
+  }
+
+  // constructor for an packet with only header
+  MAX31855Packet(PacketHeader header_)
   {
     header = header_;
-    probeTemperature = probeT;
-    sensorTemperature = sensorT;
   }
 };
 
@@ -41,12 +44,19 @@ private:
       MEASUREMENT_INTERVAL / 10;                // [us] (2000Hz)
   static const uint32_t MEASUREMENT_MARGIN = 0; // [us]
 
-  // previous measurements from the sensor
-  int16_t prevProbeMeas; 
-  int16_t prevAmbientMeas;
+  // sensor properties for error checking and conversions
+  static constexpr float PROBE_SENSITIVITY = 0.25 / 4.; // [degC/LSB]
+  static constexpr float PROBE_MAX = 1372;
+  static constexpr float PROBE_MIN = -270;
+  static constexpr float AMBIENT_SENSITIVITY = 0.0625 / 16.; // [degC/LSB]
+  static constexpr float AMBIENT_MAX = 125;
+  static constexpr float AMBIENT_MIN = -55;
 
   MAX31855_Class max31855Object;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  // previous measurements from the sensor
+  MAX31855Packet lastPacket;
 
 public:
   // constructor
@@ -64,5 +74,8 @@ public:
   // check if the sensor is due for a measurement
   bool isDue(uint32_t currMicros);
 
-  MAX31855Packet getPacket(uint32_t currMicros);
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
+
+  MAX31855Packet getPacket(uint32_t currMicros, bool debug = false);
 };

@@ -14,14 +14,20 @@ uint8_t HoneywellRscWrapper::sensorQty = 0;
 HoneywellRscWrapper::
     HoneywellRscWrapper(int DR,
                         int CS_EE,
-                        int CS_ADC) : Sensor(CHECK_INTERVAL,
-                                             MEASUREMENT_MARGIN,
-                                             MEASUREMENT_INTERVAL,
-                                             true),
-                                      rscObject(DR, CS_EE, CS_ADC)
+                        int CS_ADC,
+                        int SPI_BUS) : Sensor(sensorQty),
+                                      rscObject(DR, CS_EE, CS_ADC, SPI_BUS),
+                                      lastPressurePacket(getHeader(
+                                          RSC_PRESSURE_PACKET_TYPE,
+                                          sizeof(HoneywellRSCPacket),
+                                          0)),
+                                      lastTempPacket(getHeader(
+                                          RSC_TEMP_PACKET_TYPE,
+                                          sizeof(HoneywellRSCPacket),
+                                          0))
 {
-  sensorID = sensorQty;
   sensorQty += 1;
+  active = false;
 }
 
 // destructor
@@ -31,12 +37,18 @@ HoneywellRscWrapper::~HoneywellRscWrapper()
 }
 
 bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
-                                RSC_DATA_RATE data_rate)
+                                RSC_DATA_RATE data_rate,
+                                uint32_t desiredTempPeriod)
 {
+  // Setup the timing parameters
+
   // Try to see if the RSC is working
   for (int i = 0; i < attempts; i++)
   {
     rscObject.init(data_rate); // initialize the object
+
+    pressureMin = rscObject.pressure_minimum();
+    pressureMax = rscObject.pressure_range() + pressureMin;
     // try to make a dummy measurement
     rscObject.adc_request(PRESSURE);
     delay(50);
@@ -44,6 +56,10 @@ bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
     if (reading != 0 && !isnan(reading)) // condition for success
     {
       active = true;
+      temp_frequency = floor(desiredTempPeriod / rscObject.calc_dr_delay());
+      setupProperties(rscObject.calc_dr_delay(), rscObject.calc_dr_delay(),
+                      rscObject.calc_dr_delay(), true);
+
       rscObject.adc_request(nextReadType());
       measurementAmountModulo += 1;
       return active;
@@ -75,6 +91,18 @@ bool HoneywellRscWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
   }
 }
 
+bool HoneywellRscWrapper::isMeasurementInvalid()
+{
+  if (lastPressurePacket.measurement > pressureMax ||
+      lastPressurePacket.measurement < pressureMin ||
+      lastTempPacket.measurement > TEMP_MAX ||
+      lastTempPacket.measurement < TEMP_MIN)
+  {
+    return true;
+  }
+  return false;
+}
+
 READING_T HoneywellRscWrapper::currReadType()
 {
   // temperature readings are requested when modulo == 0
@@ -104,32 +132,60 @@ READING_T HoneywellRscWrapper::nextReadType()
 
 HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
-  float meas;
-  packetType packetTypeNum;
-
   // determine the type of measurement we are getting
   if (currReadType() == TEMPERATURE)
   {
-    meas = rscObject.get_temperature(); // get the measurement
-    packetTypeNum = RSC_TEMP_PACKET_TYPE; // set the packet type
+    lastTempPacket.measurement = rscObject.get_temperature();
+    lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
+                                      sizeof(HoneywellRSCPacket),
+                                      currMicros);
+
+    // request the next data from the adc
+    rscObject.adc_request(nextReadType());
+
+    // update the measurement count
+    measurementAmountModulo += 1;
+    measurementAmountModulo = measurementAmountModulo % temp_frequency;
+    return lastTempPacket;
   }
   else
   {
-    meas = rscObject.get_pressure(); // get the measurement
-    packetTypeNum = RSC_PRESSURE_PACKET_TYPE; // set the packet type
+    lastPressurePacket.measurement = rscObject.get_pressure();
+    lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
+                                          sizeof(HoneywellRSCPacket),
+                                          currMicros);
+
+    // request the next data from the adc
+    rscObject.adc_request(nextReadType());
+
+    // update the measurement count
+    measurementAmountModulo += 1;
+    measurementAmountModulo = measurementAmountModulo % temp_frequency;
+    return lastPressurePacket;
+  }
+}
+
+HoneywellRSCPacket *HoneywellRscWrapper::getSerialPackets(
+    uint32_t currMicros, bool debug)
+{
+  if (debug)
+  {
+    lastPressurePacket.measurement =
+        generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
+    lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
+                                          sizeof(HoneywellRSCPacket),
+                                          currMicros);
+    lastTempPacket.measurement =
+        generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000);
+    lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
+                                      sizeof(HoneywellRSCPacket),
+                                      currMicros);
   }
 
-  // request the next data from the adc
-  rscObject.adc_request(nextReadType());
 
-  // update the measurement count
-  measurementAmountModulo += 1;
-  measurementAmountModulo = measurementAmountModulo % TEMP_FREQUENCY;
+  static HoneywellRSCPacket Packets[2];
+  Packets[0] = lastPressurePacket;
+  Packets[1] = lastTempPacket;
 
-  // create and write the packet
-  HoneywellRSCPacket packet(getHeader(packetTypeNum,
-                                      sizeof(HoneywellRSCPacket),
-                                      currMicros),
-                            meas);
-  return packet;
+  return Packets;
 }

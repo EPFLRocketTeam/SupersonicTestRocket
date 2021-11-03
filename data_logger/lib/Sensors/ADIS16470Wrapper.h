@@ -19,28 +19,14 @@
 struct ADIS16470Packet
 {
   struct PacketHeader header; // 8 bytes
-  // sending as uint16_t to save data space and since it's easy to convert
-  // could likely send as float to save a potential headache later
-  uint16_t gyroX;       // 2 bytes
-  uint16_t gyroY;       // 2 bytes
-  uint16_t gyroZ;       // 2 bytes
-  uint16_t accX;        // 2 bytes
-  uint16_t accY;        // 2 bytes
-  uint16_t accZ;        // 2 bytes
-  uint16_t temp;        // 2 bytes
-  uint16_t padding = 0; // 2 bytes. necessary for alignment
+  float gyros[3] = {0};       // 3 * 4 = 12 bytes
+  float acc[3] = {0};         // 3 * 4 = 12 bytes
+  float temp = 0;             // 4 bytes
 
-  // constructor. takes data directly from wordBurst from the ADIS16470 library
-  ADIS16470Packet(PacketHeader header_, uint16_t IMUdata[10])
+  // constructor for an empty packet
+  ADIS16470Packet(PacketHeader header_)
   {
     header = header_;
-    gyroX = IMUdata[1];
-    gyroY = IMUdata[2];
-    gyroZ = IMUdata[3];
-    accX = IMUdata[4];
-    accY = IMUdata[5];
-    accZ = IMUdata[6];
-    temp = IMUdata[7];
   }
 };
 
@@ -50,12 +36,26 @@ class ADIS16470Wrapper : public Sensor
 private:
   static const uint32_t MEASUREMENT_INTERVAL = 500;            // [us] (2000Hz)
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
-  static const uint32_t MEASUREMENT_MARGIN = 100;              // [us]
+  static const uint32_t MEASUREMENT_MARGIN = 500;              // [us]
+
+  // sensor properties for error checking and conversions
+  static constexpr float GYRO_SENSITIVITY = 0.1; // [deg/s /LSB]
+  static constexpr float GYRO_MAX = 2000;        // [deg/s]
+  static constexpr float GYRO_MIN = -2000;
+  static constexpr float ACC_SENSITIVITY = 0.00125; // [g/LSB]
+  static constexpr float ACC_MAX = 40;              // [g]
+  static constexpr float ACC_MIN = -40;
+  static constexpr float TEMP_SENSITIVITY = 0.1; // [degC/LSB]
+  static constexpr float TEMP_MAX = 85;          // [degC]
+  static constexpr float TEMP_MIN = -25;
 
   const int DR_PIN;
 
   ADIS16470 adisObject;
   static uint8_t sensorQty; // how many sensors of this type exist
+
+  ADIS16470Packet lastPacket;
+
 public:
   // constructor
   ADIS16470Wrapper(int CS, int DR, int RST);
@@ -74,5 +74,8 @@ public:
   // check if the checksum matches
   bool verifyCheckSum(uint16_t sensorData[10]);
 
-  ADIS16470Packet getPacket(uint32_t currMicros);
+  // overwritten version of method in base class sensor
+  bool isMeasurementInvalid();
+
+  ADIS16470Packet getPacket(uint32_t currMicros, bool debug = false);
 };

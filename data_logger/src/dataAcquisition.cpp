@@ -10,6 +10,7 @@
 // flags for the data ready triggers
 volatile bool adis16470DRflag = false;
 volatile bool rscDRflag[2] = {0};
+volatile bool altimaxFlag = false;
 
 void interruptFunctionADIS()
 {
@@ -23,9 +24,14 @@ void interruptFunctionRSC2()
 {
   rscDRflag[1] = true;
 }
+void interruptFunctionAltimax()
+{
+  altimaxFlag = true;
+}
 
 void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
-                 HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs)
+                 HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs,
+                 Sensor altimax)
 {
   // SETUP phase
 
@@ -65,81 +71,123 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
                   interruptFunctionRSC1, FALLING);
   attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
                   interruptFunctionRSC2, FALLING);
+  attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN),
+                  interruptFunctionAltimax, RISING);
 
-  uint32_t prevSyncLoop = micros(); // timing for syncing
+  // set the last time for every check to now
+  uint32_t prevSyncLoop = micros();   // timing for syncing
+  uint32_t prevSerialLoop = micros(); // timing for serial monitor output
+  // checking if the sensors are due will update their check times even if we
+  // don't use the boolean they return
+  // doing regardless of active status since objects are still created
+  // if they are inactive, this value will simply never be used
+  adis16470.isDue(micros(), adis16470DRflag);
+  ais1120sx.isDue(micros()); // check if due to update time
+  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+  {
+    rscs[i].isDue(micros(), rscDRflag[i]); // check if due to update time
+  }
+  for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
+  {
+    tcs[i].isDue(micros()); // check if due to update time
+  }
 
   // Start acquiring data
   Serial.println("Starting to acquire data.");
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
+  int errorCount = 0;
   // acquire data as long as button sequence is not initated
   while (checkButtons(buttonArray, stopEvent))
   {
-
     // ADIS16470
-    if (adis16470.active) // check if the sensor is active
+    if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
     {
-      if (adis16470.isDue(micros(), adis16470DRflag)) // if due
+      ADIS16470Packet packet = adis16470.getPacket(micros(), DEBUG);
+      if (packet.header.errorCode)
       {
-        Serial.println("Acquiring data from the ADIS16470.");
-        ADIS16470Packet packet = adis16470.getPacket(micros());
-        rb.write((const uint8_t *)&packet, sizeof(packet));
+        errorCount ++;
+        if (errorCount == 1000)
+        {
+          digitalWrite(RED_LED_PIN, HIGH);
+        } 
       }
-    }
 
+      rb.write((const uint8_t *)&packet,
+               sizeof(ADIS16470Packet));
+    }
     // AIS1120SX
-    if (ais1120sx.active) // check if the sensor is active
+    if (ais1120sx.active && ais1120sx.isDue(micros()))
     {
-      if (ais1120sx.isDue(micros())) // if due
-      {
-        Serial.println("Acquiring data from the AIS1120SX.");
-        AISx120SXPacket packet = ais1120sx.getPacket(micros());
-        rb.write((const uint8_t *)&packet, sizeof(packet));
-      }
+      rb.write((const uint8_t *)&ais1120sx.getPacket(micros(), DEBUG),
+               sizeof(AISx120SXPacket));
     }
 
     // Pressure sensors
     for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
     {
-      if (rscs[i].active) // check if the sensor is active
+      if (rscs[i].active && rscs[i].isDue(micros(), rscDRflag[i]))
       {
-        if (rscs[i].isDue(micros(), rscDRflag[i])) // sensor is due
-        {
-          Serial.print("Acquiring data from RSC");
-          Serial.println(i + 1);
-          HoneywellRSCPacket packet = rscs[i].getPacket(micros());
-          rb.write((const uint8_t *)&packet, sizeof(packet));
-        }
+        rb.write((const uint8_t *)&rscs[i].getPacket(micros()),
+                 sizeof(HoneywellRSCPacket));
       }
     }
 
     // THERMOCOUPLES
     for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
     {
-      if (tcs[i].active) // check if the sensor is active
+      if (tcs[i].active && tcs[i].isDue(micros()))
       {
-        if (tcs[i].isDue(micros())) // check if sensor is due
-        {
-          Serial.print("Acquiring data from TC");
-          Serial.println(i + 1);
-          MAX31855Packet packet = tcs[i].getPacket(micros());
-          rb.write((const uint8_t *)&packet, sizeof(packet));
-        }
+        rb.write((const uint8_t *)&tcs[i].getPacket(micros(), DEBUG),
+                 sizeof(MAX31855Packet));
       }
+    }
+
+    // Altimax
+    if (altimax.isDueByDR(micros(), altimaxFlag))
+    {
+      PacketHeader packet = altimax.getHeader(ALTIMAX_PACKET_TYPE,
+                                              sizeof(PacketHeader), micros());
+      rb.write((const uint8_t *)&packet, sizeof(packet));
+      altimaxFlag = false;
     }
 
     // check if it's time to sync
     if (micros() - prevSyncLoop > SYNC_INTERVAL)
     {
       prevSyncLoop += SYNC_INTERVAL;
-      Serial.println("Syncing data.");
+      // Serial.println("Syncing data.");
       // Serial.println(micros());
       // TODO: See if better to have with or without syncing.
       // Without syncing seems to write to file anyway since it's preallocated
       // And perhaps solve the issue of unplugging during a sync? To investigate
       // See useful memory time when power loss with and without sync
       // rb.sync();
+    }
+
+    // check if it's time to output to the console
+    // this is not done with every measurement since the human eye can only
+    // see smoothly up to around 60 Hz anyways, and this is only for debugging
+    if (micros() - prevSerialLoop > SERIAL_INTERVAL)
+    {
+      prevSerialLoop += SERIAL_INTERVAL;
+      // get the packets for the rsc and max
+      HoneywellRSCPacket rscPackets[rscs[0].getSensorQty() * 2] = {};
+      MAX31855Packet maxPackets[tcs[0].getSensorQty()] = {};
+      for (size_t i = 0; i < rscs[0].getSensorQty(); i++)
+      {
+        rscPackets[2 * i] = rscs[i].getSerialPackets(micros(), DEBUG)[0];
+        rscPackets[2 * i + 1] = rscs[i].getSerialPackets(micros(), DEBUG)[1];
+      }
+      for (size_t i = 0; i < tcs[0].getSensorQty(); i++)
+      {
+        maxPackets[i] = tcs[i].getPacket(micros(), DEBUG);
+      }
+      outputSensorData(micros(), adis16470.getPacket(micros(), DEBUG),
+                       ais1120sx.getPacket(micros(), DEBUG),
+                       rscPackets, rscs[0].getSensorQty(),
+                       maxPackets, tcs[0].getSensorQty());
     }
 
     // Check if ringBuf is ready for writing
@@ -170,16 +218,16 @@ void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
     if (rb.getWriteError())
     {
       // Error caused by too few free bytes in RingBuf.
-      Serial.println("WriteError");
+      Serial.println("WriteError - RingBuf full.");
       break;
     }
-
   } // Finished acquiring data
 
   // detach the interrupts
   detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
   detachInterrupt(digitalPinToInterrupt(DR_RSC[0]));
   detachInterrupt(digitalPinToInterrupt(DR_RSC[1]));
+  detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN));
 
   // CLEANUP Phase
   // Write any RingBuf data to file.

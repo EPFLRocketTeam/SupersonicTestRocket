@@ -11,14 +11,17 @@
 uint8_t AISx120SXWrapper::sensorQty = 0;
 
 // constructor
-AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(CHECK_INTERVAL,
-                                                         MEASUREMENT_MARGIN,
-                                                         MEASUREMENT_INTERVAL,
-                                                         false),
-                                                  aisObject(CS_)
+AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(sensorQty),
+                                                  aisObject(CS_),
+                                                  lastPacket(getHeader(
+                                                      ADIS16470_PACKET_TYPE,
+                                                      sizeof(AISx120SXPacket),
+                                                      0))
 {
-  sensorID = sensorQty;
+  setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
+                  false);
   sensorQty += 1;
+  active = false;
 }
 
 // destructor
@@ -65,24 +68,41 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
     int16_t *rawMeas;
     rawMeas = aisObject.readAccel();
 
-    if (prevMeas[0] != rawMeas[0] || prevMeas[1] != rawMeas[1]) // data is new
+    if (lastPacket.accel[0] != rawMeas[0] * SENSITIVITY ||
+        lastPacket.accel[1] != rawMeas[1] * SENSITIVITY) // data is new
     {
       returnVal = true;
       prevMeasTime = currMicros;
     }
     // copy new measurements into the old ones
-    prevMeas[0] = rawMeas[0];
-    prevMeas[1] = rawMeas[1];
+    lastPacket.accel[0] = rawMeas[0] * SENSITIVITY;
+    lastPacket.accel[1] = rawMeas[1] * SENSITIVITY;
   }
   return returnVal;
 }
 
-AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
+bool AISx120SXWrapper::isMeasurementInvalid()
 {
-  // create and write the packet
-  AISx120SXPacket packet(getHeader(AISx120SX_PACKET_TYPE,
-                                   sizeof(AISx120SXPacket),
-                                   currMicros),
-                         prevMeas);
-  return packet;
+  if (lastPacket.accel[0] > ACC_MAX || lastPacket.accel[0] < ACC_MIN ||
+      lastPacket.accel[1] > ACC_MAX || lastPacket.accel[1] < ACC_MIN)
+  {
+    return true;
+  }
+  return false;
+}
+
+AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros, bool debug)
+{
+  // update the error on the packet
+  lastPacket.header = getHeader(AISx120SX_PACKET_TYPE,
+                                sizeof(AISx120SXPacket),
+                                currMicros);
+  if (debug)
+  {
+    lastPacket.accel[0] = generateFakeData(-120, 120, micros());
+    lastPacket.accel[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+  }
+  // when not debugging readings are updated in isDue()
+
+  return lastPacket;
 }
