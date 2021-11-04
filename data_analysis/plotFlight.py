@@ -12,7 +12,7 @@ import os
 import matplotlib.pyplot as plt
 
 # variables
-directory = "data/decodedData/kaltbrunn_launch_2021_09_04"
+directory = "./data/decodedData/kaltbrunn_launch_2021_09_04"
 # launch start/end window. obtained after graphs first shown
 launch_start = 1100e6
 launch_end = 1200e6
