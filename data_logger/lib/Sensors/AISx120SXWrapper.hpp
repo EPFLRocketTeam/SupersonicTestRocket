@@ -17,6 +17,8 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 
+// *************** AISx120SXPacket *************** //
+
 struct AISx120SXBody
 {
   float accel[2] = {0}; // 2 * 4 = 8 bytes
@@ -84,7 +86,8 @@ public:
   }
 };
 
-// Wrapper for the AISx120SX class
+// *************** AISx120SXWrapper *************** //
+
 class AISx120SXWrapper : public Sensor
 {
 private:
@@ -103,18 +106,28 @@ private:
 
   AISx120SXPacket lastPacket;
 
+  // Setup parameters
+  bandwidth bandwidthX;
+  bandwidth bandwidthY;
+  bool x_offset_monitor;
+  bool x_offset_canc;
+  bool y_offset_monitor;
+  bool y_offset_canc;
+
 public:
   // constructor
-  AISx120SXWrapper(uint8_t CS_);
+  AISx120SXWrapper(uint8_t CS_,
+                   bandwidth bandwidthX, bandwidth bandwidthY,
+                   bool x_offset_monitor, bool x_offset_canc,
+                   bool y_offset_monitor, bool y_offset_canc);
 
   // destructor
   ~AISx120SXWrapper();
 
   // attemps to set up the sensor and returns true if it was successful
-  bool setup(int attempts, int delayDuration,
-             bandwidth bandwidthX, bandwidth bandwidthY,
-             bool x_offset_monitor, bool x_offset_canc,
-             bool y_offset_monitor, bool y_offset_canc);
+  bool setup(uint32_t attempts, uint32_t delayDuration);
+
+  const char *myName() { return "AISx120SX"; }
 
   // return the current count of sensors
   uint8_t getSensorQty();

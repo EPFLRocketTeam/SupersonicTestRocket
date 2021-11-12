@@ -11,9 +11,19 @@
 uint8_t AISx120SXWrapper::sensorQty = 0;
 
 // constructor
-AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(sensorQty),
-                                                  aisObject(CS_),
-                                                  lastPacket(getHeader(0))
+AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_,
+                                   bandwidth bwd_X, bandwidth bwd_Y,
+                                   bool x_offset_m, bool x_offset_c,
+                                   bool y_offset_m, bool y_offset_c)
+    : Sensor(sensorQty),
+      aisObject(CS_),
+      lastPacket(getHeader(0)),
+      bandwidthX(bwd_X),
+      bandwidthY(bwd_Y),
+      x_offset_monitor(x_offset_m),
+      y_offset_monitor(y_offset_m),
+      x_offset_canc(x_offset_c),
+      y_offset_canc(y_offset_c)
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
                   false);
@@ -27,13 +37,10 @@ AISx120SXWrapper::~AISx120SXWrapper()
   sensorQty -= 1;
 }
 
-bool AISx120SXWrapper::setup(int attempts, int delayDuration,
-                             bandwidth bandwidthX, bandwidth bandwidthY,
-                             bool x_offset_monitor, bool x_offset_canc,
-                             bool y_offset_monitor, bool y_offset_canc)
+bool AISx120SXWrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
   // Try to see if the AIS is working
-  for (int i = 0; i < attempts; i++)
+  for (uint32_t i = 0; i < attempts; i++)
   {
     if (aisObject.setup(bandwidthX, bandwidthY, x_offset_monitor, x_offset_canc,
                         y_offset_monitor, y_offset_canc)) // condition for success

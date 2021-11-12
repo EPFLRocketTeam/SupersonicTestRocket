@@ -41,6 +41,12 @@ public:
   void setupProperties(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
                        uint32_t measInterval_, bool DR_driven_);
 
+  // Setup the underlying sensor (other special parameters should be given at construction)
+  virtual bool setup(uint32_t attempts, uint32_t delayDuration) = 0;
+
+  // Get the name of the sensor; useful for debugging/logging purposes
+  virtual const char* myName() = 0;
+
   // if the sensor is due for a check because of time
   // returns 1 if it is due
   bool isDueByTime(uint32_t currMicros);

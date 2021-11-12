@@ -17,6 +17,8 @@
 #include "Sensor.hpp"
 #include "Packet.hpp"
 
+// *************** MAX31855Packet *************** //
+
 struct MAX31855Body
 {
   float probeTemperature = 0;  // 4 bytes
@@ -73,7 +75,7 @@ public:
   }
 };
 
-// Wrapper for the MAX31855 class
+// *************** MAX31855Wrapper *************** //
 class MAX31855Wrapper : public Sensor
 {
 private:
@@ -96,15 +98,20 @@ private:
   // previous measurements from the sensor
   MAX31855Packet lastPacket;
 
+  // Setup parameter
+  uint8_t CS;
+
 public:
   // constructor
-  MAX31855Wrapper();
+  MAX31855Wrapper(uint8_t CS);
 
   // destructor
   ~MAX31855Wrapper();
 
   // attemps to set up the sensor and returns true if it was successful
-  bool setup(int attempts, int delayDuration, uint8_t CS);
+  bool setup(uint32_t attempts, uint32_t delayDuration);
+
+  const char *myName() { return "MAX31855"; }
 
   // return the current count of sensors
   uint8_t getSensorQty();

@@ -17,6 +17,8 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 
+// *************** ADIS16470Packet *************** //
+
 struct ADIS16470Body
 {
   float gyros[3] = {0};       // 3 * 4 = 12 bytes
@@ -177,7 +179,8 @@ public:
   }
 };
 
-// Wrapper for the ADIS16470 class
+// *************** ADIS16470Wrapper *************** //
+
 class ADIS16470Wrapper : public Sensor
 {
 private:
@@ -211,7 +214,9 @@ public:
   ~ADIS16470Wrapper();
 
   // attemps to set up the sensor and returns true if it was successful
-  bool setup(int attempts, int delayDuration);
+  bool setup(uint32_t attempts, uint32_t delayDuration);
+
+  const char* myName() {return "ADIS16470";}
 
   uint8_t getSensorQty();
 

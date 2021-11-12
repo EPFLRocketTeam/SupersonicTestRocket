@@ -14,7 +14,9 @@ uint8_t HoneywellRscWrapper::sensorQty = 0;
 HoneywellRscWrapper::HoneywellRscWrapper(int DR,
                                          int CS_EE,
                                          int CS_ADC,
-                                         int SPI_BUS)
+                                         int SPI_BUS,
+                                         RSC_DATA_RATE data_r,
+                                         uint32_t desired_P)
     : Sensor(sensorQty),
       rscObject(DR, CS_EE, CS_ADC, SPI_BUS),
       lastPressurePacket(Sensor::getHeader(
@@ -24,7 +26,9 @@ HoneywellRscWrapper::HoneywellRscWrapper(int DR,
       lastTempPacket(Sensor::getHeader(
           RSC_TEMP_PACKET_TYPE,
           sizeof(HoneywellRSCBody),
-          0))
+          0)),
+      data_rate(data_r),
+      desiredTempPeriod(desired_P)
 {
   sensorQty += 1;
   active = false;
@@ -36,14 +40,12 @@ HoneywellRscWrapper::~HoneywellRscWrapper()
   sensorQty -= 1;
 }
 
-bool HoneywellRscWrapper::setup(int attempts, int delayDuration,
-                                RSC_DATA_RATE data_rate,
-                                uint32_t desiredTempPeriod)
+bool HoneywellRscWrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
   // Setup the timing parameters
 
   // Try to see if the RSC is working
-  for (int i = 0; i < attempts; i++)
+  for (uint32_t i = 0; i < attempts; i++)
   {
     rscObject.init(data_rate); // initialize the object
 

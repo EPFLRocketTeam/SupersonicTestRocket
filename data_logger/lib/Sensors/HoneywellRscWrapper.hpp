@@ -119,16 +119,22 @@ private:
   HoneywellRSC_Pressure_Packet lastPressurePacket;
   HoneywellRSC_Temp_Packet lastTempPacket;
 
+  // Parameters for setup
+  RSC_DATA_RATE data_rate;
+  uint32_t desiredTempPeriod;
+
 public:
   // constructor
-  HoneywellRscWrapper(int DR, int CS_EE, int CS_ADC, int SPI_BUS);
+  HoneywellRscWrapper(int DR, int CS_EE, int CS_ADC, int SPI_BUS,
+                      RSC_DATA_RATE data_r, uint32_t desired_P);
 
   // destructor
   ~HoneywellRscWrapper();
 
   // attemps to set up the sensor and returns true if it was successful
-  bool setup(int attempts, int delayDuration, RSC_DATA_RATE data_rate,
-             uint32_t desiredTempPeriod);
+  bool setup(uint32_t attempts, uint32_t delayDuration);
+
+  const char *myName() { return "HoneywellRsc"; }
 
   // return the current count of sensors
   uint8_t getSensorQty();

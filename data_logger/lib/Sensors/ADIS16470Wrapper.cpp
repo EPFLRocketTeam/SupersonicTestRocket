@@ -29,14 +29,14 @@ ADIS16470Wrapper::~ADIS16470Wrapper()
   sensorQty -= 1;
 }
 
-bool ADIS16470Wrapper::setup(int attempts, int delayDuration)
+bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
   adisObject.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
   adisObject.regWrite(DEC_RATE, 0x00);  // Set digital filter
   adisObject.regWrite(FILT_CTRL, 0x04); // Set digital filter
 
   // Try to see if the ADIS is working
-  for (int i = 0; i < attempts; i++)
+  for (uint32_t i = 0; i < attempts; i++)
   {
     // acquire some data
     uint16_t *wordBurstData;
@@ -159,6 +159,6 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
 PacketHeader ADIS16470Wrapper::getHeader(uint32_t currMicros)
 {
   return Sensor::getHeader(ADIS16470_PACKET_TYPE,
-                           sizeof((ADIS16470Body)),
+                           sizeof(ADIS16470Body),
                            currMicros);
 }

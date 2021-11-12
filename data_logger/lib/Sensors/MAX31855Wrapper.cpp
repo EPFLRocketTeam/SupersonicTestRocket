@@ -11,8 +11,10 @@
 uint8_t MAX31855Wrapper::sensorQty = 0;
 
 // constructor
-MAX31855Wrapper::MAX31855Wrapper() : Sensor(sensorQty),
-                                     lastPacket(getHeader(0))
+MAX31855Wrapper::MAX31855Wrapper(uint8_t cs)
+    : Sensor(sensorQty),
+      lastPacket(getHeader(0)),
+      CS(cs)
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                   MEASUREMENT_INTERVAL, false);
@@ -26,10 +28,10 @@ MAX31855Wrapper::~MAX31855Wrapper()
   sensorQty -= 1;
 }
 
-bool MAX31855Wrapper::setup(int attempts, int delayDuration, uint8_t CS)
+bool MAX31855Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
   // Try to see if the MAX is working
-  for (int i = 0; i < attempts; i++)
+  for (uint32_t i = 0; i < attempts; i++)
   {
     if (!max31855Object.begin(CS))
     {
