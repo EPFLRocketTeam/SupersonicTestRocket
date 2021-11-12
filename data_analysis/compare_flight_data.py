@@ -135,6 +135,8 @@ ax.plot(or_data["Time (s)"],
 ax.plot(ais_data["timestamp (s)"], ais_thrust,
         label="AIS (using OR drag and mass)")
 ax.plot(sft_data["timestamp (s)"], sft_data["N"], label="SFT")
+ax.plot(sft_data["timestamp (s)"], sft_data["N"] * 1.0428,
+        label="SFT (corrected)")
 ax.set_xlabel("Time, t [s]")
 ax.set_ylabel("Motor thrust, T [N]")
 ax.legend()
