@@ -29,9 +29,7 @@ void interruptFunctionAltimax()
   altimaxFlag = true;
 }
 
-void acquireData(ADIS16470Wrapper adis16470, AISx120SXWrapper ais1120sx,
-                 HoneywellRscWrapper *rscs, MAX31855Wrapper *tcs,
-                 Sensor altimax)
+void acquireData(Sensor* sArray[], size_t sSize)
 {
   // SETUP phase
 

@@ -149,11 +149,11 @@ void setup()
     Serial.printf("Sensor n° %d: %s ",i,sensorArray[i]->myName());
     if (sensorArray[i]->setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
     {
-      Serial.println("has been set up successfully.")
+      Serial.println("has been set up successfully.");
     }
     else
     {
-      Serial.println("could not be set up.")
+      Serial.println("could not be set up.");
     }
   }
 
@@ -166,7 +166,7 @@ void setup()
   Serial.println("----- Setup complete -----");
   successFlash();
 
-  acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
+  acquireData(sensorArray,NUM_SENSORS);
 }
 
 // LOOP ========================================================================
@@ -200,7 +200,7 @@ void loop()
         Serial.println("Will begin data acquisition as button was pressed.");
         digitalWrite(GREEN_LED_PIN, LOW);
         successFlash();
-        acquireData(adis16470, ais1120sx, rscs, tcs, altimax);
+        acquireData(sensorArray,NUM_SENSORS);
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");
