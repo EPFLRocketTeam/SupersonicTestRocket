@@ -32,3 +32,7 @@ extern const uint8_t TAT_TC;
 extern const uint8_t CS_TCS_PIN[4];
 // Altimax
 extern const uint8_t ALTIMAX_DR_PIN;
+
+// Sensors ----------------------------------------------------------------------
+
+extern const uint8_t NUM_SENSORS = 9;
