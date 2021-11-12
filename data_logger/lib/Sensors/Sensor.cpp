@@ -12,11 +12,6 @@ Sensor::Sensor(uint8_t sensorID) : SENSOR_ID(sensorID)
   checksumError = false;
 }
 
-Sensor::~Sensor()
-{
-  // do stuff
-}
-
 void Sensor::setupProperties(uint32_t checkInterval_,
                              uint32_t checkIntervalMargin_,
                              uint32_t measInterval_, bool DR_driven_)
@@ -119,7 +114,7 @@ uint8_t Sensor::getErrorCode(uint32_t currMicros)
   return errorCode;
 }
 
-// takes an error code and transforms it into a booleana array
+// takes an error code and transforms it into a boolean array
 bool *decodeErrorCode(uint8_t errorCode)
 {
   // array of flags of errors that occured

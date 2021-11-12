@@ -12,10 +12,7 @@ uint8_t MAX31855Wrapper::sensorQty = 0;
 
 // constructor
 MAX31855Wrapper::MAX31855Wrapper() : Sensor(sensorQty),
-                                     lastPacket(getHeader(
-                                         MAX31855_PACKET_TYPE,
-                                         sizeof(MAX31855Packet),
-                                         0))
+                                     lastPacket(getHeader(0))
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                   MEASUREMENT_INTERVAL, false);
@@ -64,17 +61,18 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros)
     if (!max31855Object.fault()) // if no error
     {
       float probeT = max31855Object.rawToProbe(rawMeas) * PROBE_SENSITIVITY;
-      float ambientT = max31855Object.rawToAmbient(rawMeas) *
-                       AMBIENT_SENSITIVITY;
-      if (lastPacket.probeTemperature != probeT ||
-          lastPacket.sensorTemperature != ambientT) // data is new
+      float ambientT = max31855Object.rawToAmbient(rawMeas) * AMBIENT_SENSITIVITY;
+
+      if (lastPacket.getProbeTemperature() != probeT ||
+          lastPacket.getSensorTemperature() != ambientT) // data is new
       {
         prevMeasTime = currMicros;
         returnVal = true;
       }
+
       // update the last measurements
-      lastPacket.probeTemperature = probeT;
-      lastPacket.sensorTemperature = ambientT;
+      lastPacket.setProbeTemperature(probeT);
+      lastPacket.setSensorTemperature(ambientT);
     }
   }
   return returnVal;
@@ -82,10 +80,10 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros)
 
 bool MAX31855Wrapper::isMeasurementInvalid()
 {
-  if (lastPacket.probeTemperature > PROBE_MAX ||
-      lastPacket.probeTemperature < PROBE_MIN ||
-      lastPacket.sensorTemperature > AMBIENT_MAX ||
-      lastPacket.sensorTemperature < AMBIENT_MIN)
+  if (lastPacket.getProbeTemperature() > PROBE_MAX ||
+      lastPacket.getProbeTemperature() < PROBE_MIN ||
+      lastPacket.getSensorTemperature() > AMBIENT_MAX ||
+      lastPacket.getSensorTemperature() < AMBIENT_MIN)
   {
     return true;
   }
@@ -95,9 +93,7 @@ bool MAX31855Wrapper::isMeasurementInvalid()
 MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
-  lastPacket.header = getHeader(MAX31855_PACKET_TYPE,
-                                sizeof(MAX31855Packet),
-                                currMicros);
+  lastPacket.updateHeader(getHeader(currMicros));
 
 #ifdef DEBUG
 
@@ -110,4 +106,11 @@ MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 #endif
 
   return lastPacket;
+}
+
+PacketHeader MAX31855Wrapper::getHeader(uint32_t currMicros)
+{
+  return Sensor::getHeader(MAX31855_PACKET_TYPE,
+                           sizeof(MAX31855Body),
+                           currMicros);
 }

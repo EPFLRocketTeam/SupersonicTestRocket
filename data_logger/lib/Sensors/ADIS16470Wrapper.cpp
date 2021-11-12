@@ -10,15 +10,12 @@
 // initialize the sensor count
 uint8_t ADIS16470Wrapper::sensorQty = 0;
 
-// constructor
+// ----- Constructor ----- //
 ADIS16470Wrapper::
     ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(sensorQty),
                                                 DR_PIN(DR),
                                                 adisObject(CS, DR, RST),
-                                                lastPacket(getHeader(
-                                                    ADIS16470_PACKET_TYPE,
-                                                    sizeof(ADIS16470Packet),
-                                                    0))
+                                                lastPacket(getHeader(0))
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
                   true);
@@ -26,7 +23,7 @@ ADIS16470Wrapper::
   active = false;
 }
 
-// destructor
+// ----- Destructor ----- //
 ADIS16470Wrapper::~ADIS16470Wrapper()
 {
   sensorQty -= 1;
@@ -48,11 +45,11 @@ bool ADIS16470Wrapper::setup(int attempts, int delayDuration)
     int16_t checksum = adisObject.checksum(wordBurstData); // get the checksum
 
     // get a zero vector to make sure the data we are getting isn't just zeros
-    uint16_t zeros[sizeof(uint16_t)*ADIS16470::wordBurstLength] = {0};
+    uint16_t zeros[sizeof(uint16_t) * ADIS16470::wordBurstLength] = {0};
 
     // checksum ok AND didn't read just zeros --> setup successful!
     if (wordBurstData[9] == checksum &&
-        memcmp(wordBurstData, zeros, sizeof(uint16_t)*ADIS16470::wordBurstLength) != 0)
+        memcmp(wordBurstData, zeros, sizeof(uint16_t) * ADIS16470::wordBurstLength) != 0)
     {
       active = true;
       return active;
@@ -101,20 +98,20 @@ bool ADIS16470Wrapper::isMeasurementInvalid()
 
   for (size_t i = 0; i < 3; i++)
   {
-    allZeros = allZeros && lastPacket.gyros[i] == 0; //  if gyro zero
-    allZeros = allZeros && lastPacket.acc[i] == 0;   // if pressure zero
-    if (lastPacket.gyros[i] > GYRO_MAX ||
-        lastPacket.gyros[i] < GYRO_MIN)
+    allZeros = allZeros && lastPacket.getGyro(i) == 0; //  if gyro zero
+    allZeros = allZeros && lastPacket.getAcc(i) == 0;  // if pressure zero
+    if (lastPacket.getGyro(i) > GYRO_MAX ||
+        lastPacket.getGyro(i) < GYRO_MIN)
     {
       return true;
     }
-    if (lastPacket.acc[i] > ACC_MAX || lastPacket.acc[i] < ACC_MIN)
+    if (lastPacket.getAcc(i) > ACC_MAX || lastPacket.getAcc(i) < ACC_MIN)
     {
       return true;
     }
   }
-  allZeros = allZeros && lastPacket.temp == 0; // check if zero
-  if (lastPacket.temp > TEMP_MAX || lastPacket.temp < TEMP_MIN)
+  allZeros = allZeros && lastPacket.getTemp() == 0; // check if zero
+  if (lastPacket.getTemp() > TEMP_MAX || lastPacket.getTemp() < TEMP_MIN)
   {
     return true;
   }
@@ -145,18 +142,23 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
     wordBurstData = adisObject.wordBurst(); // Read data and insert into array
     verifyCheckSum(wordBurstData);
 
-    lastPacket.gyros[0] = ((int16_t)wordBurstData[1]) * GYRO_SENSITIVITY;
-    lastPacket.gyros[1] = ((int16_t)wordBurstData[2]) * GYRO_SENSITIVITY;
-    lastPacket.gyros[2] = ((int16_t)wordBurstData[3]) * GYRO_SENSITIVITY;
-    lastPacket.acc[0] = ((int16_t)wordBurstData[4]) * ACC_SENSITIVITY;
-    lastPacket.acc[1] = ((int16_t)wordBurstData[5]) * ACC_SENSITIVITY;
-    lastPacket.acc[2] = ((int16_t)wordBurstData[6]) * ACC_SENSITIVITY;
-    lastPacket.temp = ((int16_t)wordBurstData[7]) * TEMP_SENSITIVITY;
+    lastPacket.setXGyro(((int16_t)wordBurstData[1]) * GYRO_SENSITIVITY);
+    lastPacket.setYGyro(((int16_t)wordBurstData[2]) * GYRO_SENSITIVITY);
+    lastPacket.setZGyro(((int16_t)wordBurstData[3]) * GYRO_SENSITIVITY);
+    lastPacket.setXAcc(((int16_t)wordBurstData[4]) * ACC_SENSITIVITY);
+    lastPacket.setYAcc(((int16_t)wordBurstData[5]) * ACC_SENSITIVITY);
+    lastPacket.setZAcc(((int16_t)wordBurstData[6]) * ACC_SENSITIVITY);
+    lastPacket.setTemp(((int16_t)wordBurstData[7]) * TEMP_SENSITIVITY);
   }
   // check for errors and create the header
-  lastPacket.header = getHeader(ADIS16470_PACKET_TYPE,
-                                sizeof(ADIS16470Packet),
-                                currMicros);
+  lastPacket.updateHeader(getHeader(currMicros));
 
   return lastPacket;
+}
+
+PacketHeader ADIS16470Wrapper::getHeader(uint32_t currMicros)
+{
+  return Sensor::getHeader(ADIS16470_PACKET_TYPE,
+                           sizeof((ADIS16470Body)),
+                           currMicros);
 }

@@ -14,19 +14,73 @@
 #include <AISx120SX.h>
 
 // User-defined headers
+#include "Packet.hpp"
 #include "Sensor.hpp"
 
-struct AISx120SXPacket
+struct AISx120SXBody
 {
-  struct PacketHeader header; // 8 bytes
-  float accel[2] = {0};           // 4 bytes
-  // following unused for the AIS1120SX but included for AIS2120SX
-  //float accelY = 0; // 4 bytes
+  float accel[2] = {0}; // 2 * 4 = 8 bytes
+};
 
-  // constructor for an empty packet
-  AISx120SXPacket(PacketHeader header_)
+class AISx120SXPacket : public Packet
+{
+public:
+  // ----- Constructors ----- //
+
+  AISx120SXPacket()
   {
-    header = header_;
+    header.packetType_ = AISx120SX_PACKET_TYPE;
+    header.packetSize = sizeof(AISx120SXBody);
+
+    content = malloc(header.packetSize);
+  }
+
+  AISx120SXPacket(PacketHeader h)
+  {
+    assert(h.packetType_ == AISx120SX_PACKET_TYPE &&
+           h.packetSize == sizeof(AISx120SXBody));
+
+    header = h;
+    content = malloc(h.packetSize);
+  }
+
+  // ----- Getters ----- //
+  float getXaccel()
+  {
+    return reinterpret_cast<AISx120SXBody *>(content)->accel[0];
+  }
+
+  float getYaccel()
+  {
+    return reinterpret_cast<AISx120SXBody *>(content)->accel[1];
+  }
+
+  void getAccel(float a[2])
+  {
+    a[0] = getXaccel();
+    a[1] = getYaccel();
+  }
+
+  // ----- Setters ----- //
+  void setAcceleration(const float a[2])
+  {
+    reinterpret_cast<AISx120SXBody *>(content)->accel[0] = a[0];
+    reinterpret_cast<AISx120SXBody *>(content)->accel[1] = a[1];
+  }
+
+  void setXaccel(float a_x)
+  {
+    reinterpret_cast<AISx120SXBody *>(content)->accel[0] = a_x;
+  }
+
+  void setYaccel(float a_y)
+  {
+    reinterpret_cast<AISx120SXBody *>(content)->accel[0] = a_y;
+  }
+
+  void setContent(AISx120SXBody b)
+  {
+    memcpy(content, static_cast<void *>(&b), sizeof(AISx120SXBody));
   }
 };
 
@@ -72,4 +126,6 @@ public:
   bool isMeasurementInvalid();
 
   AISx120SXPacket getPacket(uint32_t currMicros);
+
+  PacketHeader getHeader(uint32_t currMicros);
 };

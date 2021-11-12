@@ -9,41 +9,7 @@
 
 #include <Arduino.h>
 
-// define how measurements can be due
-typedef enum
-{
-  NOT_DUE,     // measurement not due
-  DUE_BY_TIME, // due by time
-  DUE_BY_DR    // due by DR input
-} dueType;
-
-// define packet type numbering
-enum
-{
-  NO_PACKET,                     // no packet. indicates EOF
-  ADIS16470_PACKET_ARCHIVE_TYPE, // ADIS16470 Archived Packet
-  AISx120SX_PACKET_ARCHIVE_TYPE, // AISx120SX Archived Packet
-  RSC_PRESSURE_PACKET_TYPE,      // Honewell RSC pressure packet
-  RSC_TEMP_PACKET_TYPE,          // Honewell RSC temperature packet
-  MAX31855_PACKET_ARCHIVE_TYPE,  // MAX31855 Archived packet
-  ALTIMAX_PACKET_TYPE,           // ALTIMAX packet
-  ADIS16470_PACKET_TYPE,         // ADIS16470 Packet
-  AISx120SX_PACKET_TYPE,         // AISx120SX Packet
-  MAX31855_PACKET_TYPE           // MAX31855 packet
-};
-typedef uint8_t packetType;
-
-// 8 byte header for all packets
-struct PacketHeader
-{
-  packetType packetType_; // 1 byte
-  uint8_t packetSize;     // 1 byte
-  uint8_t sensorID;       // 1 byte
-  uint8_t errorCode;      // 1 byte
-  uint32_t timestamp;     // 4 bytes
-};
-
-const uint8_t ERROR_TYPE_NUM = 5; // type of errors available
+#include "Packet.hpp"
 
 // Generic sensor object
 class Sensor
@@ -102,6 +68,9 @@ public:
   // generates a packet header for the sensor
   PacketHeader getHeader(packetType packetType_, uint8_t packetSize_,
                          uint32_t currMicros);
+
+  // Auto generate Header parameters for children classes (aka specific sensors)
+  virtual PacketHeader getHeader(uint32_t currMicros) = 0;
 
   // generate fake data when debugging the serial output without sensors
   float generateFakeData(float minValue, float maxValue,

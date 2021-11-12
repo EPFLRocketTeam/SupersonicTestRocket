@@ -15,23 +15,61 @@
 
 // User-defined headers
 #include "Sensor.hpp"
+#include "Packet.hpp"
 
-struct MAX31855Packet
+struct MAX31855Body
 {
-  struct PacketHeader header;  // 8 bytes
   float probeTemperature = 0;  // 4 bytes
   float sensorTemperature = 0; // 4 bytes
+};
 
-  // constructor for an empty packet
+class MAX31855Packet : public Packet
+{
+public:
+  // ----- Constructors ----- //
+
   MAX31855Packet()
   {
-    // do nothing
+    header.packetType_ = MAX31855_PACKET_TYPE;
+    header.packetSize = sizeof(MAX31855Body);
+
+    content = malloc(header.packetSize);
   }
 
-  // constructor for an packet with only header
-  MAX31855Packet(PacketHeader header_)
+  MAX31855Packet(PacketHeader h)
   {
-    header = header_;
+    assert(h.packetType_ == MAX31855_PACKET_TYPE &&
+           h.packetSize == sizeof(MAX31855Body));
+
+    header = h;
+    content = malloc(h.packetSize);
+  }
+
+  // ----- Getters ----- //
+  float getProbeTemperature()
+  {
+    return reinterpret_cast<MAX31855Body *>(content)->probeTemperature;
+  }
+
+  float getSensorTemperature()
+  {
+    return reinterpret_cast<MAX31855Body *>(content)->sensorTemperature;
+  }
+
+  // ----- Setters ----- //
+  void setProbeTemperature(float t)
+  {
+    reinterpret_cast<MAX31855Body *>(content)->probeTemperature = t;
+  }
+
+  void setSensorTemperature(float t)
+  {
+    reinterpret_cast<MAX31855Body *>(content)->sensorTemperature = t;
+  }
+
+  void setContent(MAX31855Body b)
+  {
+    memcpy(content, static_cast<void *>(&b), sizeof(MAX31855Body));
   }
 };
 
@@ -78,4 +116,7 @@ public:
   bool isMeasurementInvalid();
 
   MAX31855Packet getPacket(uint32_t currMicros);
+
+  // MAX31855 header generator
+  PacketHeader getHeader(uint32_t currMicros);
 };

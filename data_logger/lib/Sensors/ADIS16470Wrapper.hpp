@@ -14,19 +14,166 @@
 #include <ADIS16470.h>
 
 // User-defined headers
+#include "Packet.hpp"
 #include "Sensor.hpp"
 
-struct ADIS16470Packet
+struct ADIS16470Body
 {
-  struct PacketHeader header; // 8 bytes
   float gyros[3] = {0};       // 3 * 4 = 12 bytes
   float acc[3] = {0};         // 3 * 4 = 12 bytes
   float temp = 0;             // 4 bytes
+};
 
-  // constructor for an empty packet
-  ADIS16470Packet(PacketHeader header_)
+class ADIS16470Packet : public Packet
+{
+public:
+  // ----- Constructors ----- //
+
+  ADIS16470Packet()
   {
-    header = header_;
+    header.packetType_ = ADIS16470_PACKET_TYPE;
+    header.packetSize = sizeof(ADIS16470Body);
+
+    content = malloc(header.packetSize);
+  }
+
+  ADIS16470Packet(PacketHeader h)
+  {
+    assert(h.packetType_ == ADIS16470_PACKET_TYPE &&
+           h.packetSize == sizeof(ADIS16470Body));
+
+    header = h;
+    content = malloc(h.packetSize);
+  }
+
+  // ----- Getters ----- //
+  float getGyro(size_t i)
+  {
+    assert(i < 3);
+    return reinterpret_cast<ADIS16470Body *>(content)->gyros[i];
+  }
+
+  void getGyros(float g[3])
+  {
+    g[0] = getGyro(0);
+    g[1] = getGyro(1);
+    g[2] = getGyro(2);
+  }
+
+  float getXGyro()
+  {
+    return getGyro(0);
+  }
+
+  float getYGyro()
+  {
+    return getGyro(1);
+  }
+
+  float getZGyro()
+  {
+    return getGyro(2);
+  }
+
+  float getAcc(size_t i)
+  {
+    assert(i < 3);
+    return reinterpret_cast<ADIS16470Body *>(content)->acc[i];
+  }
+
+  void getAccs(float a[3])
+  {
+    a[0] = getAcc(0);
+    a[1] = getAcc(1);
+    a[2] = getAcc(2);
+  }
+
+  float getXAcc()
+  {
+    return getAcc(0);
+  }
+
+  float getYAcc()
+  {
+    return getAcc(1);
+  }
+
+  float getZAcc()
+  {
+    return getAcc(2);
+  }
+
+  float getTemp()
+  {
+    return reinterpret_cast<ADIS16470Body *>(content)->temp;
+  }
+  
+
+  // ----- Setters ----- //
+  void setGyro(size_t i,float g)
+  {
+    assert(i < 3);
+    reinterpret_cast<ADIS16470Body *>(content)->gyros[i] = g;
+  }
+
+  void setGyros(const float g[3])
+  {
+    setGyro(0,g[0]);
+    setGyro(1,g[1]);
+    setGyro(2,g[2]);
+  }
+
+  void setXGyro(float g)
+  {
+    setGyro(0,g);
+  }
+
+  void setYGyro(float g)
+  {
+    setGyro(1,g);
+  }
+
+  void setZGyro(float g)
+  {
+    setGyro(2,g);
+  }
+
+  void setAcc(size_t i,float a)
+  {
+    assert(i < 3);
+    reinterpret_cast<ADIS16470Body *>(content)->acc[i] = a;
+  }
+
+  void setAccs(const float a[3])
+  {
+    setAcc(0,a[0]);
+    setAcc(1,a[1]);
+    setAcc(2,a[2]);
+  }
+
+  void setXAcc(float a)
+  {
+    setAcc(0,a);
+  }
+
+  void setYAcc(float a)
+  {
+    setAcc(1,a);
+  }
+
+  void setZAcc(float a)
+  {
+    setAcc(2,a);
+  }
+
+  void setTemp(float t)
+  {
+    reinterpret_cast<ADIS16470Body *>(content)->temp = t;
+  }
+
+  void setContent(ADIS16470Body b)
+  {
+    memcpy(content, static_cast<void *>(&b), sizeof(ADIS16470Body));
   }
 };
 
@@ -78,4 +225,6 @@ public:
   bool isMeasurementInvalid();
 
   ADIS16470Packet getPacket(uint32_t currMicros);
+
+  PacketHeader getHeader(uint32_t currMicros);
 };

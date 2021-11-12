@@ -14,29 +14,91 @@
 #include <Honeywell_RSC.h>
 
 // User-defined headers
+#include "Packet.hpp"
 #include "Sensor.hpp"
 
-// packet for both temperature and pressure packets
-struct HoneywellRSCPacket
+// *************** HoneywellRsc Packets *************** //
+
+struct HoneywellRSCBody
 {
-  struct PacketHeader header; // 8 bytes
   // sending as floats since the computation is hard to do after acquistion
   float measurement = 0; // 4 bytes
+};
 
-  // empty constructor
+// packet for both temperature and pressure packets
+class HoneywellRSCPacket : public Packet
+{
+public:
+  // ----- Constructors ----- //
+
   HoneywellRSCPacket()
   {
-    // do nothing
+    header.packetType_ = NO_PACKET;
+    header.packetSize = sizeof(HoneywellRSCBody);
+
+    content = malloc(header.packetSize);
   }
 
-  // constructor for a packet with only a header
-  HoneywellRSCPacket(PacketHeader header_)
+  // ----- Getters ----- //
+
+  float getMeasurement()
   {
-    header = header_;
+    return reinterpret_cast<HoneywellRSCBody *>(content)->measurement;
+  }
+
+  // ----- Setters ----- //
+
+  void setMeasurement(float m)
+  {
+    reinterpret_cast<HoneywellRSCBody *>(content)->measurement = m;
   }
 };
 
-// Wrapper for the AISx120SX class
+class HoneywellRSC_Temp_Packet : public HoneywellRSCPacket
+{
+public:
+  // ----- Constructors ----- //
+  HoneywellRSC_Temp_Packet()
+  {
+    header.packetType_ = RSC_TEMP_PACKET_TYPE;
+    header.packetSize = sizeof(HoneywellRSCBody);
+
+    content = malloc(header.packetSize);
+  }
+
+  HoneywellRSC_Temp_Packet(PacketHeader h)
+  {
+    assert(h.packetType_ == RSC_TEMP_PACKET_TYPE &&
+           h.packetSize == sizeof(HoneywellRSCBody));
+
+    header = h;
+    content = malloc(h.packetSize);
+  }
+};
+
+class HoneywellRSC_Pressure_Packet : public HoneywellRSCPacket
+{
+public:
+  // ----- Constructors ----- //
+  HoneywellRSC_Pressure_Packet()
+  {
+    header.packetType_ = RSC_PRESSURE_PACKET_TYPE;
+    header.packetSize = sizeof(HoneywellRSCBody);
+
+    content = malloc(header.packetSize);
+  }
+
+  HoneywellRSC_Pressure_Packet(PacketHeader h)
+  {
+    assert(h.packetType_ == RSC_PRESSURE_PACKET_TYPE &&
+           h.packetSize == sizeof(HoneywellRSCBody));
+
+    header = h;
+    content = malloc(h.packetSize);
+  }
+};
+
+// *************** HoneywellRscWrapper class *************** //
 class HoneywellRscWrapper : public Sensor
 {
 private:
@@ -54,8 +116,8 @@ private:
   Honeywell_RSC rscObject;
   static uint8_t sensorQty; // how many sensors of this type exist
 
-  HoneywellRSCPacket lastPressurePacket;
-  HoneywellRSCPacket lastTempPacket;
+  HoneywellRSC_Pressure_Packet lastPressurePacket;
+  HoneywellRSC_Temp_Packet lastTempPacket;
 
 public:
   // constructor
@@ -85,4 +147,6 @@ public:
 
   HoneywellRSCPacket getPacket(uint32_t currMicros);
   HoneywellRSCPacket *getSerialPackets(uint32_t currMicros);
+
+  PacketHeader getHeader(uint32_t currMicros);
 };

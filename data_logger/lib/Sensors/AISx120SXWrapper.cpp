@@ -13,10 +13,7 @@ uint8_t AISx120SXWrapper::sensorQty = 0;
 // constructor
 AISx120SXWrapper::AISx120SXWrapper(uint8_t CS_) : Sensor(sensorQty),
                                                   aisObject(CS_),
-                                                  lastPacket(getHeader(
-                                                      ADIS16470_PACKET_TYPE,
-                                                      sizeof(AISx120SXPacket),
-                                                      0))
+                                                  lastPacket(getHeader(0))
 {
   setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
                   false);
@@ -68,23 +65,23 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros)
     int16_t *rawMeas;
     rawMeas = aisObject.readAccel();
 
-    if (lastPacket.accel[0] != rawMeas[0] * SENSITIVITY ||
-        lastPacket.accel[1] != rawMeas[1] * SENSITIVITY) // data is new
+    if (lastPacket.getXaccel() != rawMeas[0] * SENSITIVITY ||
+        lastPacket.getYaccel() != rawMeas[1] * SENSITIVITY) // data is new
     {
       returnVal = true;
       prevMeasTime = currMicros;
     }
     // copy new measurements into the old ones
-    lastPacket.accel[0] = rawMeas[0] * SENSITIVITY;
-    lastPacket.accel[1] = rawMeas[1] * SENSITIVITY;
+    lastPacket.setXaccel(rawMeas[0] * SENSITIVITY);
+    lastPacket.setYaccel(rawMeas[1] * SENSITIVITY);
   }
   return returnVal;
 }
 
 bool AISx120SXWrapper::isMeasurementInvalid()
 {
-  if (lastPacket.accel[0] > ACC_MAX || lastPacket.accel[0] < ACC_MIN ||
-      lastPacket.accel[1] > ACC_MAX || lastPacket.accel[1] < ACC_MIN)
+  if (lastPacket.getXaccel() > ACC_MAX || lastPacket.getXaccel() < ACC_MIN ||
+      lastPacket.getYaccel() > ACC_MAX || lastPacket.getYaccel() < ACC_MIN)
   {
     return true;
   }
@@ -94,9 +91,7 @@ bool AISx120SXWrapper::isMeasurementInvalid()
 AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
-  lastPacket.header = getHeader(AISx120SX_PACKET_TYPE,
-                                sizeof(AISx120SXPacket),
-                                currMicros);
+  lastPacket.updateHeader(getHeader(currMicros));
 #ifdef DEBUG
   lastPacket.accel[0] = generateFakeData(-120, 120, micros());
   lastPacket.accel[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
@@ -104,4 +99,11 @@ AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 #endif
 
   return lastPacket;
+}
+
+PacketHeader AISx120SXWrapper::getHeader(uint32_t currMicros)
+{
+  return Sensor::getHeader(AISx120SX_PACKET_TYPE,
+                           sizeof(AISx120SXBody),
+                           currMicros);
 }
