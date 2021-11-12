@@ -90,8 +90,15 @@ Sensor altimax = Sensor(0);
 // TODO: Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
-const uint8_t NUM_SENSORS = 9;
+//const uint8_t NUM_SENSORS = 9; //-> Set as constexpr in "globalVariables.hpp"
 Sensor *sensorArray[NUM_SENSORS];
+
+const uint8_t ADIS16470_INDEX = 0,
+              AISx120SX_INDEX = 1,
+              Honeywell_Rsc_0_INDEX = 2,
+              Honeywell_Rsc_1_INDEX = 3,
+              MAX31855_START_INDEX = 4,
+              Altimax_INDEX = 8;
 
 const int SENSOR_SETUP_ATTEMPTS = 7;
 const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
@@ -102,27 +109,27 @@ const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
 
 void buildSensorArray()
 {
-  sensorArray[0] = new ADIS16470Wrapper(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
+  sensorArray[ADIS16470_INDEX] = new ADIS16470Wrapper(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
                                         RST_ADIS16470_PIN);
 
-  sensorArray[1] = new AISx120SXWrapper(CS_AIS1120SX_PIN, _800Hz, _800Hz,
+  sensorArray[AISx120SX_INDEX] = new AISx120SXWrapper(CS_AIS1120SX_PIN, _800Hz, _800Hz,
                                         false, false, false, false);
 
-  sensorArray[2] = new HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
+  sensorArray[Honeywell_Rsc_0_INDEX] = new HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
                                            CS_RSC_ADC_PIN[0], 1,
                                            F_DR_2000_SPS, 50000);
 
-  sensorArray[3] = new HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
+  sensorArray[Honeywell_Rsc_1_INDEX] = new HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
                                            CS_RSC_ADC_PIN[1], 0,
                                            F_DR_2000_SPS, 50000);
 
-  for(size_t t = 0; t < 4; t++)
+  for (size_t t = 0; t < 4; t++)
   {
-    sensorArray[4+t] = new MAX31855Wrapper(CS_TCS_PIN[t]);
+    sensorArray[MAX31855_START_INDEX + t] = new MAX31855Wrapper(CS_TCS_PIN[t]);
   }
 
   // TODO:
-  // sensorArray[8] = new AltimaxWrapper(args...);                           
+  // sensorArray[Altimax_INDEX] = new AltimaxWrapper(args...);
 }
 
 void setup()
@@ -144,9 +151,9 @@ void setup()
   SPI1.begin();
   // SPI1.setSCK(20);
 
-  for(size_t i = 0; i < NUM_SENSORS; i++)
+  for (size_t i = 0; i < NUM_SENSORS; i++)
   {
-    Serial.printf("Sensor n° %d: %s ",i,sensorArray[i]->myName());
+    Serial.printf("Sensor n° %d: %s ", i, sensorArray[i]->myName());
     if (sensorArray[i]->setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
     {
       Serial.println("has been set up successfully.");
@@ -166,7 +173,7 @@ void setup()
   Serial.println("----- Setup complete -----");
   successFlash();
 
-  acquireData(sensorArray,NUM_SENSORS);
+  acquireData(sensorArray, NUM_SENSORS);
 }
 
 // LOOP ========================================================================
@@ -200,7 +207,7 @@ void loop()
         Serial.println("Will begin data acquisition as button was pressed.");
         digitalWrite(GREEN_LED_PIN, LOW);
         successFlash();
-        acquireData(sensorArray,NUM_SENSORS);
+        acquireData(sensorArray, NUM_SENSORS);
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");

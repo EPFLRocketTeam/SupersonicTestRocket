@@ -54,6 +54,10 @@ public:
   // if the sensor is due for a read because of the DR line
   bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
 
+  // Add a virtual, general version to streamline management
+  // (If triggeredDR is not useful, the underlying function will just drop it)
+  virtual bool isDue(uint32_t currMicros, volatile bool &triggeredDR) = 0;
+
   // if the measurement was late. should be redefined in inherited classes
   // to properly define what it means to be invalid
   bool isMeasurementLate(uint32_t currMicros);
@@ -82,4 +86,7 @@ public:
   float generateFakeData(float minValue, float maxValue,
                          uint32_t currMicros,
                          float offset = 0, uint32_t period = 5000000);
+
+  // Virtual function to query packet from sensor
+  virtual Packet* getPacket(uint32_t currMicros) = 0;
 };

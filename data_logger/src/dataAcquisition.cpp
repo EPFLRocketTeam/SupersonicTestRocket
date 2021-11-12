@@ -7,27 +7,11 @@
 
 #include "dataAcquisition.hpp"
 
-// flags for the data ready triggers
-volatile bool adis16470DRflag = false;
-volatile bool rscDRflag[2] = {0};
-volatile bool altimaxFlag = false;
+// Use array to allow interruption of any sensor
+volatile bool flagArray[NUM_SENSORS];
 
-void interruptFunctionADIS()
-{
-  adis16470DRflag = true;
-}
-void interruptFunctionRSC1()
-{
-  rscDRflag[0] = true;
-}
-void interruptFunctionRSC2()
-{
-  rscDRflag[1] = true;
-}
-void interruptFunctionAltimax()
-{
-  altimaxFlag = true;
-}
+// Use lambda function for arbitrary interruptions
+#define INTERRUPT(i) [](){flagArray[i] = true;}
 
 void acquireData(Sensor* sArray[], size_t sSize)
 {
@@ -64,30 +48,29 @@ void acquireData(Sensor* sArray[], size_t sSize)
 
   // attach the interrupts
   attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
-                  interruptFunctionADIS, RISING);
+                  INTERRUPT(ADIS16470_INDEX), RISING);
   attachInterrupt(digitalPinToInterrupt(DR_RSC[0]),
-                  interruptFunctionRSC1, FALLING);
+                  INTERRUPT(Honeywell_Rsc_0_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
-                  interruptFunctionRSC2, FALLING);
+                  INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN),
-                  interruptFunctionAltimax, RISING);
+                  INTERRUPT(Altimax_INDEX), RISING);
+  
 
+  
   // set the last time for every check to now
   uint32_t prevSyncLoop = micros();   // timing for syncing
-  uint32_t prevSerialLoop = micros(); // timing for serial monitor output
+  uint32_t prevSerialLoop = micros(); // timing for serial monitor output 
+
+
   // checking if the sensors are due will update their check times even if we
   // don't use the boolean they return
   // doing regardless of active status since objects are still created
   // if they are inactive, this value will simply never be used
-  adis16470.isDue(micros(), adis16470DRflag);
-  ais1120sx.isDue(micros()); // check if due to update time
-  for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
+
+  for(size_t i = 0; i < sSize; i++)
   {
-    rscs[i].isDue(micros(), rscDRflag[i]); // check if due to update time
-  }
-  for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-  {
-    tcs[i].isDue(micros()); // check if due to update time
+    sArray[i]->isDue(micros(),flagArray[i]);
   }
 
   // Start acquiring data
@@ -97,12 +80,27 @@ void acquireData(Sensor* sArray[], size_t sSize)
 
   int errorCount = 0;
   // acquire data as long as button sequence is not initated
+  Packet* pkt;
   while (checkButtons(buttonArray, stopEvent))
   {
+    for(size_t i = 0; i< sSize; i++)
+    {
+      if (sArray[i]->active && sArray[i]->isDue(micros(),flagArray[i]))
+      {
+        pkt = sArray[i]->getPacket(micros());
+        rb.write(pkt->accessHeader(),sizeof(PacketHeader));
+        rb.write(pkt->accessContent(),pkt->getPacketSize());
+      }
+    }
+
+    /* NOT IMPLEMENTED VERBATIM
     // ADIS16470
     if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
     {
       ADIS16470Packet packet = adis16470.getPacket(micros());
+
+      // THIS PART IS MISSING (and special to this sensor)
+      // What is its purpose ? Why this sensor only ?
       if (packet.header.errorCode)
       {
         errorCount++;
@@ -115,41 +113,7 @@ void acquireData(Sensor* sArray[], size_t sSize)
       rb.write((const uint8_t *)&packet,
                sizeof(ADIS16470Packet));
     }
-    // AIS1120SX
-    if (ais1120sx.active && ais1120sx.isDue(micros()))
-    {
-      rb.write((const uint8_t *)&ais1120sx.getPacket(micros()),
-               sizeof(AISx120SXPacket));
-    }
-
-    // Pressure sensors
-    for (size_t i = 0; i < rscs[i].getSensorQty(); i++)
-    {
-      if (rscs[i].active && rscs[i].isDue(micros(), rscDRflag[i]))
-      {
-        rb.write((const uint8_t *)&rscs[i].getPacket(micros()),
-                 sizeof(HoneywellRSCPacket));
-      }
-    }
-
-    // THERMOCOUPLES
-    for (size_t i = 0; i < tcs[i].getSensorQty(); i++)
-    {
-      if (tcs[i].active && tcs[i].isDue(micros()))
-      {
-        rb.write((const uint8_t *)&tcs[i].getPacket(micros()),
-                 sizeof(MAX31855Packet));
-      }
-    }
-
-    // Altimax
-    if (altimax.isDueByDR(micros(), altimaxFlag))
-    {
-      PacketHeader packet = altimax.getHeader(ALTIMAX_PACKET_TYPE,
-                                              sizeof(PacketHeader), micros());
-      rb.write((const uint8_t *)&packet, sizeof(packet));
-      altimaxFlag = false;
-    }
+    */
 
     // check if it's time to sync
     if (micros() - prevSyncLoop > SYNC_INTERVAL)
@@ -164,6 +128,7 @@ void acquireData(Sensor* sArray[], size_t sSize)
       // rb.sync();
     }
 
+    /* DESACTIVATE IT FOR NOW (adapt it to the virtual Packet)
     // check if it's time to output to the console
     // this is not done with every measurement since the human eye can only
     // see smoothly up to around 60 Hz anyways, and this is only for debugging
@@ -187,6 +152,7 @@ void acquireData(Sensor* sArray[], size_t sSize)
                        rscPackets, rscs[0].getSensorQty(),
                        maxPackets, tcs[0].getSensorQty());
     }
+    */
 
     // Check if ringBuf is ready for writing
     // Amount of data in ringBuf.

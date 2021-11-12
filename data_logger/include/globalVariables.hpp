@@ -35,4 +35,11 @@ extern const uint8_t ALTIMAX_DR_PIN;
 
 // Sensors ----------------------------------------------------------------------
 
-extern const uint8_t NUM_SENSORS = 9;
+constexpr size_t NUM_SENSORS = 9; //Should hold in uint8_t
+
+extern const uint8_t ADIS16470_INDEX,
+    AISx120SX_INDEX,
+    Honeywell_Rsc_0_INDEX,
+    Honeywell_Rsc_1_INDEX,
+    MAX31855_START_INDEX,
+    Altimax_INDEX;
