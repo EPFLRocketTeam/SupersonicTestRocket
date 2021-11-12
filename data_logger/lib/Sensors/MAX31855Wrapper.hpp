@@ -117,12 +117,12 @@ public:
   uint8_t getSensorQty();
 
   // check if the sensor is due for a measurement
-  bool isDue(uint32_t currMicros);
+  bool isDue(uint32_t currMicros, volatile bool &triggeredDR);
 
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  MAX31855Packet getPacket(uint32_t currMicros);
+  MAX31855Packet* getPacket(uint32_t currMicros);
 
   // MAX31855 header generator
   PacketHeader getHeader(uint32_t currMicros);

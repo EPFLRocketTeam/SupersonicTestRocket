@@ -52,7 +52,7 @@ uint8_t MAX31855Wrapper::getSensorQty()
   return sensorQty;
 }
 
-bool MAX31855Wrapper::isDue(uint32_t currMicros)
+bool MAX31855Wrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 {
   bool returnVal = false;
   if (isDueByTime(currMicros))
@@ -92,7 +92,7 @@ bool MAX31855Wrapper::isMeasurementInvalid()
   return false;
 }
 
-MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
+MAX31855Packet* MAX31855Wrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
   lastPacket.updateHeader(getHeader(currMicros));
@@ -107,7 +107,7 @@ MAX31855Packet MAX31855Wrapper::getPacket(uint32_t currMicros)
 // when not debugging readings are updated in isDue()
 #endif
 
-  return lastPacket;
+  return &lastPacket;
 }
 
 PacketHeader MAX31855Wrapper::getHeader(uint32_t currMicros)

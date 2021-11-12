@@ -229,7 +229,7 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  ADIS16470Packet getPacket(uint32_t currMicros);
+  ADIS16470Packet *getPacket(uint32_t currMicros);
 
   PacketHeader getHeader(uint32_t currMicros);
 };

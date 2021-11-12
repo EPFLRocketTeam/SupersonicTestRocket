@@ -132,7 +132,7 @@ READING_T HoneywellRscWrapper::nextReadType()
   }
 }
 
-HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
+HoneywellRSCPacket *HoneywellRscWrapper::getPacket(uint32_t currMicros)
 {
   // determine the type of measurement we are getting
   if (currReadType() == TEMPERATURE)
@@ -148,7 +148,7 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
     // update the measurement count
     measurementAmountModulo += 1;
     measurementAmountModulo = measurementAmountModulo % temp_frequency;
-    return lastTempPacket;
+    return &lastTempPacket;
   }
   else
   {
@@ -163,7 +163,7 @@ HoneywellRSCPacket HoneywellRscWrapper::getPacket(uint32_t currMicros)
     // update the measurement count
     measurementAmountModulo += 1;
     measurementAmountModulo = measurementAmountModulo % temp_frequency;
-    return lastPressurePacket;
+    return &lastPressurePacket;
   }
 }
 

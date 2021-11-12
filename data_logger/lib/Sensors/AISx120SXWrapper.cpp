@@ -63,7 +63,7 @@ uint8_t AISx120SXWrapper::getSensorQty()
   return sensorQty;
 }
 
-bool AISx120SXWrapper::isDue(uint32_t currMicros)
+bool AISx120SXWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 {
   bool returnVal = false;
   if (isDueByTime(currMicros))
@@ -95,7 +95,7 @@ bool AISx120SXWrapper::isMeasurementInvalid()
   return false;
 }
 
-AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
+AISx120SXPacket *AISx120SXWrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
   lastPacket.updateHeader(getHeader(currMicros));
@@ -105,7 +105,7 @@ AISx120SXPacket AISx120SXWrapper::getPacket(uint32_t currMicros)
 // when not debugging readings are updated in isDue()
 #endif
 
-  return lastPacket;
+  return &lastPacket;
 }
 
 PacketHeader AISx120SXWrapper::getHeader(uint32_t currMicros)

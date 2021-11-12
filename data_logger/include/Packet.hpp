@@ -93,6 +93,18 @@ public:
         memcpy(holder, content, header.packetSize);
     }
 
+    // ----- Accessors ----- //
+
+    PacketHeader* accessHeader()
+    {
+        return &header;
+    }
+
+    void* accessContent()
+    {
+        return content;
+    }
+
 protected:
     PacketHeader header;
     void *content = NULL;

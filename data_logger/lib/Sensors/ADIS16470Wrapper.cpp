@@ -119,7 +119,7 @@ bool ADIS16470Wrapper::isMeasurementInvalid()
   return allZeros;
 }
 
-ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
+ADIS16470Packet *ADIS16470Wrapper::getPacket(uint32_t currMicros)
 {
 #ifdef DEBUG
 
@@ -153,7 +153,7 @@ ADIS16470Packet ADIS16470Wrapper::getPacket(uint32_t currMicros)
   // check for errors and create the header
   lastPacket.updateHeader(getHeader(currMicros));
 
-  return lastPacket;
+  return &lastPacket;
 }
 
 PacketHeader ADIS16470Wrapper::getHeader(uint32_t currMicros)
