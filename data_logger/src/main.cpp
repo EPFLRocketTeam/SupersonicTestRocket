@@ -91,7 +91,7 @@ const uint8_t DR_RSC[2] = {15, 26};
 const uint8_t TAT_TC = 3;
 const uint8_t CS_TCS_PIN[4] = {23, 22, 21, 20};
 // Altimax
-const uint8_t ALTIMAX_DR_PIN = 33;
+const uint8_t ALTIMAX_DR_PINS[3] = {33, 255, 255}; // 255 for not implemented
 
 // I/O -------------------------------------------------------------------------
 // Button event
