@@ -1,3 +1,32 @@
+/**
+ * @file main.cpp
+ * @author Joshua Cayetano-Emond (joshua.cayetano.emond@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-04-21
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
+/*! \mainpage My Personal Index Page
+ *
+ * \section intro_sec Introduction
+ *
+ * This is the introduction.
+ *
+ * \section install_sec Installation
+ *
+ * \subsection step1 Step 1: Opening the box
+ *
+ * etc...
+ */
+
+/*! \page fooPage foo Functions
+ * 
+ * - \subpage Copy
+ */
+
 /*
  * main.cpp Main file that will be used to log data on the Teensy.
  *
