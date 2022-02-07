@@ -1,0 +1,79 @@
+.TH "Packet" 3 "Mon Feb 7 2022" "SupersonicTestRocket Logger" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Packet
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBADIS16470Packet\fP, \fBAISx120SXPacket\fP, \fBHoneywellRSCPacket\fP, and \fBMAX31855Packet\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPacket\fP (uint8_t size)"
+.br
+.ti -1c
+.RI "\fBPacket\fP (\fBPacketHeader\fP header)"
+.br
+.ti -1c
+.RI "\fBPacket\fP (\fBPacket\fP &other)"
+.br
+.ti -1c
+.RI "uint8_t \fBsetContent\fP (void *data, size_t s)"
+.br
+.ti -1c
+.RI "void \fBsetPacketType\fP (packetType pt)"
+.br
+.ti -1c
+.RI "void \fBsetSensorID\fP (uint8_t id)"
+.br
+.ti -1c
+.RI "void \fBsetErrorCode\fP (uint8_t errCode)"
+.br
+.ti -1c
+.RI "void \fBsetTimestamp\fP (uint32_t ts)"
+.br
+.ti -1c
+.RI "void \fBupdateHeader\fP (\fBPacketHeader\fP h)"
+.br
+.ti -1c
+.RI "packetType \fBgetPacketType\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBgetPacketSize\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBgetSensorID\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBgetErrorCode\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBgetTimestamp\fP ()"
+.br
+.ti -1c
+.RI "void \fBgetContent\fP (void *holder)"
+.br
+.ti -1c
+.RI "\fBPacketHeader\fP * \fBaccessHeader\fP ()"
+.br
+.ti -1c
+.RI "void * \fBaccessContent\fP ()"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPacketHeader\fP \fBheader\fP"
+.br
+.ti -1c
+.RI "void * \fBcontent\fP = NULL"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SupersonicTestRocket Logger from the source code\&.

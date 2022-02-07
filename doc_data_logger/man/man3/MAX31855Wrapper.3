@@ -1,0 +1,69 @@
+.TH "MAX31855Wrapper" 3 "Mon Feb 7 2022" "SupersonicTestRocket Logger" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MAX31855Wrapper
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBSensor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMAX31855Wrapper\fP (uint8_t CS)"
+.br
+.ti -1c
+.RI "bool \fBsetup\fP (uint32_t attempts, uint32_t delayDuration)"
+.br
+.ti -1c
+.RI "const char * \fBmyName\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBgetSensorQty\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisDue\fP (uint32_t currMicros, volatile bool &triggeredDR)"
+.br
+.ti -1c
+.RI "bool \fBisMeasurementInvalid\fP ()"
+.br
+.ti -1c
+.RI "\fBMAX31855Packet\fP * \fBgetPacket\fP (uint32_t currMicros)"
+.br
+.ti -1c
+.RI "\fBPacketHeader\fP \fBgetHeader\fP (uint32_t currMicros)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBPacketHeader\fP MAX31855Wrapper::getHeader (uint32_t currMicros)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "\fBMAX31855Packet\fP * MAX31855Wrapper::getPacket (uint32_t currMicros)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "bool MAX31855Wrapper::isDue (uint32_t currMicros, volatile bool & triggeredDR)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "bool MAX31855Wrapper::isMeasurementInvalid ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBSensor\fP\&.
+.SS "const char * MAX31855Wrapper::myName ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "bool MAX31855Wrapper::setup (uint32_t attempts, uint32_t delayDuration)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SupersonicTestRocket Logger from the source code\&.

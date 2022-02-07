@@ -1,0 +1,72 @@
+.TH "ADIS16470Wrapper" 3 "Mon Feb 7 2022" "SupersonicTestRocket Logger" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ADIS16470Wrapper
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBSensor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBADIS16470Wrapper\fP (int CS, int DR, int RST)"
+.br
+.ti -1c
+.RI "bool \fBsetup\fP (uint32_t attempts, uint32_t delayDuration)"
+.br
+.ti -1c
+.RI "const char * \fBmyName\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBgetSensorQty\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisDue\fP (uint32_t currMicros, volatile bool &triggeredDR)"
+.br
+.ti -1c
+.RI "bool \fBverifyCheckSum\fP (uint16_t sensorData[10])"
+.br
+.ti -1c
+.RI "bool \fBisMeasurementInvalid\fP ()"
+.br
+.ti -1c
+.RI "\fBADIS16470Packet\fP * \fBgetPacket\fP (uint32_t currMicros)"
+.br
+.ti -1c
+.RI "\fBPacketHeader\fP \fBgetHeader\fP (uint32_t currMicros)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBPacketHeader\fP ADIS16470Wrapper::getHeader (uint32_t currMicros)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "\fBADIS16470Packet\fP * ADIS16470Wrapper::getPacket (uint32_t currMicros)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "bool ADIS16470Wrapper::isDue (uint32_t currMicros, volatile bool & triggeredDR)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "bool ADIS16470Wrapper::isMeasurementInvalid ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBSensor\fP\&.
+.SS "const char * ADIS16470Wrapper::myName ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+.SS "bool ADIS16470Wrapper::setup (uint32_t attempts, uint32_t delayDuration)\fC [virtual]\fP"
+
+.PP
+Implements \fBSensor\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SupersonicTestRocket Logger from the source code\&.
