@@ -104,7 +104,7 @@ void acquireData(Sensor* sArray[], size_t sSize)
       if (packet.header.errorCode)
       {
         errorCount++;
-        if (errorCount == 1000)
+        if (errorCount >= 1000)
         {
           digitalWrite(RED_LED_PIN, HIGH);
         }

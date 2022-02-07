@@ -2,7 +2,11 @@
 
 #include <cstdint>
 
-// define how measurements can be due
+/**
+ * @brief Define how measurements can be due
+ * 
+ */
+
 typedef enum
 {
     NOT_DUE,     // measurement not due
