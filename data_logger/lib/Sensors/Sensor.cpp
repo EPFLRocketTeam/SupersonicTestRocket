@@ -1,5 +1,5 @@
 /*
- * Sensor.cpp 
+ * Sensor.cpp
  *
  *  Created on: 2021-04-26
  *      Author: Joshua Cayetano-Emond
@@ -24,17 +24,23 @@ void Sensor::setupProperties(uint32_t checkInterval_,
 
 bool Sensor::isDueByTime(uint32_t currMicros)
 {
-  // check if skipped some beats
+  // Check if skipped some beats
   checkBeatsSkipped = floor((currMicros - prevCheck) / CHECK_INTERVAL);
 
-  uint32_t actualCheckInterval = CHECK_INTERVAL + CHECK_INTERVAL_MARGIN;
-  // if the sensor starts reading by time, we remove the margin and simply
+  // If the sensor starts reading by time, we remove the margin and simply
   // rely on the nominal checking interval
-  // this resets every time the sensor is read by DR (usual behaviour)
+  // This resets every time the sensor is read by DR (usual behaviour)
+  uint32_t actualCheckInterval;
+
   if (dueMethod == DUE_BY_TIME)
   {
     actualCheckInterval = CHECK_INTERVAL;
   }
+  else
+  {
+    actualCheckInterval = CHECK_INTERVAL + CHECK_INTERVAL_MARGIN;
+  }
+
   if (currMicros - prevCheck > actualCheckInterval)
   {
     if (checkBeatsSkipped > 1)
@@ -43,7 +49,11 @@ bool Sensor::isDueByTime(uint32_t currMicros)
       // Serial.println(checkBeatsSkipped - 1);
       // Serial.println("Consider lowering frequency.");
     }
-    prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
+
+    // Why is prevCheck actualized by incrementing instead of simply taking the actual time???
+    //prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
+    prevCheck = currMicros; 
+
     dueMethod = DUE_BY_TIME;                         // sensor is due by time
     return true;                                     // event is due
   }
@@ -77,35 +87,51 @@ bool Sensor::isMeasurementInvalid()
   return false;
 }
 
-bool *Sensor::getErrors()
+void Sensor::updateErrors(uint32_t currMicros)
 {
-  // array of flags of errors that occured
-  static bool errors[ERROR_TYPE_NUM] = {false};
 
-  // first error: if a measurement beat was missed (measurement beat skipped)
-  errors[0] = measurementLate;
-  // second error: if the acquisition loop skipped a beat
+  errors[0] = isMeasurementLate(currMicros);
   errors[1] = checkBeatsSkipped > 1;
-  // third error: if DR pin didn't trigger the read
   errors[2] = DR_DRIVEN && dueMethod != DUE_BY_DR;
-  // fourth error: checksum error
   errors[3] = checksumError;
-  // fifth error: invalid measurement
   errors[4] = isMeasurementInvalid();
-
-  return errors;
 }
 
-uint8_t Sensor::getErrorCode(uint32_t currMicros)
+// generates a packet header for the sensor
+PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
+                               uint32_t currMicros)
+{
+  PacketHeader header;
+  
+  updateErrors(currMicros);
+
+  header.packetType_ = packetType_;
+  header.packetSize = packetSize_;
+  header.sensorID = SENSOR_ID;
+  header.errorCode = getErrorCode(errors);
+  header.timestamp = currMicros;
+  return header;
+}
+
+float generateFakeData(float minValue, float maxValue,
+                               uint32_t currMicros,
+                               float offset, uint32_t period)
+{
+  float mid = (minValue + maxValue) / 2.;
+  float amplitude = (maxValue - minValue) / 2.;
+
+  return sin(2 * PI * currMicros / period) * amplitude + mid + offset;
+}
+
+
+
+uint8_t getErrorCode(bool* errorArray)
 {
   uint8_t errorCode = 0;
 
-  isMeasurementLate(currMicros); // update the measurementLate variable
-  bool *errors = getErrors();
-
   for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
   {
-    if (errors[i])
+    if (errorArray[i])
     {
       bitSet(errorCode, 7 - i);
     }
@@ -126,27 +152,4 @@ bool *decodeErrorCode(uint8_t errorCode)
   }
 
   return errors;
-}
-
-// generates a packet header for the sensor
-PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
-                               uint32_t currMicros)
-{
-  PacketHeader header;
-  header.packetType_ = packetType_;
-  header.packetSize = packetSize_;
-  header.sensorID = SENSOR_ID;
-  header.errorCode = getErrorCode(currMicros);
-  header.timestamp = currMicros;
-  return header;
-}
-
-float Sensor::generateFakeData(float minValue, float maxValue,
-                               uint32_t currMicros,
-                               float offset, uint32_t period)
-{
-  float mid = (minValue + maxValue) / 2.;
-  float amplitude = (maxValue - minValue) / 2.;
-
-  return sin(2 * PI * currMicros / period) * amplitude + mid + offset;
 }
