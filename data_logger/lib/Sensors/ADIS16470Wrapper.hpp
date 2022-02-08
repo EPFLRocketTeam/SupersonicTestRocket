@@ -19,11 +19,12 @@
 
 // *************** ADIS16470Packet *************** //
 
+/// Describe the content of a ADIS16470 packet
 struct ADIS16470Body
 {
-  float gyros[3] = {0};       // 3 * 4 = 12 bytes
-  float acc[3] = {0};         // 3 * 4 = 12 bytes
-  float temp = 0;             // 4 bytes
+  float gyros[3] = {0}; ///< Angular velocities around X,Y,Z axis; 3 * 4 = 12 bytes
+  float acc[3] = {0};   ///< Linear velocities along X,Y,Z axis; 3 * 4 = 12 bytes
+  float temp = 0;       ///< Temperature; 4 bytes
 };
 
 class ADIS16470Packet : public Packet
@@ -31,6 +32,14 @@ class ADIS16470Packet : public Packet
 public:
   // ----- Constructors ----- //
 
+  /**
+   * @brief Construct a new ADIS16470 Packet based on the default header
+   *
+   * \p packetType_ and \p packetSize are accordingly set.
+   * \p content is allocated.
+   *
+   * @see Packet::Packet()
+   */
   ADIS16470Packet()
   {
     header.packetType_ = ADIS16470_PACKET_TYPE;
@@ -39,6 +48,14 @@ public:
     content = malloc(header.packetSize);
   }
 
+  /**
+   * @brief Construct a new ADIS16470 Packet from a given header
+   *
+   * Set the header to the one provided and allocate memory according the the size
+   * indicated in the header
+   *
+   * @param h Header for the packet, must have correct size and type
+   */
   ADIS16470Packet(PacketHeader h)
   {
     assert(h.packetType_ == ADIS16470_PACKET_TYPE &&
@@ -49,12 +66,24 @@ public:
   }
 
   // ----- Getters ----- //
+
+  /**
+   * @brief Get the wanted angular velocity 
+   * 
+   * @param i Index of the wanted angular velocity (0 for X, 1 for Y and 2 for Z)
+   * @return float : corresponding value
+   */
   float getGyro(size_t i)
   {
     assert(i < 3);
     return reinterpret_cast<ADIS16470Body *>(content)->gyros[i];
   }
 
+  /**
+   * @brief Given an array of 3 floats, fill it with the XYZ values of angular velocity
+   * 
+   * @param g Array to be filled
+   */
   void getGyros(float g[3])
   {
     g[0] = getGyro(0);
@@ -62,27 +91,56 @@ public:
     g[2] = getGyro(2);
   }
 
+  /**
+   * @brief Get the angular velocity around the X axis
+   * 
+   * @return float 
+   * @see getGyro(size_t i)
+   */
   float getXGyro()
   {
     return getGyro(0);
   }
 
+  /**
+   * @brief Get the angular velocity around the Y axis
+   * 
+   * @return float 
+   * @see getGyro(size_t i)
+   */
   float getYGyro()
   {
     return getGyro(1);
   }
 
+  /**
+   * @brief Get the angular velocity around the Z axis
+   * 
+   * @return float 
+   * @see getGyro(size_t i)
+   */
   float getZGyro()
   {
     return getGyro(2);
   }
 
+  /**
+   * @brief Get the wanted linear velocity 
+   * 
+   * @param i Index of the wanted linear velocity (0 for X, 1 for Y and 2 for Z)
+   * @return float : corresponding value
+   */
   float getAcc(size_t i)
   {
     assert(i < 3);
     return reinterpret_cast<ADIS16470Body *>(content)->acc[i];
   }
 
+  /**
+   * @brief Given an array of 3 floats, fill it with the XYZ values of linear velocity
+   * 
+   * @param a Array to be filled
+   */
   void getAccs(float a[3])
   {
     a[0] = getAcc(0);
@@ -90,90 +148,175 @@ public:
     a[2] = getAcc(2);
   }
 
+  /**
+   * @brief Get the linear velocity along the X axis
+   * 
+   * @return float 
+   * @see getAcc(size_t i)
+   */
   float getXAcc()
   {
     return getAcc(0);
   }
 
+  /**
+   * @brief Get the linear velocity along the Y axis
+   * 
+   * @return float 
+   * @see getAcc(size_t i)
+   */
   float getYAcc()
   {
     return getAcc(1);
   }
 
+  /**
+   * @brief Get the linear velocity along the Z axis
+   * 
+   * @return float 
+   * @see getAcc(size_t i)
+   */
   float getZAcc()
   {
     return getAcc(2);
   }
 
+  /**
+   * @brief Get the temperature
+   * 
+   * @return float 
+   */
   float getTemp()
   {
     return reinterpret_cast<ADIS16470Body *>(content)->temp;
   }
-  
 
   // ----- Setters ----- //
-  void setGyro(size_t i,float g)
+
+  /**
+   * @brief Set the wanted angular velocity according to the provided value
+   * 
+   * @param i Index of the wanted angular velocity (0 for X, 1 for Y and 2 for Z)
+   * @param g Provided value
+   */
+  void setGyro(size_t i, float g)
   {
     assert(i < 3);
     reinterpret_cast<ADIS16470Body *>(content)->gyros[i] = g;
   }
 
+  /**
+   * @brief Given an array of 3 floats, set the XYZ values of angular velocity in the packet
+   * 
+   * @param g Source array
+   */
   void setGyros(const float g[3])
   {
-    setGyro(0,g[0]);
-    setGyro(1,g[1]);
-    setGyro(2,g[2]);
+    setGyro(0, g[0]);
+    setGyro(1, g[1]);
+    setGyro(2, g[2]);
   }
 
+  /**
+   * @brief Set the angular velocity around the X axis
+   * 
+   * @param g 
+   */
   void setXGyro(float g)
   {
-    setGyro(0,g);
+    setGyro(0, g);
   }
 
+  /**
+   * @brief Set the angular velocity around the Y axis
+   * 
+   * @param g 
+   */
   void setYGyro(float g)
   {
-    setGyro(1,g);
+    setGyro(1, g);
   }
 
+  /**
+   * @brief Set the angular velocity around the Z axis
+   * 
+   * @param g 
+   */
   void setZGyro(float g)
   {
-    setGyro(2,g);
+    setGyro(2, g);
   }
 
-  void setAcc(size_t i,float a)
+  /**
+   * @brief Set the wanted linear velocity according to the provided value
+   * 
+   * @param i Index of the wanted linear velocity (0 for X, 1 for Y and 2 for Z)
+   * @param a Provided value
+   */
+  void setAcc(size_t i, float a)
   {
     assert(i < 3);
     reinterpret_cast<ADIS16470Body *>(content)->acc[i] = a;
   }
 
+  /**
+   * @brief Given an array of 3 floats, set the XYZ values of linear velocity in the packet
+   * 
+   * @param a Source array
+   */
   void setAccs(const float a[3])
   {
-    setAcc(0,a[0]);
-    setAcc(1,a[1]);
-    setAcc(2,a[2]);
+    setAcc(0, a[0]);
+    setAcc(1, a[1]);
+    setAcc(2, a[2]);
   }
 
+  /**
+   * @brief Set the linear velocity along the X axis
+   * 
+   * @param a 
+   */
   void setXAcc(float a)
   {
-    setAcc(0,a);
+    setAcc(0, a);
   }
 
+  /**
+   * @brief Set the linear velocity along the Y axis
+   * 
+   * @param a 
+   */
   void setYAcc(float a)
   {
-    setAcc(1,a);
+    setAcc(1, a);
   }
 
+  /**
+   * @brief Set the linear velocity along the Z axis
+   * 
+   * @param a 
+   */
   void setZAcc(float a)
   {
-    setAcc(2,a);
+    setAcc(2, a);
   }
 
+  /**
+   * @brief Set the temperature
+   * 
+   * @param t 
+   */
   void setTemp(float t)
   {
     reinterpret_cast<ADIS16470Body *>(content)->temp = t;
   }
 
-  void setContent(ADIS16470Body b)
+  /**
+   * @brief Set the whole content of the packet
+   * 
+   * @param b
+   */
+  void setContent(ADIS16470Body &b)
   {
     memcpy(content, static_cast<void *>(&b), sizeof(ADIS16470Body));
   }
@@ -216,7 +359,7 @@ public:
   // attemps to set up the sensor and returns true if it was successful
   bool setup(uint32_t attempts, uint32_t delayDuration);
 
-  const char* myName() {return "ADIS16470";}
+  const char *myName() { return "ADIS16470"; }
 
   uint8_t getSensorQty();
 
