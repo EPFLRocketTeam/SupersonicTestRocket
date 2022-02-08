@@ -3,8 +3,8 @@
 #include <cstdint>
 
 /**
+ * @enum dueType
  * @brief Define how measurements can be due
- * 
  */
 typedef enum
 {
@@ -14,11 +14,12 @@ typedef enum
 } dueType;
 
 /**
+ * @enum packetType
  * @brief Define different types of packets; use 1 byte
  */
 enum packetType : uint8_t
 {
-    NO_PACKET,                     ///< no packet. indicates EOF
+    NO_PACKET,                     ///< No packet. indicates EOF
     ADIS16470_PACKET_ARCHIVE_TYPE, ///< ADIS16470 Archived Packet
     AISx120SX_PACKET_ARCHIVE_TYPE, ///< AISx120SX Archived Packet
     RSC_PRESSURE_PACKET_TYPE,      ///< Honewell RSC pressure packet

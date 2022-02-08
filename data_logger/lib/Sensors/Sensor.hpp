@@ -43,7 +43,7 @@ protected:
    * Fourth error: checksum error
    * Fifth error: invalid measurement
    *
-   * \note Ensure the number of errors matches \p ERROR_TYPE_NUM
+   * \note Ensure the number of errors matches ERROR_TYPE_NUM
    *
    * @see ERROR_TYPE_NUM
    */
@@ -53,11 +53,11 @@ public:
   bool active; ///< If the sensor is active
 
   /**
-   * @brief Construct a new Sensor object. Only set the SENSOR_ID
+   * @brief Construct a new Sensor object. Only set Sensor::SENSOR_ID
    *
    * @param sensorID
    *
-   * @see SENSOR_ID
+   * @see Sensor::SENSOR_ID
    */
   Sensor(uint8_t sensorID);
 
@@ -69,15 +69,15 @@ public:
   /**
    * @brief Set the Sensor's measure attributes according to the provided arguments
    *
-   * @param checkInterval_ Value for CHECK_INTERVAL
-   * @param checkIntervalMargin_ Value for CHECK_INTERVAL_MARGIN
-   * @param measInterval_ Value for MEAS_INTERVAL
-   * @param DR_driven_ Value for DR_DRIVEN
+   * @param checkInterval_ Value for Sensor::CHECK_INTERVAL
+   * @param checkIntervalMargin_ Value for Sensor::CHECK_INTERVAL_MARGIN
+   * @param measInterval_ Value for Sensor::MEAS_INTERVAL
+   * @param DR_driven_ Value for Sensor::DR_DRIVEN
    *
-   * @see CHECK_INTERVAL
-   * @see CHECK_INTERVAL_MARGIN
-   * @see MEAS_INTERVAL
-   * @see DR_DRIVEN
+   * @see Sensor::CHECK_INTERVAL
+   * @see Sensor::CHECK_INTERVAL_MARGIN
+   * @see Sensor::MEAS_INTERVAL
+   * @see Sensor::DR_DRIVEN
    */
   void setupProperties(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
                        uint32_t measInterval_, bool DR_driven_);
@@ -102,33 +102,37 @@ public:
   /**
    * @brief Returns if the sensor if due for a read because of time elapsed, and actualize corresponding attributes
    *
-   * First, compute the new value of \p checkBeatsSkipped (= \p floor (( \p currMicros - \p prevCheck) / \p CHECK_INTERVAL )) )
+   * First, compute the new value of Sensor::checkBeatsSkipped
+   * \f[
+   * \texttt{checkBeatsSkipped} = \left\lfloor \cfrac{\texttt{currMicros} - \texttt{prevCheck}}{\texttt{CHECK_INTERVAL}} \right\rfloor
+   * \f]
    *
-   * If the sensor was already reading by time (that is \p dueMethod is \p DUE_BY_TIME ),
-   * we remove the margin \p CHECK_INTERVAL_MARGIN and simply rely on the nominal checking interval \p CHECK_INTERVAL .
-   * If the time elapsed between the current time \p currMicros and the time of the last check \p prevCheck is larger than the interval,
-   * we set the \p dueMethod to \p DUE_BY_TIME , set \p prevCheck to \p currMicros and return \p true .
+   * If the sensor was already reading by time (that is Sensor::dueMethod is dueType::DUE_BY_TIME ),
+   * we remove the margin Sensor::CHECK_INTERVAL_MARGIN and simply rely on the nominal checking interval Sensor::CHECK_INTERVAL .
+   * If the time elapsed between the current time \p currMicros and the time of the last check Sensor::prevCheck is larger than the interval,
+   * we set the Sensor::dueMethod to dueType::DUE_BY_TIME , set Sensor::prevCheck to \p currMicros and return \p true .
    *
-   * \note \p dueMethod can be switched to \p DUE_BY_DR only by \p isDueByDR
+   * \note Sensor::dueMethod can be switched to  dueType::DUE_BY_DR only by Sensor::isDueByDR
    *
    * @param currMicros Current time, in microseconds
    * @return true : A measurement is due because of the time elapsed since the last collected one
    * @return false : No measurement due by time
    *
-   * @see checkBeatsSkipped
-   * @see dueMethod
-   * @see CHECK_INTERVAL
-   * @see CHECK_INTERVAL_MARGIN
-   * @see prevCheck
-   * @see isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
+   * @see Sensor::checkBeatsSkipped
+   * @see Sensor::dueMethod
+   * @see Sensor::CHECK_INTERVAL
+   * @see Sensor::CHECK_INTERVAL_MARGIN
+   * @see Sensor::prevCheck
+   * @see Sensor::isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
+   * @see dueType
    */
   bool isDueByTime(uint32_t currMicros);
 
   /**
    * @brief Returns if the sensor is due for a read because of the Data Ready line
    *
-   * If the sensor has the \p DR_DRIVEN flag set and \p triggeredDR is true,
-   * \p triggeredDR is reset, \p dueMethod is actualized to \p DUE_BY_DR and \p prevCheck is set to \p currMicros .
+   * If the sensor has the Sensor::DR_DRIVEN flag set and Sensor::triggeredDR is true,
+   * \p triggeredDR is reset, Sensor::dueMethod is actualized to dueType::DUE_BY_DR and Sensor::prevCheck is set to \p currMicros .
    *
    *
    * @param currMicros Current time, in microseconds
@@ -136,10 +140,10 @@ public:
    * @return true :  A measurement is due because of the DR line
    * @return false : No measurement due by the DR line
    *
-   * @see dueMethod
-   * @see DR_DRIVEN
-   * @see prevCheck
-   * @see isDueByTime(uint32_t currMicros)
+   * @see Sensor::dueMethod
+   * @see Sensor::DR_DRIVEN
+   * @see Sensor::prevCheck
+   * @see Sensor::isDueByTime(uint32_t currMicros)
    */
   bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
 
@@ -156,17 +160,17 @@ public:
   virtual bool isDue(uint32_t currMicros, volatile bool &triggeredDR) = 0;
 
   /**
-   * @brief Update the value of \p measurementLate and returns it
+   * @brief Update the value of Sensor::measurementLate and returns it
    * 
-   * A measurement is considered late is the time elapsed since the last one ( \p prevMeasTime )
-   * is at least twice the measurement interval ( \p MEAS_INTERVAL )
+   * A measurement is considered late is the time elapsed since the last one ( Sensor::prevMeasTime )
+   * is at least twice the measurement interval ( Sensor::MEAS_INTERVAL )
    * 
    * @param currMicros Current time, in microseconds
    * @return true : A measurement should be done
    * @return false : No measurement to be done
    * 
-   * @see prevMeasTime
-   * @see MEAS_INTERVAL
+   * @see Sensor::prevMeasTime
+   * @see Sensor::MEAS_INTERVAL
    */
   bool isMeasurementLate(uint32_t currMicros);
 
@@ -181,14 +185,14 @@ public:
    * @brief Update the \p errors bool array
    * 
    * @param currMicros Current time, in microseconds
-   * @see errors
+   * @see Sensor::errors
    */
   void updateErrors(uint32_t currMicros);
 
   /**
    * @brief Generate a \p PacketHeader from the sensor and the explicitely given arguments
    * 
-   * @note It is preferred to use its \p virtual counterpart, as both \p packetType_ and \p packetSize_
+   * @note It is preferred to use its virtual counterpart, as both \p packetType_ and \p packetSize_
    * should be automatically well-chosen.
    * 
    * @param packetType_ Type of the packet
@@ -198,7 +202,7 @@ public:
    * 
    * @see PacketHeader
    * @see packetType
-   * @see getHeader(uint32_t currMicros)
+   * @see Sensor::getHeader(uint32_t currMicros)
    */
   PacketHeader getHeader(packetType packetType_, uint8_t packetSize_,
                          uint32_t currMicros);
@@ -220,6 +224,8 @@ public:
    * 
    * @param currMicros Current time, in microseconds
    * @return Packet* : Reference to the current packet held
+   * 
+   * @see Packet
    */
   virtual Packet *getPacket(uint32_t currMicros) = 0;
 };
@@ -227,17 +233,17 @@ public:
 /**
  * @brief Generate some fake data; useful for debugging
  *
- * Compute \p mid = ( \p minValue + \p maxValue ) / 2
- * and \p amplitude = ( \p maxValue - \p minValue ) / 2
+ * Compute \f$ \texttt{mid} = \cfrac{\texttt{minValue} + \texttt{maxValue}}{2} \f$
+ * and \f$ \texttt{amplitude} = \cfrac{\texttt{maxValue} - \texttt{minValue}}{2} \f$
  *
- * Pseudo-random output: \f$ \sin(2\pi * currMicros / period) * amplitude + mid + offset \f$
+ * Pseudo-random output: \f$ \sin(2\pi * \texttt{currMicros} / \texttt{period}) * \texttt{amplitude} + \texttt{mid} + \texttt{offset} \f$
  *
  * @param minValue : Minimal possible value
  * @param maxValue : Maximal possible value
  * @param currMicros : Current time, in microseconds
  * @param offset : Offset from the mid value
  * @param period : Temporal period of the sin function used to compute output (in microseconds)
- * @return float : \f$ \sin(2\pi * currMicros / period) * amplitude + mid + offset \f$
+ * @return float : A pseudo-random number
  */
 float generateFakeData(float minValue, float maxValue,
                        uint32_t currMicros,
@@ -246,7 +252,7 @@ float generateFakeData(float minValue, float maxValue,
 /**
  * @brief Convert a boolean errors' array to an error code (binary encoding)
  * 
- * @param errorArray An error code array, of size \p ERROR_TYPE_NUM
+ * @param errorArray An error code array, of size ERROR_TYPE_NUM
  * @return uint8_t : The corresponding error code
  * 
  * @see Sensor::errors
@@ -257,7 +263,7 @@ uint8_t getErrorCode(bool *errorArray);
  * @brief Convert an error code into the corresponding boolean array
  * 
  * @param errorCode An error code (errors encoded in binary)
- * @return bool * : Boolean array of size \p ERROR_TYPE_NUM
+ * @return bool * : Boolean array of size ERROR_TYPE_NUM
  * 
  * @see Sensor::errors
  */
