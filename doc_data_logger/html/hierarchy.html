@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -45,7 +55,7 @@ $(function() {
 <div class="contents">
 <div class="textblock">This inheritance list is sorted roughly, but not completely, alphabetically:</div><div class="directory">
 <div class="levels">[detail level <span onclick="javascript:toggleLevel(1);">1</span><span onclick="javascript:toggleLevel(2);">2</span><span onclick="javascript:toggleLevel(3);">3</span>]</div><table class="directory">
-<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_a_d_i_s16470_body.html" target="_self">ADIS16470Body</a></td><td class="desc"></td></tr>
+<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_a_d_i_s16470_body.html" target="_self">ADIS16470Body</a></td><td class="desc">Describe the content of a ADIS16470 packet </td></tr>
 <tr id="row_1_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_a_i_sx120_s_x_body.html" target="_self">AISx120SXBody</a></td><td class="desc"></td></tr>
 <tr id="row_2_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structevent_output.html" target="_self">eventOutput</a></td><td class="desc"></td></tr>
 <tr id="row_3_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_honeywell_r_s_c_body.html" target="_self">HoneywellRSCBody</a></td><td class="desc"></td></tr>
@@ -57,10 +67,10 @@ $(function() {
 <tr id="row_5_2_0_"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_honeywell_r_s_c___pressure___packet.html" target="_self">HoneywellRSC_Pressure_Packet</a></td><td class="desc"></td></tr>
 <tr id="row_5_2_1_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_honeywell_r_s_c___temp___packet.html" target="_self">HoneywellRSC_Temp_Packet</a></td><td class="desc"></td></tr>
 <tr id="row_5_3_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_m_a_x31855_packet.html" target="_self">MAX31855Packet</a></td><td class="desc"></td></tr>
-<tr id="row_6_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_packet_header.html" target="_self">PacketHeader</a></td><td class="desc"></td></tr>
+<tr id="row_6_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_packet_header.html" target="_self">PacketHeader</a></td><td class="desc">8 byte header for all packets </td></tr>
 <tr id="row_7_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_push_button_array.html" target="_self">PushButtonArray</a></td><td class="desc"></td></tr>
 <tr id="row_8_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_push_button_array_event.html" target="_self">PushButtonArrayEvent</a></td><td class="desc"></td></tr>
-<tr id="row_9_"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_9_" class="arrow" onclick="toggleFolder('9_')">&#9660;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_sensor.html" target="_self">Sensor</a></td><td class="desc"></td></tr>
+<tr id="row_9_"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_9_" class="arrow" onclick="toggleFolder('9_')">&#9660;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_sensor.html" target="_self">Sensor</a></td><td class="desc">Generic sensor object </td></tr>
 <tr id="row_9_0_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_a_d_i_s16470_wrapper.html" target="_self">ADIS16470Wrapper</a></td><td class="desc"></td></tr>
 <tr id="row_9_1_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_a_i_sx120_s_x_wrapper.html" target="_self">AISx120SXWrapper</a></td><td class="desc"></td></tr>
 <tr id="row_9_2_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_honeywell_rsc_wrapper.html" target="_self">HoneywellRscWrapper</a></td><td class="desc"></td></tr>

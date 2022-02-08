@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -42,38 +52,436 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="class_push_button_array-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">PushButtonArray Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="_push_button_array_8h_source.html">PushButtonArray.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6081fd3d1ddb2f5248b72ec4bbf7accc"><td class="memItemLeft" align="right" valign="top"><a id="a6081fd3d1ddb2f5248b72ec4bbf7accc" name="a6081fd3d1ddb2f5248b72ec4bbf7accc"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getState</b> ()</td></tr>
+<tr class="memitem:a39b25445c38f39fd1e3722cf83745781"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a39b25445c38f39fd1e3722cf83745781">PushButtonArray</a> ()</td></tr>
+<tr class="separator:a39b25445c38f39fd1e3722cf83745781"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6081fd3d1ddb2f5248b72ec4bbf7accc"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a6081fd3d1ddb2f5248b72ec4bbf7accc">getState</a> ()</td></tr>
 <tr class="separator:a6081fd3d1ddb2f5248b72ec4bbf7accc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42c223511d68284fc0338af442469177"><td class="memItemLeft" align="right" valign="top"><a id="a42c223511d68284fc0338af442469177" name="a42c223511d68284fc0338af442469177"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>translateState</b> (bool individualButtonStates[BUTTON_NUM])</td></tr>
+<tr class="memitem:a42c223511d68284fc0338af442469177"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a42c223511d68284fc0338af442469177">translateState</a> (bool individualButtonStates[<a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a>])</td></tr>
 <tr class="separator:a42c223511d68284fc0338af442469177"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab439db86459fe7e1d578367379a740d1"><td class="memItemLeft" align="right" valign="top"><a id="ab439db86459fe7e1d578367379a740d1" name="ab439db86459fe7e1d578367379a740d1"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>addEvent</b> (uint8_t state, uint8_t nextState, uint32_t windowStart, uint32_t windowEnd)</td></tr>
+<tr class="memitem:ab439db86459fe7e1d578367379a740d1"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#ab439db86459fe7e1d578367379a740d1">addEvent</a> (uint8_t <a class="el" href="class_push_button_array.html#a199edc5422e0dbe546029bde3652d4ba">state</a>, uint8_t nextState, uint32_t windowStart, uint32_t windowEnd)</td></tr>
 <tr class="separator:ab439db86459fe7e1d578367379a740d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fb92004d7566ad8501ee002518920f5"><td class="memItemLeft" align="right" valign="top"><a id="a9fb92004d7566ad8501ee002518920f5" name="a9fb92004d7566ad8501ee002518920f5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>activateEvent</b> (uint8_t idx)</td></tr>
+<tr class="memitem:a9fb92004d7566ad8501ee002518920f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a9fb92004d7566ad8501ee002518920f5">activateEvent</a> (uint8_t idx)</td></tr>
 <tr class="separator:a9fb92004d7566ad8501ee002518920f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55ee277b731f99ac434ddc549ff3e2a0"><td class="memItemLeft" align="right" valign="top"><a id="a55ee277b731f99ac434ddc549ff3e2a0" name="a55ee277b731f99ac434ddc549ff3e2a0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>deactivateEvent</b> (uint8_t idx)</td></tr>
+<tr class="memitem:a55ee277b731f99ac434ddc549ff3e2a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a55ee277b731f99ac434ddc549ff3e2a0">deactivateEvent</a> (uint8_t idx)</td></tr>
 <tr class="separator:a55ee277b731f99ac434ddc549ff3e2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44060feecb166359a85b45faafb42bbe"><td class="memItemLeft" align="right" valign="top"><a id="a44060feecb166359a85b45faafb42bbe" name="a44060feecb166359a85b45faafb42bbe"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteEvent</b> (uint8_t idx)</td></tr>
+<tr class="memitem:a44060feecb166359a85b45faafb42bbe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a44060feecb166359a85b45faafb42bbe">deleteEvent</a> (uint8_t idx)</td></tr>
 <tr class="separator:a44060feecb166359a85b45faafb42bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a703edc6e8a61a0df21980d3403695635"><td class="memItemLeft" align="right" valign="top"><a id="a703edc6e8a61a0df21980d3403695635" name="a703edc6e8a61a0df21980d3403695635"></a>
-<a class="el" href="structevent_output.html">eventOutput</a>&#160;</td><td class="memItemRight" valign="bottom"><b>checkEvents</b> (uint32_t currMillis, bool individualButtonStates[BUTTON_NUM])</td></tr>
+<tr class="memitem:a703edc6e8a61a0df21980d3403695635"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structevent_output.html">eventOutput</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a703edc6e8a61a0df21980d3403695635">checkEvents</a> (uint32_t currMillis, bool individualButtonStates[<a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a>])</td></tr>
 <tr class="separator:a703edc6e8a61a0df21980d3403695635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a81f417b5bd79c6bcbe42e162ac9f917e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a81f417b5bd79c6bcbe42e162ac9f917e">stateStartTime</a> [<a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a>] = {0}</td></tr>
+<tr class="separator:a81f417b5bd79c6bcbe42e162ac9f917e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f23e12b1a0df35b94c6fe152c6ad2f6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a9f23e12b1a0df35b94c6fe152c6ad2f6">stateEndTime</a> [<a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a>] = {0}</td></tr>
+<tr class="separator:a9f23e12b1a0df35b94c6fe152c6ad2f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab74c655529916c581e77bff32902202c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#ab74c655529916c581e77bff32902202c">stateDuration</a> [<a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a>] = {0}</td></tr>
+<tr class="separator:ab74c655529916c581e77bff32902202c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2bfa25cacce3a6906afdb4735199d60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_push_button_array_event.html">PushButtonArrayEvent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#af2bfa25cacce3a6906afdb4735199d60">Events</a> [<a class="el" href="class_push_button_array.html#afc031e11a10cafa70166c7972e5d512e">EVENT_NUM</a>]</td></tr>
+<tr class="separator:af2bfa25cacce3a6906afdb4735199d60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a199edc5422e0dbe546029bde3652d4ba"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a199edc5422e0dbe546029bde3652d4ba">state</a> = 0</td></tr>
+<tr class="separator:a199edc5422e0dbe546029bde3652d4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02bb668f6fce1bed1a67ab295894eaf8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a02bb668f6fce1bed1a67ab295894eaf8">lastState</a> = 0</td></tr>
+<tr class="separator:a02bb668f6fce1bed1a67ab295894eaf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a41e5da9b52cad7719e820c1b1e379345"><td class="memItemLeft" align="right" valign="top">static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a> = 2</td></tr>
+<tr class="separator:a41e5da9b52cad7719e820c1b1e379345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8294460178bbf2b5ab2274a8f519b825"><td class="memItemLeft" align="right" valign="top">static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a> = <a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a> * <a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a></td></tr>
+<tr class="separator:a8294460178bbf2b5ab2274a8f519b825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc031e11a10cafa70166c7972e5d512e"><td class="memItemLeft" align="right" valign="top">static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_push_button_array.html#afc031e11a10cafa70166c7972e5d512e">EVENT_NUM</a> = 8</td></tr>
+<tr class="separator:afc031e11a10cafa70166c7972e5d512e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a39b25445c38f39fd1e3722cf83745781" name="a39b25445c38f39fd1e3722cf83745781"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39b25445c38f39fd1e3722cf83745781">&#9670;&nbsp;</a></span>PushButtonArray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PushButtonArray::PushButtonArray </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9fb92004d7566ad8501ee002518920f5" name="a9fb92004d7566ad8501ee002518920f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fb92004d7566ad8501ee002518920f5">&#9670;&nbsp;</a></span>activateEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PushButtonArray::activateEvent </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab439db86459fe7e1d578367379a740d1" name="ab439db86459fe7e1d578367379a740d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab439db86459fe7e1d578367379a740d1">&#9670;&nbsp;</a></span>addEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PushButtonArray::addEvent </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>nextState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>windowStart</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>windowEnd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a703edc6e8a61a0df21980d3403695635" name="a703edc6e8a61a0df21980d3403695635"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a703edc6e8a61a0df21980d3403695635">&#9670;&nbsp;</a></span>checkEvents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structevent_output.html">eventOutput</a> PushButtonArray::checkEvents </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>currMillis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>individualButtonStates</em>[BUTTON_NUM]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a55ee277b731f99ac434ddc549ff3e2a0" name="a55ee277b731f99ac434ddc549ff3e2a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55ee277b731f99ac434ddc549ff3e2a0">&#9670;&nbsp;</a></span>deactivateEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PushButtonArray::deactivateEvent </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a44060feecb166359a85b45faafb42bbe" name="a44060feecb166359a85b45faafb42bbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44060feecb166359a85b45faafb42bbe">&#9670;&nbsp;</a></span>deleteEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PushButtonArray::deleteEvent </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6081fd3d1ddb2f5248b72ec4bbf7accc" name="a6081fd3d1ddb2f5248b72ec4bbf7accc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6081fd3d1ddb2f5248b72ec4bbf7accc">&#9670;&nbsp;</a></span>getState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PushButtonArray::getState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a42c223511d68284fc0338af442469177" name="a42c223511d68284fc0338af442469177"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42c223511d68284fc0338af442469177">&#9670;&nbsp;</a></span>translateState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PushButtonArray::translateState </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>individualButtonStates</em>[BUTTON_NUM]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a41e5da9b52cad7719e820c1b1e379345" name="a41e5da9b52cad7719e820c1b1e379345"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41e5da9b52cad7719e820c1b1e379345">&#9670;&nbsp;</a></span>BUTTON_NUM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint8_t PushButtonArray::BUTTON_NUM = 2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afc031e11a10cafa70166c7972e5d512e" name="afc031e11a10cafa70166c7972e5d512e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc031e11a10cafa70166c7972e5d512e">&#9670;&nbsp;</a></span>EVENT_NUM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint8_t PushButtonArray::EVENT_NUM = 8</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af2bfa25cacce3a6906afdb4735199d60" name="af2bfa25cacce3a6906afdb4735199d60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2bfa25cacce3a6906afdb4735199d60">&#9670;&nbsp;</a></span>Events</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_push_button_array_event.html">PushButtonArrayEvent</a> PushButtonArray::Events[<a class="el" href="class_push_button_array.html#afc031e11a10cafa70166c7972e5d512e">EVENT_NUM</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a02bb668f6fce1bed1a67ab295894eaf8" name="a02bb668f6fce1bed1a67ab295894eaf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02bb668f6fce1bed1a67ab295894eaf8">&#9670;&nbsp;</a></span>lastState</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PushButtonArray::lastState = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a199edc5422e0dbe546029bde3652d4ba" name="a199edc5422e0dbe546029bde3652d4ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a199edc5422e0dbe546029bde3652d4ba">&#9670;&nbsp;</a></span>state</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PushButtonArray::state = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8294460178bbf2b5ab2274a8f519b825" name="a8294460178bbf2b5ab2274a8f519b825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8294460178bbf2b5ab2274a8f519b825">&#9670;&nbsp;</a></span>STATE_NUM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint8_t PushButtonArray::STATE_NUM = <a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a> * <a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab74c655529916c581e77bff32902202c" name="ab74c655529916c581e77bff32902202c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab74c655529916c581e77bff32902202c">&#9670;&nbsp;</a></span>stateDuration</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t PushButtonArray::stateDuration[<a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a>] = {0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9f23e12b1a0df35b94c6fe152c6ad2f6" name="a9f23e12b1a0df35b94c6fe152c6ad2f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f23e12b1a0df35b94c6fe152c6ad2f6">&#9670;&nbsp;</a></span>stateEndTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t PushButtonArray::stateEndTime[<a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a>] = {0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a81f417b5bd79c6bcbe42e162ac9f917e" name="a81f417b5bd79c6bcbe42e162ac9f917e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81f417b5bd79c6bcbe42e162ac9f917e">&#9670;&nbsp;</a></span>stateStartTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t PushButtonArray::stateStartTime[<a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a>] = {0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>data_logger/lib/PushButtonArray/<a class="el" href="_push_button_array_8h_source.html">PushButtonArray.h</a></li>
-<li>data_logger/lib/PushButtonArray/PushButtonArray.cpp</li>
+<li>data_logger/lib/PushButtonArray/<a class="el" href="_push_button_array_8cpp.html">PushButtonArray.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

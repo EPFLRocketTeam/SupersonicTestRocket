@@ -1,4 +1,3 @@
 *.pyc
 workspace.code-workspace
 MyTools/**
-doc_data_logger/**

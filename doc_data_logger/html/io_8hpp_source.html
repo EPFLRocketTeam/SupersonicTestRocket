@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -47,7 +57,7 @@ $(function() {
   <div class="headertitle"><div class="title">io.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="io_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * io.hpp</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> *  Created on: 2021-04-24</span></div>
@@ -56,21 +66,27 @@ $(function() {
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;globalVariables.hpp&quot;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="global_variables_8hpp.html">globalVariables.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">const</span> <span class="keywordtype">int</span> SUCCESS_FLASH_DURATION = 500;</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">const</span> <span class="keywordtype">int</span> ERROR_FLASH_DURATION = 1500;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="io_8hpp.html#ade03ec25b19a15bb8d91d801ba5d036f">   12</a></span><span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="io_8hpp.html#ade03ec25b19a15bb8d91d801ba5d036f">SUCCESS_FLASH_DURATION</a> = 500;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="io_8hpp.html#af0072414201cfb3155e850ca54e63380">   13</a></span><span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="io_8hpp.html#af0072414201cfb3155e850ca54e63380">ERROR_FLASH_DURATION</a> = 1500;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment">// flashes the given LED for a certain time</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">// \!/ uses delay(). do not use in any time-sensitive application</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keywordtype">void</span> flashLED(uint8_t pinNumber, <span class="keywordtype">int</span> flashDuration);</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keywordtype">void</span> <a class="code hl_function" href="io_8hpp.html#a4c36361ba53d12edeafff849a14b0ac9">flashLED</a>(uint8_t pinNumber, <span class="keywordtype">int</span> flashDuration);</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment">// flash the LED when something was successful</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// \!/ uses delay(). do not use in any time-sensitive application</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">void</span> successFlash();</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">void</span> <a class="code hl_function" href="io_8hpp.html#a66dc68c9016b12f884500db19b220652">successFlash</a>();</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">// flash the LED when something had an error</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">// \!/ uses delay(). do not use in any time-sensitive application</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">void</span> errorFlash();</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">void</span> <a class="code hl_function" href="io_8hpp.html#af9d0321ac0cf1f1074c132f9feab9c6e">errorFlash</a>();</div>
+<div class="ttc" id="aglobal_variables_8hpp_html"><div class="ttname"><a href="global_variables_8hpp.html">globalVariables.hpp</a></div></div>
+<div class="ttc" id="aio_8hpp_html_a4c36361ba53d12edeafff849a14b0ac9"><div class="ttname"><a href="io_8hpp.html#a4c36361ba53d12edeafff849a14b0ac9">flashLED</a></div><div class="ttdeci">void flashLED(uint8_t pinNumber, int flashDuration)</div><div class="ttdef"><b>Definition:</b> io.cpp:10</div></div>
+<div class="ttc" id="aio_8hpp_html_a66dc68c9016b12f884500db19b220652"><div class="ttname"><a href="io_8hpp.html#a66dc68c9016b12f884500db19b220652">successFlash</a></div><div class="ttdeci">void successFlash()</div><div class="ttdef"><b>Definition:</b> io.cpp:18</div></div>
+<div class="ttc" id="aio_8hpp_html_ade03ec25b19a15bb8d91d801ba5d036f"><div class="ttname"><a href="io_8hpp.html#ade03ec25b19a15bb8d91d801ba5d036f">SUCCESS_FLASH_DURATION</a></div><div class="ttdeci">const int SUCCESS_FLASH_DURATION</div><div class="ttdef"><b>Definition:</b> io.hpp:12</div></div>
+<div class="ttc" id="aio_8hpp_html_af0072414201cfb3155e850ca54e63380"><div class="ttname"><a href="io_8hpp.html#af0072414201cfb3155e850ca54e63380">ERROR_FLASH_DURATION</a></div><div class="ttdeci">const int ERROR_FLASH_DURATION</div><div class="ttdef"><b>Definition:</b> io.hpp:13</div></div>
+<div class="ttc" id="aio_8hpp_html_af9d0321ac0cf1f1074c132f9feab9c6e"><div class="ttname"><a href="io_8hpp.html#af9d0321ac0cf1f1074c132f9feab9c6e">errorFlash</a></div><div class="ttdeci">void errorFlash()</div><div class="ttdef"><b>Definition:</b> io.cpp:23</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

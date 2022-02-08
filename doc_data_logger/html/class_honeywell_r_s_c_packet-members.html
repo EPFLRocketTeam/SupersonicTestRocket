@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -46,30 +56,30 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>accessContent</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>accessHeader</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>content</b> (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>getContent</b>(void *holder) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getErrorCode</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>getMeasurement</b>() (defined in <a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a>)</td><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getPacketSize</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>getPacketType</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getSensorID</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>getTimestamp</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>header</b> (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>HoneywellRSCPacket</b>() (defined in <a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a>)</td><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Packet</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>Packet</b>(uint8_t size) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Packet</b>(PacketHeader header) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>Packet</b>(Packet &amp;other) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>setContent</b>(void *data, size_t s) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>setErrorCode</b>(uint8_t errCode) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>setMeasurement</b>(float m) (defined in <a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a>)</td><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>setPacketType</b>(packetType pt) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>setSensorID</b>(uint8_t id) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>setTimestamp</b>(uint32_t ts) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>updateHeader</b>(PacketHeader h) (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>~Packet</b>() (defined in <a class="el" href="class_packet.html">Packet</a>)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a0ae97ac4e20cf53344cfc0246952cf78">accessContent</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a24775f82deeeaf92bfbb3c2e238c47f6">accessHeader</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a31628cd89ec4db7de00618ef2c8f9d0c">content</a></td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a89b667e969a23c15438d6c20fc4b0d60">getContent</a>(void *holder)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#ad9d50f8c1c702616d921b57e056845fd">getErrorCode</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html#a3884402ec36fbc44d0cd5b366613039a">getMeasurement</a>()</td><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#ad432be2667efbd3530047d9e189935c4">getPacketSize</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#ae772f9d433022aebb3484fab6b09ab1f">getPacketType</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a8a24360e005bb542ee01d3d957fc7a81">getSensorID</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a8cf31685fe9736a3627f7ad71ab8b60d">getTimestamp</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a4ffe27b98b750e7b4d9201b7c0713f24">header</a></td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html#a0e45c449ef9a5737063a83fa5d53d13d">HoneywellRSCPacket</a>()</td><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#aabcfb963c0d5bc0fa554668f92989622">Packet</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#acc42abcd0514e9d96e555531aa22546c">Packet</a>(uint8_t size)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a5353650001b5fe4f592ce24abfee46de">Packet</a>(PacketHeader &amp;header)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a02522b253746f9c05727ac05b391a035">Packet</a>(Packet &amp;other)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a727647e052a395dccad62b34a1345847">setContent</a>(void *data, size_t s)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a710761be3a0e774d71e5319b93156036">setErrorCode</a>(uint8_t errCode)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html#af6635f597014e15eecba80fa74747fa6">setMeasurement</a>(float m)</td><td class="entry"><a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#ab41e69c94c5113b8b5c8b46320db2bc5">setPacketType</a>(packetType pt)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#ac7e222aaf674503f822e9c44811a41c7">setSensorID</a>(uint8_t id)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a1aa0076b1ff63d7e25466f635b99f32b">setTimestamp</a>(uint32_t ts)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_packet.html#a7c85338a37cdaa6a45d147ee47ed4939">updateHeader</a>(PacketHeader h)</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_packet.html#a48938391fb7e07460bb0e01198ae5ede">~Packet</a>()</td><td class="entry"><a class="el" href="class_packet.html">Packet</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

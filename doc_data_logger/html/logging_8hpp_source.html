@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -47,7 +57,7 @@ $(function() {
   <div class="headertitle"><div class="title">logging.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="logging_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * logging.hpp</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> *  Created on: 2021-04-22</span></div>
@@ -64,21 +74,22 @@ $(function() {
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;SdFat.h&gt;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;RingBuf.h&gt;</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#define SD_CONFIG SdioConfig(FIFO_SDIO)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="logging_8hpp.html#a0584f45d96c62d7d203d272b99af6fa1">   18</a></span><span class="preprocessor">#define SD_CONFIG SdioConfig(FIFO_SDIO)</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// Size to log 64 byte lines at 2000Hz for more than sixty minutes.</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define LOG_FILE_SIZE 64 * 2000 * 90 * 60</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="logging_8hpp.html#aae919ba7488e6353a8c239b5f081247c">   21</a></span><span class="preprocessor">#define LOG_FILE_SIZE 64 * 2000 * 90 * 60</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">// Space to hold 64 byte lines at 2000Hz for more than 1s.</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#define RING_BUF_CAPACITY 64 * 2000 * 1</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="logging_8hpp.html#a76f1cbaf73ae198b74977cfc6d0426cc">   23</a></span><span class="preprocessor">#define RING_BUF_CAPACITY 64 * 2000 * 1</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">// Counter for the logging file name</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#define COUNTER_FILENAME &quot;counter.dat&quot;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="logging_8hpp.html#a28eae7f17c55c9844d8672cbd8d92505">   25</a></span><span class="preprocessor">#define COUNTER_FILENAME &quot;counter.dat&quot;</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keywordtype">void</span> setupLoggingFile(FsFile &amp;loggingFile,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keywordtype">void</span> <a class="code hl_function" href="logging_8hpp.html#a24b4f7b9ef47cd72db54c99668d6b232">setupLoggingFile</a>(FsFile &amp;loggingFile,</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>                      RingBuf&lt;FsFile, RING_BUF_CAPACITY&gt; &amp;rb);</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">// Deprecated function as too slow on a Teensy</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment">// converts from a binary file of packets to a CSV file for human reading</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">//bool binFileToCSV(FsFile &amp;binFile);</span></div>
+<div class="ttc" id="alogging_8hpp_html_a24b4f7b9ef47cd72db54c99668d6b232"><div class="ttname"><a href="logging_8hpp.html#a24b4f7b9ef47cd72db54c99668d6b232">setupLoggingFile</a></div><div class="ttdeci">void setupLoggingFile(FsFile &amp;loggingFile, RingBuf&lt; FsFile, RING_BUF_CAPACITY &gt; &amp;rb)</div><div class="ttdef"><b>Definition:</b> logging.cpp:10</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

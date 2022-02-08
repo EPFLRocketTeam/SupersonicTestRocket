@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -42,107 +52,226 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="class_a_i_sx120_s_x_wrapper-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">AISx120SXWrapper Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="_a_i_sx120_s_x_wrapper_8hpp_source.html">AISx120SXWrapper.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for AISx120SXWrapper:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_a_i_sx120_s_x_wrapper.png" usemap="#AISx120SXWrapper_map" alt=""/>
   <map id="AISx120SXWrapper_map" name="AISx120SXWrapper_map">
-<area href="class_sensor.html" alt="Sensor" shape="rect" coords="0,0,125,24"/>
+<area href="class_sensor.html" title="Generic sensor object." alt="Sensor" shape="rect" coords="0,0,125,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a205e3f16733e2b50fdaf09030d328bbe"><td class="memItemLeft" align="right" valign="top"><a id="a205e3f16733e2b50fdaf09030d328bbe" name="a205e3f16733e2b50fdaf09030d328bbe"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>AISx120SXWrapper</b> (uint8_t CS_, bandwidth bandwidthX, bandwidth bandwidthY, bool x_offset_monitor, bool x_offset_canc, bool y_offset_monitor, bool y_offset_canc)</td></tr>
+<tr class="memitem:a205e3f16733e2b50fdaf09030d328bbe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a205e3f16733e2b50fdaf09030d328bbe">AISx120SXWrapper</a> (uint8_t CS_, bandwidth <a class="el" href="class_a_i_sx120_s_x_wrapper.html#aece737406fa9c9ac60271f1a6597759d">bandwidthX</a>, bandwidth <a class="el" href="class_a_i_sx120_s_x_wrapper.html#ab610bbdc4c26943e5089b7a1dff07330">bandwidthY</a>, bool <a class="el" href="class_a_i_sx120_s_x_wrapper.html#a8555d0f27281e2901d4e6a9ba857e531">x_offset_monitor</a>, bool <a class="el" href="class_a_i_sx120_s_x_wrapper.html#a86b9374c52f90646292ab614c9cf2d1e">x_offset_canc</a>, bool <a class="el" href="class_a_i_sx120_s_x_wrapper.html#aa8ea905be30a40fa8a0550a067f72a3c">y_offset_monitor</a>, bool <a class="el" href="class_a_i_sx120_s_x_wrapper.html#ab6438d606979a1a95790d093733b6d91">y_offset_canc</a>)</td></tr>
 <tr class="separator:a205e3f16733e2b50fdaf09030d328bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59cdb3fb1994d90316e23f24e0a293db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a59cdb3fb1994d90316e23f24e0a293db">~AISx120SXWrapper</a> ()</td></tr>
+<tr class="separator:a59cdb3fb1994d90316e23f24e0a293db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9e4ce37cd563c330e96f87d781799f9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ad9e4ce37cd563c330e96f87d781799f9">setup</a> (uint32_t attempts, uint32_t delayDuration)</td></tr>
+<tr class="memdesc:ad9e4ce37cd563c330e96f87d781799f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the underlying sensor (other parameters should be given at construction)  <a href="class_a_i_sx120_s_x_wrapper.html#ad9e4ce37cd563c330e96f87d781799f9">More...</a><br /></td></tr>
 <tr class="separator:ad9e4ce37cd563c330e96f87d781799f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01cb9d803774b933235f8a5452205908"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a01cb9d803774b933235f8a5452205908">myName</a> ()</td></tr>
+<tr class="memdesc:a01cb9d803774b933235f8a5452205908"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the sensor; mostly for logging/debugging purpose.  <a href="class_a_i_sx120_s_x_wrapper.html#a01cb9d803774b933235f8a5452205908">More...</a><br /></td></tr>
 <tr class="separator:a01cb9d803774b933235f8a5452205908"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa875873198b7864fb549dccb0e1b1cee"><td class="memItemLeft" align="right" valign="top"><a id="aa875873198b7864fb549dccb0e1b1cee" name="aa875873198b7864fb549dccb0e1b1cee"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getSensorQty</b> ()</td></tr>
+<tr class="memitem:aa875873198b7864fb549dccb0e1b1cee"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#aa875873198b7864fb549dccb0e1b1cee">getSensorQty</a> ()</td></tr>
 <tr class="separator:aa875873198b7864fb549dccb0e1b1cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ea61ea84e261a28f75fd0b9bd8741fc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a5ea61ea84e261a28f75fd0b9bd8741fc">isDue</a> (uint32_t currMicros, volatile bool &amp;triggeredDR)</td></tr>
+<tr class="memdesc:a5ea61ea84e261a28f75fd0b9bd8741fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a virtual, general version to streamline management. Should be implemented by child classes.  <a href="class_a_i_sx120_s_x_wrapper.html#a5ea61ea84e261a28f75fd0b9bd8741fc">More...</a><br /></td></tr>
 <tr class="separator:a5ea61ea84e261a28f75fd0b9bd8741fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71c19360dd0ed1b5c6442ae0f409781e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a71c19360dd0ed1b5c6442ae0f409781e">isMeasurementInvalid</a> ()</td></tr>
+<tr class="memdesc:a71c19360dd0ed1b5c6442ae0f409781e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Should be implemented by child classes. Used to declare a measurement invalid.  <a href="class_a_i_sx120_s_x_wrapper.html#a71c19360dd0ed1b5c6442ae0f409781e">More...</a><br /></td></tr>
 <tr class="separator:a71c19360dd0ed1b5c6442ae0f409781e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37ed914b512cd3b1783c9573e9e8d05a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_a_i_sx120_s_x_packet.html">AISx120SXPacket</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a37ed914b512cd3b1783c9573e9e8d05a">getPacket</a> (uint32_t currMicros)</td></tr>
+<tr class="memdesc:a37ed914b512cd3b1783c9573e9e8d05a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the last packet provided by the sensor.  <a href="class_a_i_sx120_s_x_wrapper.html#a37ed914b512cd3b1783c9573e9e8d05a">More...</a><br /></td></tr>
 <tr class="separator:a37ed914b512cd3b1783c9573e9e8d05a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13c0118be5be47a8d264920296feca30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a13c0118be5be47a8d264920296feca30">getHeader</a> (uint32_t currMicros)</td></tr>
+<tr class="memdesc:a13c0118be5be47a8d264920296feca30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Auto generate the <a class="el" href="struct_packet_header.html" title="8 byte header for all packets">PacketHeader</a> object; defined in child classes.  <a href="class_a_i_sx120_s_x_wrapper.html#a13c0118be5be47a8d264920296feca30">More...</a><br /></td></tr>
 <tr class="separator:a13c0118be5be47a8d264920296feca30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_sensor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_sensor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_sensor.html">Sensor</a></td></tr>
-<tr class="memitem:ab51284205dc27493bb5f4599b392c8a7 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="ab51284205dc27493bb5f4599b392c8a7" name="ab51284205dc27493bb5f4599b392c8a7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Sensor</b> (uint8_t sensorID)</td></tr>
+<tr class="memitem:ab51284205dc27493bb5f4599b392c8a7 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#ab51284205dc27493bb5f4599b392c8a7">Sensor</a> (uint8_t sensorID)</td></tr>
+<tr class="memdesc:ab51284205dc27493bb5f4599b392c8a7 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_sensor.html" title="Generic sensor object.">Sensor</a> object. Only set <a class="el" href="class_sensor.html#ad32a0b3a15f0133c4f928421e2f1548f" title="Sensor&#39;s id. Is non-zero if identical sensors are used.">Sensor::SENSOR_ID</a>.  <a href="class_sensor.html#ab51284205dc27493bb5f4599b392c8a7">More...</a><br /></td></tr>
 <tr class="separator:ab51284205dc27493bb5f4599b392c8a7 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac63aac6b69bb1d6bd8de12665e0113dc inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="ac63aac6b69bb1d6bd8de12665e0113dc" name="ac63aac6b69bb1d6bd8de12665e0113dc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setupProperties</b> (uint32_t checkInterval_, uint32_t checkIntervalMargin_, uint32_t measInterval_, bool DR_driven_)</td></tr>
+<tr class="memitem:aee8c70e7ef05ce65e7ee33686b5d7db2 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#aee8c70e7ef05ce65e7ee33686b5d7db2">~Sensor</a> ()</td></tr>
+<tr class="memdesc:aee8c70e7ef05ce65e7ee33686b5d7db2 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the <a class="el" href="class_sensor.html" title="Generic sensor object.">Sensor</a> object (default destructor)  <a href="class_sensor.html#aee8c70e7ef05ce65e7ee33686b5d7db2">More...</a><br /></td></tr>
+<tr class="separator:aee8c70e7ef05ce65e7ee33686b5d7db2 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac63aac6b69bb1d6bd8de12665e0113dc inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#ac63aac6b69bb1d6bd8de12665e0113dc">setupProperties</a> (uint32_t checkInterval_, uint32_t checkIntervalMargin_, uint32_t measInterval_, bool DR_driven_)</td></tr>
+<tr class="memdesc:ac63aac6b69bb1d6bd8de12665e0113dc inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <a class="el" href="class_sensor.html" title="Generic sensor object.">Sensor</a>'s measure attributes according to the provided arguments.  <a href="class_sensor.html#ac63aac6b69bb1d6bd8de12665e0113dc">More...</a><br /></td></tr>
 <tr class="separator:ac63aac6b69bb1d6bd8de12665e0113dc inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85eb36f51b7b3dfb34ab60daea8587a1 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a85eb36f51b7b3dfb34ab60daea8587a1" name="a85eb36f51b7b3dfb34ab60daea8587a1"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (uint32_t attempts, uint32_t delayDuration)=0</td></tr>
+<tr class="memitem:a85eb36f51b7b3dfb34ab60daea8587a1 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a85eb36f51b7b3dfb34ab60daea8587a1">setup</a> (uint32_t attempts, uint32_t delayDuration)=0</td></tr>
+<tr class="memdesc:a85eb36f51b7b3dfb34ab60daea8587a1 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the underlying sensor (other parameters should be given at construction)  <a href="class_sensor.html#a85eb36f51b7b3dfb34ab60daea8587a1">More...</a><br /></td></tr>
 <tr class="separator:a85eb36f51b7b3dfb34ab60daea8587a1 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87bbac12994ff68f5797976ec5c9af70 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a87bbac12994ff68f5797976ec5c9af70" name="a87bbac12994ff68f5797976ec5c9af70"></a>
-virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><b>myName</b> ()=0</td></tr>
+<tr class="memitem:a87bbac12994ff68f5797976ec5c9af70 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a87bbac12994ff68f5797976ec5c9af70">myName</a> ()=0</td></tr>
+<tr class="memdesc:a87bbac12994ff68f5797976ec5c9af70 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the sensor; mostly for logging/debugging purpose.  <a href="class_sensor.html#a87bbac12994ff68f5797976ec5c9af70">More...</a><br /></td></tr>
 <tr class="separator:a87bbac12994ff68f5797976ec5c9af70 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76bf98e434c5b82f45634d2099c977b8 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a76bf98e434c5b82f45634d2099c977b8" name="a76bf98e434c5b82f45634d2099c977b8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isDueByTime</b> (uint32_t currMicros)</td></tr>
+<tr class="memitem:a76bf98e434c5b82f45634d2099c977b8 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a76bf98e434c5b82f45634d2099c977b8">isDueByTime</a> (uint32_t currMicros)</td></tr>
+<tr class="memdesc:a76bf98e434c5b82f45634d2099c977b8 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the sensor if due for a read because of time elapsed, and actualize corresponding attributes.  <a href="class_sensor.html#a76bf98e434c5b82f45634d2099c977b8">More...</a><br /></td></tr>
 <tr class="separator:a76bf98e434c5b82f45634d2099c977b8 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4db98939aad18b6a65c5430fbafdc986 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a4db98939aad18b6a65c5430fbafdc986" name="a4db98939aad18b6a65c5430fbafdc986"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isDueByDR</b> (uint32_t currMicros, volatile bool &amp;triggeredDR)</td></tr>
+<tr class="memitem:a4db98939aad18b6a65c5430fbafdc986 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a4db98939aad18b6a65c5430fbafdc986">isDueByDR</a> (uint32_t currMicros, volatile bool &amp;triggeredDR)</td></tr>
+<tr class="memdesc:a4db98939aad18b6a65c5430fbafdc986 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the sensor is due for a read because of the Data Ready line.  <a href="class_sensor.html#a4db98939aad18b6a65c5430fbafdc986">More...</a><br /></td></tr>
 <tr class="separator:a4db98939aad18b6a65c5430fbafdc986 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a453cfdc6a468c71d0c10a6ed24ca3124 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a453cfdc6a468c71d0c10a6ed24ca3124" name="a453cfdc6a468c71d0c10a6ed24ca3124"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isDue</b> (uint32_t currMicros, volatile bool &amp;triggeredDR)=0</td></tr>
+<tr class="memitem:a453cfdc6a468c71d0c10a6ed24ca3124 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a453cfdc6a468c71d0c10a6ed24ca3124">isDue</a> (uint32_t currMicros, volatile bool &amp;triggeredDR)=0</td></tr>
+<tr class="memdesc:a453cfdc6a468c71d0c10a6ed24ca3124 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a virtual, general version to streamline management. Should be implemented by child classes.  <a href="class_sensor.html#a453cfdc6a468c71d0c10a6ed24ca3124">More...</a><br /></td></tr>
 <tr class="separator:a453cfdc6a468c71d0c10a6ed24ca3124 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44218166b4d4c87b3316123b49680a6c inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a44218166b4d4c87b3316123b49680a6c" name="a44218166b4d4c87b3316123b49680a6c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isMeasurementLate</b> (uint32_t currMicros)</td></tr>
+<tr class="memitem:a44218166b4d4c87b3316123b49680a6c inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a44218166b4d4c87b3316123b49680a6c">isMeasurementLate</a> (uint32_t currMicros)</td></tr>
+<tr class="memdesc:a44218166b4d4c87b3316123b49680a6c inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the value of <a class="el" href="class_sensor.html#aa99ebf81e030fbf2ee262be8949414ea" title="If the last measurement was late.">Sensor::measurementLate</a> and returns it.  <a href="class_sensor.html#a44218166b4d4c87b3316123b49680a6c">More...</a><br /></td></tr>
 <tr class="separator:a44218166b4d4c87b3316123b49680a6c inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f27a2933393ca06349aca7e6da658ce inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a7f27a2933393ca06349aca7e6da658ce" name="a7f27a2933393ca06349aca7e6da658ce"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isMeasurementInvalid</b> ()</td></tr>
+<tr class="memitem:a7f27a2933393ca06349aca7e6da658ce inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a7f27a2933393ca06349aca7e6da658ce">isMeasurementInvalid</a> ()</td></tr>
+<tr class="memdesc:a7f27a2933393ca06349aca7e6da658ce inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Should be implemented by child classes. Used to declare a measurement invalid.  <a href="class_sensor.html#a7f27a2933393ca06349aca7e6da658ce">More...</a><br /></td></tr>
 <tr class="separator:a7f27a2933393ca06349aca7e6da658ce inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab72988ae275011f37afce31c46539c6c inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="ab72988ae275011f37afce31c46539c6c" name="ab72988ae275011f37afce31c46539c6c"></a>
-bool *&#160;</td><td class="memItemRight" valign="bottom"><b>getErrors</b> ()</td></tr>
-<tr class="separator:ab72988ae275011f37afce31c46539c6c inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c512120c70cf6278895052f8d42b5ce inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a6c512120c70cf6278895052f8d42b5ce" name="a6c512120c70cf6278895052f8d42b5ce"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getErrorCode</b> (uint32_t currMicros)</td></tr>
-<tr class="separator:a6c512120c70cf6278895052f8d42b5ce inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41d1914d82050dea3fd7cbe5535c3e49 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a41d1914d82050dea3fd7cbe5535c3e49" name="a41d1914d82050dea3fd7cbe5535c3e49"></a>
-bool *&#160;</td><td class="memItemRight" valign="bottom"><b>decodeErrorCode</b> (uint8_t errorCode)</td></tr>
-<tr class="separator:a41d1914d82050dea3fd7cbe5535c3e49 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae00520e7221b2e4bcf09b3fac3706481 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="ae00520e7221b2e4bcf09b3fac3706481" name="ae00520e7221b2e4bcf09b3fac3706481"></a>
-<a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getHeader</b> (packetType packetType_, uint8_t packetSize_, uint32_t currMicros)</td></tr>
+<tr class="memitem:a1b5f07da37adc5282d21ab35e3337472 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a1b5f07da37adc5282d21ab35e3337472">updateErrors</a> (uint32_t currMicros)</td></tr>
+<tr class="memdesc:a1b5f07da37adc5282d21ab35e3337472 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the <code>errors</code> bool array.  <a href="class_sensor.html#a1b5f07da37adc5282d21ab35e3337472">More...</a><br /></td></tr>
+<tr class="separator:a1b5f07da37adc5282d21ab35e3337472 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae00520e7221b2e4bcf09b3fac3706481 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#ae00520e7221b2e4bcf09b3fac3706481">getHeader</a> (<a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4e">packetType</a> packetType_, uint8_t packetSize_, uint32_t currMicros)</td></tr>
+<tr class="memdesc:ae00520e7221b2e4bcf09b3fac3706481 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a <code><a class="el" href="struct_packet_header.html" title="8 byte header for all packets">PacketHeader</a></code> from the sensor and the explicitely given arguments.  <a href="class_sensor.html#ae00520e7221b2e4bcf09b3fac3706481">More...</a><br /></td></tr>
 <tr class="separator:ae00520e7221b2e4bcf09b3fac3706481 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41d6b493e82fe52bb1886f2bff92999b inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a41d6b493e82fe52bb1886f2bff92999b" name="a41d6b493e82fe52bb1886f2bff92999b"></a>
-virtual <a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getHeader</b> (uint32_t currMicros)=0</td></tr>
+<tr class="memitem:a41d6b493e82fe52bb1886f2bff92999b inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a41d6b493e82fe52bb1886f2bff92999b">getHeader</a> (uint32_t currMicros)=0</td></tr>
+<tr class="memdesc:a41d6b493e82fe52bb1886f2bff92999b inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Auto generate the <a class="el" href="struct_packet_header.html" title="8 byte header for all packets">PacketHeader</a> object; defined in child classes.  <a href="class_sensor.html#a41d6b493e82fe52bb1886f2bff92999b">More...</a><br /></td></tr>
 <tr class="separator:a41d6b493e82fe52bb1886f2bff92999b inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a61faad4406f96bc94b2b972afc0a99 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a7a61faad4406f96bc94b2b972afc0a99" name="a7a61faad4406f96bc94b2b972afc0a99"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>generateFakeData</b> (float minValue, float maxValue, uint32_t currMicros, float offset=0, uint32_t period=5000000)</td></tr>
-<tr class="separator:a7a61faad4406f96bc94b2b972afc0a99 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b66e154d7dc98b6382addab146ca040 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a0b66e154d7dc98b6382addab146ca040" name="a0b66e154d7dc98b6382addab146ca040"></a>
-virtual <a class="el" href="class_packet.html">Packet</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getPacket</b> (uint32_t currMicros)=0</td></tr>
+<tr class="memitem:a0b66e154d7dc98b6382addab146ca040 inherit pub_methods_class_sensor"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_packet.html">Packet</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a0b66e154d7dc98b6382addab146ca040">getPacket</a> (uint32_t currMicros)=0</td></tr>
+<tr class="memdesc:a0b66e154d7dc98b6382addab146ca040 inherit pub_methods_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the last packet provided by the sensor.  <a href="class_sensor.html#a0b66e154d7dc98b6382addab146ca040">More...</a><br /></td></tr>
 <tr class="separator:a0b66e154d7dc98b6382addab146ca040 inherit pub_methods_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ac7f4c74ac39403ecbd339c2f66935912"><td class="memItemLeft" align="right" valign="top">AISx120SX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ac7f4c74ac39403ecbd339c2f66935912">aisObject</a></td></tr>
+<tr class="separator:ac7f4c74ac39403ecbd339c2f66935912"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a331eb186cafc1927bc1f4ea19d08d672"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_a_i_sx120_s_x_packet.html">AISx120SXPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a331eb186cafc1927bc1f4ea19d08d672">lastPacket</a></td></tr>
+<tr class="separator:a331eb186cafc1927bc1f4ea19d08d672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece737406fa9c9ac60271f1a6597759d"><td class="memItemLeft" align="right" valign="top">bandwidth&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#aece737406fa9c9ac60271f1a6597759d">bandwidthX</a></td></tr>
+<tr class="separator:aece737406fa9c9ac60271f1a6597759d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab610bbdc4c26943e5089b7a1dff07330"><td class="memItemLeft" align="right" valign="top">bandwidth&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ab610bbdc4c26943e5089b7a1dff07330">bandwidthY</a></td></tr>
+<tr class="separator:ab610bbdc4c26943e5089b7a1dff07330"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8555d0f27281e2901d4e6a9ba857e531"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a8555d0f27281e2901d4e6a9ba857e531">x_offset_monitor</a></td></tr>
+<tr class="separator:a8555d0f27281e2901d4e6a9ba857e531"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86b9374c52f90646292ab614c9cf2d1e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#a86b9374c52f90646292ab614c9cf2d1e">x_offset_canc</a></td></tr>
+<tr class="separator:a86b9374c52f90646292ab614c9cf2d1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8ea905be30a40fa8a0550a067f72a3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#aa8ea905be30a40fa8a0550a067f72a3c">y_offset_monitor</a></td></tr>
+<tr class="separator:aa8ea905be30a40fa8a0550a067f72a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6438d606979a1a95790d093733b6d91"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ab6438d606979a1a95790d093733b6d91">y_offset_canc</a></td></tr>
+<tr class="separator:ab6438d606979a1a95790d093733b6d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:afb222a32a9077045cda7c93b9e0194f7"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#afb222a32a9077045cda7c93b9e0194f7">MEASUREMENT_INTERVAL</a> = 1250</td></tr>
+<tr class="separator:afb222a32a9077045cda7c93b9e0194f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae80edd9fb804f1935ebc9ed51ce11577"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ae80edd9fb804f1935ebc9ed51ce11577">CHECK_INTERVAL</a></td></tr>
+<tr class="separator:ae80edd9fb804f1935ebc9ed51ce11577"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd65332742ba8f130339e3fc64124621"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#acd65332742ba8f130339e3fc64124621">MEASUREMENT_MARGIN</a> = 0</td></tr>
+<tr class="separator:acd65332742ba8f130339e3fc64124621"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac49aac50f4162f5132d08e312ffa8d58"><td class="memItemLeft" align="right" valign="top">static constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ac49aac50f4162f5132d08e312ffa8d58">SENSITIVITY</a> = 1 / (68 * 4.)</td></tr>
+<tr class="separator:ac49aac50f4162f5132d08e312ffa8d58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb82ee7c96367698dccd99184ec2ca7d"><td class="memItemLeft" align="right" valign="top">static constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#afb82ee7c96367698dccd99184ec2ca7d">ACC_MAX</a> = 120</td></tr>
+<tr class="separator:afb82ee7c96367698dccd99184ec2ca7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaff9882a85f76ce53ebdcd35afdbc788"><td class="memItemLeft" align="right" valign="top">static constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#aaff9882a85f76ce53ebdcd35afdbc788">ACC_MIN</a> = -120</td></tr>
+<tr class="separator:aaff9882a85f76ce53ebdcd35afdbc788"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab18db58cd3803a4140cbacfc18f6a61f"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_i_sx120_s_x_wrapper.html#ab18db58cd3803a4140cbacfc18f6a61f">sensorQty</a> = 0</td></tr>
+<tr class="separator:ab18db58cd3803a4140cbacfc18f6a61f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_class_sensor"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_sensor')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="class_sensor.html">Sensor</a></td></tr>
-<tr class="memitem:a24fd0c86c714edf603aac94428e96a01 inherit pub_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a24fd0c86c714edf603aac94428e96a01" name="a24fd0c86c714edf603aac94428e96a01"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>active</b></td></tr>
+<tr class="memitem:a24fd0c86c714edf603aac94428e96a01 inherit pub_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a24fd0c86c714edf603aac94428e96a01">active</a></td></tr>
+<tr class="memdesc:a24fd0c86c714edf603aac94428e96a01 inherit pub_attribs_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the sensor is active.  <a href="class_sensor.html#a24fd0c86c714edf603aac94428e96a01">More...</a><br /></td></tr>
 <tr class="separator:a24fd0c86c714edf603aac94428e96a01 inherit pub_attribs_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_sensor"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_sensor')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_sensor.html">Sensor</a></td></tr>
-<tr class="memitem:ad32a0b3a15f0133c4f928421e2f1548f inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="ad32a0b3a15f0133c4f928421e2f1548f" name="ad32a0b3a15f0133c4f928421e2f1548f"></a>
-const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_ID</b></td></tr>
+<tr class="memitem:ad32a0b3a15f0133c4f928421e2f1548f inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#ad32a0b3a15f0133c4f928421e2f1548f">SENSOR_ID</a></td></tr>
+<tr class="memdesc:ad32a0b3a15f0133c4f928421e2f1548f inherit pro_attribs_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sensor.html" title="Generic sensor object.">Sensor</a>'s id. Is non-zero if identical sensors are used.  <a href="class_sensor.html#ad32a0b3a15f0133c4f928421e2f1548f">More...</a><br /></td></tr>
 <tr class="separator:ad32a0b3a15f0133c4f928421e2f1548f inherit pro_attribs_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4bb369f25730372769c770fc2a05cb51 inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a4bb369f25730372769c770fc2a05cb51" name="a4bb369f25730372769c770fc2a05cb51"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>checksumError</b></td></tr>
+<tr class="memitem:a4bb369f25730372769c770fc2a05cb51 inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a4bb369f25730372769c770fc2a05cb51">checksumError</a></td></tr>
+<tr class="memdesc:a4bb369f25730372769c770fc2a05cb51 inherit pro_attribs_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">If there was a checksum erro.  <a href="class_sensor.html#a4bb369f25730372769c770fc2a05cb51">More...</a><br /></td></tr>
 <tr class="separator:a4bb369f25730372769c770fc2a05cb51 inherit pro_attribs_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f90e28a697db3ec8885d57f685c0c3c inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top"><a id="a4f90e28a697db3ec8885d57f685c0c3c" name="a4f90e28a697db3ec8885d57f685c0c3c"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b></td></tr>
+<tr class="memitem:a4f90e28a697db3ec8885d57f685c0c3c inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a4f90e28a697db3ec8885d57f685c0c3c">prevMeasTime</a></td></tr>
+<tr class="memdesc:a4f90e28a697db3ec8885d57f685c0c3c inherit pro_attribs_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">When last new measurement was made (in microseconds)  <a href="class_sensor.html#a4f90e28a697db3ec8885d57f685c0c3c">More...</a><br /></td></tr>
 <tr class="separator:a4f90e28a697db3ec8885d57f685c0c3c inherit pro_attribs_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a6ad921f3f909a37b85ba9c976c7a96 inherit pro_attribs_class_sensor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor.html#a4a6ad921f3f909a37b85ba9c976c7a96">errors</a> [<a class="el" href="_packet_8hpp.html#a1e0a7491d04538b95451227decc035d0">ERROR_TYPE_NUM</a>] = {false}</td></tr>
+<tr class="memdesc:a4a6ad921f3f909a37b85ba9c976c7a96 inherit pro_attribs_class_sensor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the array of possible errors for a sensor.  <a href="class_sensor.html#a4a6ad921f3f909a37b85ba9c976c7a96">More...</a><br /></td></tr>
+<tr class="separator:a4a6ad921f3f909a37b85ba9c976c7a96 inherit pro_attribs_class_sensor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a205e3f16733e2b50fdaf09030d328bbe" name="a205e3f16733e2b50fdaf09030d328bbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a205e3f16733e2b50fdaf09030d328bbe">&#9670;&nbsp;</a></span>AISx120SXWrapper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AISx120SXWrapper::AISx120SXWrapper </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>CS_</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bandwidth&#160;</td>
+          <td class="paramname"><em>bandwidthX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bandwidth&#160;</td>
+          <td class="paramname"><em>bandwidthY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>x_offset_monitor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>x_offset_canc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>y_offset_monitor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>y_offset_canc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a59cdb3fb1994d90316e23f24e0a293db" name="a59cdb3fb1994d90316e23f24e0a293db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59cdb3fb1994d90316e23f24e0a293db">&#9670;&nbsp;</a></span>~AISx120SXWrapper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AISx120SXWrapper::~AISx120SXWrapper </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a13c0118be5be47a8d264920296feca30" name="a13c0118be5be47a8d264920296feca30"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a13c0118be5be47a8d264920296feca30">&#9670;&nbsp;</a></span>getHeader()</h2>
@@ -168,7 +297,17 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b><
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="class_sensor.html">Sensor</a>.</p>
+<p>Auto generate the <a class="el" href="struct_packet_header.html" title="8 byte header for all packets">PacketHeader</a> object; defined in child classes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">currMicros</td><td>: Current time, in microseconds </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_packet_header.html" title="8 byte header for all packets">PacketHeader</a></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="struct_packet_header.html" title="8 byte header for all packets">PacketHeader</a> </dd></dl>
+
+<p>Implements <a class="el" href="class_sensor.html#a41d6b493e82fe52bb1886f2bff92999b">Sensor</a>.</p>
 
 </div>
 </div>
@@ -196,7 +335,35 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b><
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="class_sensor.html">Sensor</a>.</p>
+<p>Get a reference to the last packet provided by the sensor. </p>
+<p >This function may be in charge of actualizing the content of the packet buffer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">currMicros</td><td>Current time, in microseconds </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Packet* : Reference to the current packet held</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_packet.html">Packet</a> </dd></dl>
+
+<p>Implements <a class="el" href="class_sensor.html#a0b66e154d7dc98b6382addab146ca040">Sensor</a>.</p>
+
+</div>
+</div>
+<a id="aa875873198b7864fb549dccb0e1b1cee" name="aa875873198b7864fb549dccb0e1b1cee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa875873198b7864fb549dccb0e1b1cee">&#9670;&nbsp;</a></span>getSensorQty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t AISx120SXWrapper::getSensorQty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -234,7 +401,19 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b><
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="class_sensor.html">Sensor</a>.</p>
+<p>Add a virtual, general version to streamline management. Should be implemented by child classes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">currMicros</td><td>Current time, in microseconds </td></tr>
+    <tr><td class="paramname">triggeredDR</td><td>Status of the DR line. Might be dropped by child classes not using it</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true : A measurement is due </dd>
+<dd>
+false : No measurement due </dd></dl>
+
+<p>Implements <a class="el" href="class_sensor.html#a453cfdc6a468c71d0c10a6ed24ca3124">Sensor</a>.</p>
 
 </div>
 </div>
@@ -261,7 +440,10 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b><
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="class_sensor.html">Sensor</a>.</p>
+<p>Should be implemented by child classes. Used to declare a measurement invalid. </p>
+<dl class="section return"><dt>Returns</dt><dd>false </dd></dl>
+
+<p>Reimplemented from <a class="el" href="class_sensor.html#a7f27a2933393ca06349aca7e6da658ce">Sensor</a>.</p>
 
 </div>
 </div>
@@ -288,7 +470,10 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b><
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="class_sensor.html">Sensor</a>.</p>
+<p>Get the name of the sensor; mostly for logging/debugging purpose. </p>
+<dl class="section return"><dt>Returns</dt><dd>const char* </dd></dl>
+
+<p>Implements <a class="el" href="class_sensor.html#a87bbac12994ff68f5797976ec5c9af70">Sensor</a>.</p>
 
 </div>
 </div>
@@ -326,13 +511,359 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>prevMeasTime</b><
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="class_sensor.html">Sensor</a>.</p>
+<p>Setup the underlying sensor (other parameters should be given at construction) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">attempts</td><td>Number of allowed attempts to try setting up the sensor </td></tr>
+    <tr><td class="paramname">delayDuration</td><td>Delay between the tries </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true : The <a class="el" href="class_sensor.html" title="Generic sensor object.">Sensor</a> is correctly set up </dd>
+<dd>
+false : The <a class="el" href="class_sensor.html" title="Generic sensor object.">Sensor</a> failed to set up </dd></dl>
+
+<p>Implements <a class="el" href="class_sensor.html#a85eb36f51b7b3dfb34ab60daea8587a1">Sensor</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="afb82ee7c96367698dccd99184ec2ca7d" name="afb82ee7c96367698dccd99184ec2ca7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb82ee7c96367698dccd99184ec2ca7d">&#9670;&nbsp;</a></span>ACC_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr float AISx120SXWrapper::ACC_MAX = 120</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaff9882a85f76ce53ebdcd35afdbc788" name="aaff9882a85f76ce53ebdcd35afdbc788"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaff9882a85f76ce53ebdcd35afdbc788">&#9670;&nbsp;</a></span>ACC_MIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr float AISx120SXWrapper::ACC_MIN = -120</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac7f4c74ac39403ecbd339c2f66935912" name="ac7f4c74ac39403ecbd339c2f66935912"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7f4c74ac39403ecbd339c2f66935912">&#9670;&nbsp;</a></span>aisObject</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">AISx120SX AISx120SXWrapper::aisObject</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aece737406fa9c9ac60271f1a6597759d" name="aece737406fa9c9ac60271f1a6597759d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aece737406fa9c9ac60271f1a6597759d">&#9670;&nbsp;</a></span>bandwidthX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bandwidth AISx120SXWrapper::bandwidthX</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab610bbdc4c26943e5089b7a1dff07330" name="ab610bbdc4c26943e5089b7a1dff07330"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab610bbdc4c26943e5089b7a1dff07330">&#9670;&nbsp;</a></span>bandwidthY</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bandwidth AISx120SXWrapper::bandwidthY</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae80edd9fb804f1935ebc9ed51ce11577" name="ae80edd9fb804f1935ebc9ed51ce11577"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae80edd9fb804f1935ebc9ed51ce11577">&#9670;&nbsp;</a></span>CHECK_INTERVAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t AISx120SXWrapper::CHECK_INTERVAL</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">      <a class="code hl_variable" href="class_a_i_sx120_s_x_wrapper.html#afb222a32a9077045cda7c93b9e0194f7">MEASUREMENT_INTERVAL</a> / 2</div>
+<div class="ttc" id="aclass_a_i_sx120_s_x_wrapper_html_afb222a32a9077045cda7c93b9e0194f7"><div class="ttname"><a href="class_a_i_sx120_s_x_wrapper.html#afb222a32a9077045cda7c93b9e0194f7">AISx120SXWrapper::MEASUREMENT_INTERVAL</a></div><div class="ttdeci">static const uint32_t MEASUREMENT_INTERVAL</div><div class="ttdef"><b>Definition:</b> AISx120SXWrapper.hpp:94</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a331eb186cafc1927bc1f4ea19d08d672" name="a331eb186cafc1927bc1f4ea19d08d672"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a331eb186cafc1927bc1f4ea19d08d672">&#9670;&nbsp;</a></span>lastPacket</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_a_i_sx120_s_x_packet.html">AISx120SXPacket</a> AISx120SXWrapper::lastPacket</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afb222a32a9077045cda7c93b9e0194f7" name="afb222a32a9077045cda7c93b9e0194f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb222a32a9077045cda7c93b9e0194f7">&#9670;&nbsp;</a></span>MEASUREMENT_INTERVAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t AISx120SXWrapper::MEASUREMENT_INTERVAL = 1250</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd65332742ba8f130339e3fc64124621" name="acd65332742ba8f130339e3fc64124621"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd65332742ba8f130339e3fc64124621">&#9670;&nbsp;</a></span>MEASUREMENT_MARGIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t AISx120SXWrapper::MEASUREMENT_MARGIN = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac49aac50f4162f5132d08e312ffa8d58" name="ac49aac50f4162f5132d08e312ffa8d58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac49aac50f4162f5132d08e312ffa8d58">&#9670;&nbsp;</a></span>SENSITIVITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr float AISx120SXWrapper::SENSITIVITY = 1 / (68 * 4.)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab18db58cd3803a4140cbacfc18f6a61f" name="ab18db58cd3803a4140cbacfc18f6a61f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab18db58cd3803a4140cbacfc18f6a61f">&#9670;&nbsp;</a></span>sensorQty</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t AISx120SXWrapper::sensorQty = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a86b9374c52f90646292ab614c9cf2d1e" name="a86b9374c52f90646292ab614c9cf2d1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86b9374c52f90646292ab614c9cf2d1e">&#9670;&nbsp;</a></span>x_offset_canc</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AISx120SXWrapper::x_offset_canc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8555d0f27281e2901d4e6a9ba857e531" name="a8555d0f27281e2901d4e6a9ba857e531"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8555d0f27281e2901d4e6a9ba857e531">&#9670;&nbsp;</a></span>x_offset_monitor</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AISx120SXWrapper::x_offset_monitor</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab6438d606979a1a95790d093733b6d91" name="ab6438d606979a1a95790d093733b6d91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6438d606979a1a95790d093733b6d91">&#9670;&nbsp;</a></span>y_offset_canc</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AISx120SXWrapper::y_offset_canc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa8ea905be30a40fa8a0550a067f72a3c" name="aa8ea905be30a40fa8a0550a067f72a3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8ea905be30a40fa8a0550a067f72a3c">&#9670;&nbsp;</a></span>y_offset_monitor</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AISx120SXWrapper::y_offset_monitor</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>data_logger/lib/Sensors/<a class="el" href="_a_i_sx120_s_x_wrapper_8hpp_source.html">AISx120SXWrapper.hpp</a></li>
-<li>data_logger/lib/Sensors/AISx120SXWrapper.cpp</li>
+<li>data_logger/lib/Sensors/<a class="el" href="_a_i_sx120_s_x_wrapper_8cpp.html">AISx120SXWrapper.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
