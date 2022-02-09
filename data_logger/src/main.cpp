@@ -33,7 +33,7 @@
 // DEFINE VARIABLES ============================================================
 
 #define DEBUG
-//const bool DEBUG = false;
+const bool SERIAL_PRINT = true;
 
 // Pins ------------------------------------------------------------------------
 // I/O
@@ -56,7 +56,7 @@ const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
 // RSC1's DR line should be on pin 15 according to the PCB, however, it was
 // manually reconnected to pin 39 on the first iteration of the PCB
 // change lines accordingly if building a new PCB from the schematics
-//const uint8_t DR_RSC[2] = {39, 26};
+// const uint8_t DR_RSC[2] = {39, 26};
 const uint8_t DR_RSC[2] = {15, 26};
 // Thermocouples
 const uint8_t TAT_TC = 3;
@@ -73,7 +73,7 @@ const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
 // Create the sensor wrapper objects -------------------------------------------
 
-/* Using Sensor* array instead 
+/* Using Sensor* array instead
 ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
                            RST_ADIS16470_PIN);
 AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN);
@@ -90,7 +90,7 @@ Sensor altimax = Sensor(0);
 // TODO: Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
-//const uint8_t NUM_SENSORS = 9; //-> Set as constexpr in "globalVariables.hpp"
+// const uint8_t NUM_SENSORS = 9; //-> Set as constexpr in "globalVariables.hpp"
 Sensor *sensorArray[NUM_SENSORS];
 
 const uint8_t ADIS16470_INDEX = 0,
@@ -110,18 +110,18 @@ const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
 void buildSensorArray()
 {
   sensorArray[ADIS16470_INDEX] = new ADIS16470Wrapper(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
-                                        RST_ADIS16470_PIN);
+                                                      RST_ADIS16470_PIN);
 
   sensorArray[AISx120SX_INDEX] = new AISx120SXWrapper(CS_AIS1120SX_PIN, _800Hz, _800Hz,
-                                        false, false, false, false);
+                                                      false, false, false, false);
 
   sensorArray[Honeywell_Rsc_0_INDEX] = new HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
-                                           CS_RSC_ADC_PIN[0], 1,
-                                           F_DR_2000_SPS, 50000);
+                                                               CS_RSC_ADC_PIN[0], 1,
+                                                               F_DR_2000_SPS, 50000);
 
   sensorArray[Honeywell_Rsc_1_INDEX] = new HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
-                                           CS_RSC_ADC_PIN[1], 0,
-                                           F_DR_2000_SPS, 50000);
+                                                               CS_RSC_ADC_PIN[1], 0,
+                                                               F_DR_2000_SPS, 50000);
 
   for (size_t t = 0; t < 4; t++)
   {
@@ -173,7 +173,7 @@ void setup()
   Serial.println("----- Setup complete -----");
   successFlash();
 
-  acquireData(sensorArray, NUM_SENSORS);
+  acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT);
 }
 
 // LOOP ========================================================================
@@ -207,7 +207,7 @@ void loop()
         Serial.println("Will begin data acquisition as button was pressed.");
         digitalWrite(GREEN_LED_PIN, LOW);
         successFlash();
-        acquireData(sensorArray, NUM_SENSORS);
+        acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT);
         break;
       case BAD_TRANSITION:
         Serial.println("Button not pressed properly. Not doing anything.");
