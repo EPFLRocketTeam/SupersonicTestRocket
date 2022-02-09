@@ -25,6 +25,13 @@ struct MAX31855Body
   float sensorTemperature = 0; // 4 bytes
 };
 
+#define MAX31855_BODY_FORMAT "**************** MAX31855 Packet ***************\n" \
+                             "Probe temperature: %12e\n"                          \
+                             "Sensor temperature: %12e\n"                         \
+                             "***************** END OF PACKET ****************\n"
+
+#define MAX31855_BODY_PRINT_SIZE 50 * 4
+
 class MAX31855Packet : public Packet
 {
 public:
@@ -56,6 +63,22 @@ public:
   float getSensorTemperature()
   {
     return reinterpret_cast<MAX31855Body *>(content)->sensorTemperature;
+  }
+
+  /**
+   * @brief Return a pointer toward a printable description of an AISx120SX content
+   *
+   * @return char* : Pointer toward formated content description
+   */
+  char *getPrintableContent()
+  {
+    char output[MAX31855_BODY_PRINT_SIZE] = "";
+
+    snprintf(output, MAX31855_BODY_PRINT_SIZE, MAX31855_BODY_FORMAT,
+             getProbeTemperature(),
+             getSensorTemperature());
+
+    return output;
   }
 
   // ----- Setters ----- //
@@ -122,7 +145,7 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  MAX31855Packet* getPacket(uint32_t currMicros);
+  MAX31855Packet *getPacket(uint32_t currMicros);
 
   // MAX31855 header generator
   PacketHeader getHeader(uint32_t currMicros);

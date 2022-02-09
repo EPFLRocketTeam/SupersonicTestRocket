@@ -25,6 +25,16 @@ struct HoneywellRSCBody
   float measurement = 0; // 4 bytes
 };
 
+#define HoneywellRSC_BODY_TEMP_FORMAT "************** HoneywellRSC Packet *************\n" \
+                                      "Temperature: %12e\n"                                \
+                                      "***************** END OF PACKET ****************\n"
+
+#define HoneywellRSC_BODY_PRESSURE_FORMAT "************** HoneywellRSC Packet *************\n" \
+                                          "Pressure: %12e\n"                                   \
+                                          "***************** END OF PACKET ****************\n"
+
+#define HoneywellRSC_BODY_PRINT_SIZE 50 * 3
+
 // packet for both temperature and pressure packets
 class HoneywellRSCPacket : public Packet
 {
@@ -74,6 +84,21 @@ public:
     header = h;
     content = malloc(h.packetSize);
   }
+
+  /**
+   * @brief Return a pointer toward a printable description of an HoneywellRSC Pressure content
+   *
+   * @return char* : Pointer toward formated content description
+   */
+  char *getPrintableContent()
+  {
+    char output[HoneywellRSC_BODY_PRINT_SIZE] = "";
+
+    snprintf(output, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_PRESSURE_FORMAT,
+             getMeasurement());
+
+    return output;
+  }
 };
 
 class HoneywellRSC_Pressure_Packet : public HoneywellRSCPacket
@@ -95,6 +120,21 @@ public:
 
     header = h;
     content = malloc(h.packetSize);
+  }
+
+  /**
+   * @brief Return a pointer toward a printable description of an HoneywellRSC Temperature content
+   *
+   * @return char* : Pointer toward formated content description
+   */
+  char *getPrintableContent()
+  {
+    char output[HoneywellRSC_BODY_PRINT_SIZE] = "";
+
+    snprintf(output, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_TEMP_FORMAT,
+             getMeasurement());
+
+    return output;
   }
 };
 

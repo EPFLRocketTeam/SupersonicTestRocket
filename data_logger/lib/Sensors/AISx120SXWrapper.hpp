@@ -24,6 +24,14 @@ struct AISx120SXBody
   float accel[2] = {0}; // 2 * 4 = 8 bytes
 };
 
+#define AISx120SX_BODY_FORMAT "*************** AISx120SX Packet ***************\n" \
+                              "Linear accelerations:\n"                            \
+                              "\t- X: %12e\n"                                      \
+                              "\t- Y: %12e\n"                                      \
+                              "***************** END OF PACKET ****************\n"
+
+#define AISx120SX_BODY_PRINT_SIZE 50 * 5
+
 class AISx120SXPacket : public Packet
 {
 public:
@@ -61,6 +69,22 @@ public:
   {
     a[0] = getXaccel();
     a[1] = getYaccel();
+  }
+
+  /**
+   * @brief Return a pointer toward a printable description of an AISx120SX content
+   *
+   * @return char* : Pointer toward formated content description
+   */
+  char *getPrintableContent()
+  {
+    char output[AISx120SX_BODY_PRINT_SIZE] = "";
+
+    snprintf(output, AISx120SX_BODY_PRINT_SIZE, AISx120SX_BODY_FORMAT,
+             getXaccel(),
+             getYaccel());
+
+    return output;
   }
 
   // ----- Setters ----- //
