@@ -13,7 +13,7 @@ uint8_t ADIS16470Wrapper::sensorQty = 0;
 // ----- Constructor ----- //
 ADIS16470Wrapper::
     ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(sensorQty),
-                                                DR_PIN(DR),
+                                                // DR_PIN(DR),
                                                 adisObject(CS, DR, RST),
                                                 lastPacket(getHeader(0))
 {
@@ -61,11 +61,6 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
   }
   active = false;
   return active; // setup was not succesful
-}
-
-uint8_t ADIS16470Wrapper::getSensorQty()
-{
-  return sensorQty;
 }
 
 bool ADIS16470Wrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)

@@ -27,6 +27,20 @@ struct ADIS16470Body
   float temp = 0;       ///< Temperature; 4 bytes
 };
 
+#define ADIS16470_BODY_FORMAT "*************** ADIS16470 Packet ***************\n" \
+                              "Angular velocities:\n"                              \
+                              "\t- X: %12e\n"                                      \
+                              "\t- Y: %12e\n"                                      \
+                              "\t- Z: %12e\n"                                      \
+                              "Linear velocities:\n"                               \
+                              "\t- X: %12e\n"                                      \
+                              "\t- Y: %12e\n"                                      \
+                              "\t- Z: %12e\n"                                      \
+                              "Temperature: %12e\n"                                \
+                              "***************** END OF PACKET ****************\n"
+
+#define ADIS16470_BODY_PRINT_SIZE 50 * 11
+
 class ADIS16470Packet : public Packet
 {
 public:
@@ -35,8 +49,8 @@ public:
   /**
    * @brief Construct a new ADIS16470 Packet based on the default header
    *
-   * \p packetType_ and \p packetSize are accordingly set.
-   * \p content is allocated.
+   * \c packetType_ and \c packetSize are accordingly set.
+   * Packet::content is allocated.
    *
    * @see Packet::Packet()
    */
@@ -68,8 +82,8 @@ public:
   // ----- Getters ----- //
 
   /**
-   * @brief Get the wanted angular velocity 
-   * 
+   * @brief Get the wanted angular velocity
+   *
    * @param i Index of the wanted angular velocity (0 for X, 1 for Y and 2 for Z)
    * @return float : corresponding value
    */
@@ -81,7 +95,7 @@ public:
 
   /**
    * @brief Given an array of 3 floats, fill it with the XYZ values of angular velocity
-   * 
+   *
    * @param g Array to be filled
    */
   void getGyros(float g[3])
@@ -93,8 +107,8 @@ public:
 
   /**
    * @brief Get the angular velocity around the X axis
-   * 
-   * @return float 
+   *
+   * @return float
    * @see getGyro(size_t i)
    */
   float getXGyro()
@@ -104,8 +118,8 @@ public:
 
   /**
    * @brief Get the angular velocity around the Y axis
-   * 
-   * @return float 
+   *
+   * @return float
    * @see getGyro(size_t i)
    */
   float getYGyro()
@@ -115,8 +129,8 @@ public:
 
   /**
    * @brief Get the angular velocity around the Z axis
-   * 
-   * @return float 
+   *
+   * @return float
    * @see getGyro(size_t i)
    */
   float getZGyro()
@@ -125,8 +139,8 @@ public:
   }
 
   /**
-   * @brief Get the wanted linear velocity 
-   * 
+   * @brief Get the wanted linear velocity
+   *
    * @param i Index of the wanted linear velocity (0 for X, 1 for Y and 2 for Z)
    * @return float : corresponding value
    */
@@ -138,7 +152,7 @@ public:
 
   /**
    * @brief Given an array of 3 floats, fill it with the XYZ values of linear velocity
-   * 
+   *
    * @param a Array to be filled
    */
   void getAccs(float a[3])
@@ -150,8 +164,8 @@ public:
 
   /**
    * @brief Get the linear velocity along the X axis
-   * 
-   * @return float 
+   *
+   * @return float
    * @see getAcc(size_t i)
    */
   float getXAcc()
@@ -161,8 +175,8 @@ public:
 
   /**
    * @brief Get the linear velocity along the Y axis
-   * 
-   * @return float 
+   *
+   * @return float
    * @see getAcc(size_t i)
    */
   float getYAcc()
@@ -172,8 +186,8 @@ public:
 
   /**
    * @brief Get the linear velocity along the Z axis
-   * 
-   * @return float 
+   *
+   * @return float
    * @see getAcc(size_t i)
    */
   float getZAcc()
@@ -183,19 +197,40 @@ public:
 
   /**
    * @brief Get the temperature
-   * 
-   * @return float 
+   *
+   * @return float
    */
   float getTemp()
   {
     return reinterpret_cast<ADIS16470Body *>(content)->temp;
   }
 
+  /**
+   * @brief Return a pointer toward a printable description of an ADIS16470 content
+   *
+   * @return char* : Pointer toward formated content description
+   */
+  char *getPrintableContent()
+  {
+    char output[ADIS16470_BODY_PRINT_SIZE] = "";
+
+    snprintf(output, ADIS16470_BODY_PRINT_SIZE, ADIS16470_BODY_FORMAT,
+             getXGyro(),
+             getYGyro(),
+             getZGyro(),
+             getXAcc(),
+             getYAcc(),
+             getZAcc(),
+             getTemp());
+
+    return output;
+  }
+
   // ----- Setters ----- //
 
   /**
    * @brief Set the wanted angular velocity according to the provided value
-   * 
+   *
    * @param i Index of the wanted angular velocity (0 for X, 1 for Y and 2 for Z)
    * @param g Provided value
    */
@@ -207,7 +242,7 @@ public:
 
   /**
    * @brief Given an array of 3 floats, set the XYZ values of angular velocity in the packet
-   * 
+   *
    * @param g Source array
    */
   void setGyros(const float g[3])
@@ -219,8 +254,9 @@ public:
 
   /**
    * @brief Set the angular velocity around the X axis
-   * 
-   * @param g 
+   *
+   * @param g
+   * @see setGyros(const float g[3])
    */
   void setXGyro(float g)
   {
@@ -229,8 +265,9 @@ public:
 
   /**
    * @brief Set the angular velocity around the Y axis
-   * 
-   * @param g 
+   *
+   * @param g
+   * @see setGyros(const float g[3])
    */
   void setYGyro(float g)
   {
@@ -239,8 +276,9 @@ public:
 
   /**
    * @brief Set the angular velocity around the Z axis
-   * 
-   * @param g 
+   *
+   * @param g
+   * @see setGyros(const float g[3])
    */
   void setZGyro(float g)
   {
@@ -249,7 +287,7 @@ public:
 
   /**
    * @brief Set the wanted linear velocity according to the provided value
-   * 
+   *
    * @param i Index of the wanted linear velocity (0 for X, 1 for Y and 2 for Z)
    * @param a Provided value
    */
@@ -261,7 +299,7 @@ public:
 
   /**
    * @brief Given an array of 3 floats, set the XYZ values of linear velocity in the packet
-   * 
+   *
    * @param a Source array
    */
   void setAccs(const float a[3])
@@ -273,8 +311,9 @@ public:
 
   /**
    * @brief Set the linear velocity along the X axis
-   * 
-   * @param a 
+   *
+   * @param a
+   * @see setAcc(size_t i, float a)
    */
   void setXAcc(float a)
   {
@@ -283,8 +322,9 @@ public:
 
   /**
    * @brief Set the linear velocity along the Y axis
-   * 
-   * @param a 
+   *
+   * @param a
+   * @see setAcc(size_t i, float a)
    */
   void setYAcc(float a)
   {
@@ -293,8 +333,9 @@ public:
 
   /**
    * @brief Set the linear velocity along the Z axis
-   * 
-   * @param a 
+   *
+   * @param a
+   * @see setAcc(size_t i, float a)
    */
   void setZAcc(float a)
   {
@@ -303,8 +344,8 @@ public:
 
   /**
    * @brief Set the temperature
-   * 
-   * @param t 
+   *
+   * @param t
    */
   void setTemp(float t)
   {
@@ -313,7 +354,7 @@ public:
 
   /**
    * @brief Set the whole content of the packet
-   * 
+   *
    * @param b
    */
   void setContent(ADIS16470Body &b)
@@ -327,52 +368,128 @@ public:
 class ADIS16470Wrapper : public Sensor
 {
 private:
-  static const uint32_t MEASUREMENT_INTERVAL = 500;            // [us] (2000Hz)
-  static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; // [us]
-  static const uint32_t MEASUREMENT_MARGIN = 500;              // [us]
+  static const uint32_t MEASUREMENT_INTERVAL = 500;            ///< [us] (2000Hz)
+  static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; ///< [us]
+  static const uint32_t MEASUREMENT_MARGIN = 500;              ///< [us]
 
   // sensor properties for error checking and conversions
-  static constexpr float GYRO_SENSITIVITY = 0.1; // [deg/s /LSB]
-  static constexpr float GYRO_MAX = 2000;        // [deg/s]
-  static constexpr float GYRO_MIN = -2000;
-  static constexpr float ACC_SENSITIVITY = 0.00125; // [g/LSB]
-  static constexpr float ACC_MAX = 40;              // [g]
-  static constexpr float ACC_MIN = -40;
-  static constexpr float TEMP_SENSITIVITY = 0.1; // [degC/LSB]
-  static constexpr float TEMP_MAX = 85;          // [degC]
-  static constexpr float TEMP_MIN = -25;
+  static constexpr float GYRO_SENSITIVITY = 0.1;    ///< [deg/s /LSB]
+  static constexpr float GYRO_MAX = 2000;           ///< [deg/s]
+  static constexpr float GYRO_MIN = -2000;          ///< [deg/s]
+  static constexpr float ACC_SENSITIVITY = 0.00125; ///< [g/LSB]
+  static constexpr float ACC_MAX = 40;              ///< [g]
+  static constexpr float ACC_MIN = -40;             ///< [g]
+  static constexpr float TEMP_SENSITIVITY = 0.1;    ///< [degC/LSB]
+  static constexpr float TEMP_MAX = 85;             ///< [degC]
+  static constexpr float TEMP_MIN = -25;            ///< [degC]
 
-  const int DR_PIN;
+  // const int DR_PIN; ///< UNUSED!
 
-  ADIS16470 adisObject;
-  static uint8_t sensorQty; // how many sensors of this type exist
+  ADIS16470 adisObject;     ///< Underlying object
+  static uint8_t sensorQty; ///< How many sensors of this type exist
 
-  ADIS16470Packet lastPacket;
+  ADIS16470Packet lastPacket; ///< Holder for the packet, actualized by measurements
 
 public:
-  // constructor
+  /**
+   * @brief Construct a new ADIS16470Wrapper object
+   *
+   * Also call Sensor::setupProperties with the preset values for ADIS16470Wrapper::MEASUREMENT_INTERVAL,
+   * ADIS16470Wrapper::CHECK_INTERVAL and ADIS16470Wrapper::MEASUREMENT_MARGIN
+   * This sensor has a DR pin.
+   *
+   * @param CS Index for CS pin
+   * @param DR Index for DR pin
+   * @param RST Index for RST pin
+   */
   ADIS16470Wrapper(int CS, int DR, int RST);
 
-  // destructor
+  /// Destructor; reduce ADIS16470Wrapper::sensorQty
   ~ADIS16470Wrapper();
 
-  // attemps to set up the sensor and returns true if it was successful
+  /**
+   * @brief Implementation of setup for ADIS16470Wrapper
+   *
+   * A setup is successful if we can have a non-zeros reading with correct checksum
+   *
+   * @param attempts Number of allowed attempts to try setting up the sensor
+   * @param delayDuration Delay between the tries
+   * @return true : The Sensor is correctly set up
+   * @return false : The Sensor failed to set up
+   */
   bool setup(uint32_t attempts, uint32_t delayDuration);
 
+  /**
+   * @brief Get the name of this sensor as a string
+   *
+   * @return const char* : \c ADIS16470
+   */
   const char *myName() { return "ADIS16470"; }
 
-  uint8_t getSensorQty();
+  /**
+   * @brief Get the number of ADIS16470Wrapper objects
+   *
+   * It should be equal to the number of ADIS16470 sensors installed
+   *
+   * @return uint8_t : Number of ADIS16470Wrapper
+   */
+  static uint8_t getSensorQty()
+  {
+    return sensorQty;
+  }
 
-  // check if the sensor is due for a measurement
+  /**
+   * @brief Check if the ADIS16470 is due for a measurement
+   *
+   * A measurement is due if it is by time or by DR line. Update Sensor::prevMeasTime
+   *
+   * @param currMicros Current time, in microseconds
+   * @param triggeredDR Status of the DR line. Might be dropped by child classes not using it
+   *
+   * @return true : A measurement is due
+   * @return false : No measurement due
+   */
   bool isDue(uint32_t currMicros, volatile bool &triggeredDR);
 
-  // check if the checksum matches
+  /**
+   * @brief Verify if the checksum is right
+   *
+   * The verification is done by the underlying ADIS16470Wrapper::adisObject
+   *
+   * @param sensorData Data to have its checksum verified
+   * @return true : Checksum is correct
+   * @return false : Checksum is incorrect
+   */
   bool verifyCheckSum(uint16_t sensorData[10]);
 
-  // overwritten version of method in base class sensor
+  /**
+   * @brief Check if the current ADIS16470Wrapper::lastPacket is invalid
+   *
+   * A packet is invalid if it is either only zeros or one of the values is outside
+   * its range.
+   *
+   * @return true : ADIS16470Wrapper::lastPacket is invalid
+   * @return false : ADIS16470Wrapper::lastPacket is valid
+   */
   bool isMeasurementInvalid();
 
+  /**
+   * @brief Generate a reference to ADIS16470Wrapper::lastPacket after updating it
+   *
+   * @param currMicros Current time, in microseconds
+   * @return ADIS16470Packet* : Reference to the updated lastPacket
+   */
   ADIS16470Packet *getPacket(uint32_t currMicros);
 
+  /**
+   * @brief Wrapper to generate ADIS16470's packet header
+   *
+   * Call Sensor::getHeader with correct arguments
+   *
+   * @param currMicros Current time, in microseconds
+   * @return PacketHeader for ADIS16470
+   *
+   * @see Sensor::getHeader(packetType packetType_, uint8_t packetSize_, uint32_t currMicros)
+   */
   PacketHeader getHeader(uint32_t currMicros);
 };
