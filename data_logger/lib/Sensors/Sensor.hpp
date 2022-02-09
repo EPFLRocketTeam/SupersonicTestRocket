@@ -175,11 +175,9 @@ public:
   bool isMeasurementLate(uint32_t currMicros);
 
   /**
-   * @brief Should be implemented by child classes. Used to declare a measurement invalid
-   *
-   * @return false
+   * @brief Implemented by child classes. Used to declare a measurement invalid
    */
-  virtual bool isMeasurementInvalid();
+  virtual bool isMeasurementInvalid() = 0;
 
   /**
    * @brief Update the \p errors bool array
@@ -262,9 +260,9 @@ uint8_t getErrorCode(bool *errorArray);
 /**
  * @brief Convert an error code into the corresponding boolean array
  * 
+ * @param errorArray An error to store the result
  * @param errorCode An error code (errors encoded in binary)
- * @return bool * : Boolean array of size ERROR_TYPE_NUM
  * 
  * @see Sensor::errors
  */
-bool *decodeErrorCode(uint8_t errorCode);
+void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode);

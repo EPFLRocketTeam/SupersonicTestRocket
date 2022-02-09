@@ -51,11 +51,11 @@ bool Sensor::isDueByTime(uint32_t currMicros)
     }
 
     // Why is prevCheck actualized by incrementing instead of simply taking the actual time???
-    //prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
-    prevCheck = currMicros; 
+    // prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
+    prevCheck = currMicros;
 
-    dueMethod = DUE_BY_TIME;                         // sensor is due by time
-    return true;                                     // event is due
+    dueMethod = DUE_BY_TIME; // sensor is due by time
+    return true;             // event is due
   }
   else
   {
@@ -82,11 +82,6 @@ bool Sensor::isMeasurementLate(uint32_t currMicros)
   return measurementLate;
 }
 
-bool Sensor::isMeasurementInvalid()
-{
-  return false;
-}
-
 void Sensor::updateErrors(uint32_t currMicros)
 {
 
@@ -102,7 +97,7 @@ PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
                                uint32_t currMicros)
 {
   PacketHeader header;
-  
+
   updateErrors(currMicros);
 
   header.packetType_ = packetType_;
@@ -114,8 +109,8 @@ PacketHeader Sensor::getHeader(packetType packetType_, uint8_t packetSize_,
 }
 
 float generateFakeData(float minValue, float maxValue,
-                               uint32_t currMicros,
-                               float offset, uint32_t period)
+                       uint32_t currMicros,
+                       float offset, uint32_t period)
 {
   float mid = (minValue + maxValue) / 2.;
   float amplitude = (maxValue - minValue) / 2.;
@@ -123,9 +118,7 @@ float generateFakeData(float minValue, float maxValue,
   return sin(2 * PI * currMicros / period) * amplitude + mid + offset;
 }
 
-
-
-uint8_t getErrorCode(bool* errorArray)
+uint8_t getErrorCode(bool *errorArray)
 {
   uint8_t errorCode = 0;
 
@@ -141,15 +134,10 @@ uint8_t getErrorCode(bool* errorArray)
 }
 
 // takes an error code and transforms it into a boolean array
-bool *decodeErrorCode(uint8_t errorCode)
+void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode)
 {
-  // array of flags of errors that occured
-  static bool errors[ERROR_TYPE_NUM] = {false};
-
   for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
   {
-    errors[i] = bitRead(errorCode, 7 - i);
+    errorArray[i] = bitRead(errorCode, 7 - i);
   }
-
-  return errors;
 }
