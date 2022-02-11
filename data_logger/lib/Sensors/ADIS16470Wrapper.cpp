@@ -39,8 +39,7 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
   for (uint32_t i = 0; i < attempts; i++)
   {
     // acquire some data
-    uint16_t *wordBurstData;
-    wordBurstData = adisObject.wordBurst(); // Read data and insert into array
+    uint16_t *wordBurstData = adisObject.wordBurst(); // Read data and insert into array
 
     int16_t checksum = adisObject.checksum(wordBurstData); // get the checksum
 
