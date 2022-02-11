@@ -12,13 +12,26 @@
 const int SUCCESS_FLASH_DURATION = 500;
 const int ERROR_FLASH_DURATION = 1500;
 
-// flashes the given LED for a certain time
-// \!/ uses delay(). do not use in any time-sensitive application
+/**
+ * @brief Flashes the given LED for a certain time. 
+ * 
+ * @warning Uses delay(). Do not use in any time-sensitive application
+ * 
+ * @param pinNumber Pin number of the LED
+ * @param flashDuration Duration in microseconds for the flash
+ */
 void flashLED(uint8_t pinNumber, int flashDuration);
 
-// flash the LED when something was successful
-// \!/ uses delay(). do not use in any time-sensitive application
+/**
+ * @brief Wrapper of flashLED for to signal success
+ * 
+ * @warning Uses delay()
+ */
 void successFlash();
-// flash the LED when something had an error
-// \!/ uses delay(). do not use in any time-sensitive application
+
+/**
+ * @brief Wrapper of flashLED for to signal error
+ * 
+ * @warning Uses delay()
+ */
 void errorFlash();
