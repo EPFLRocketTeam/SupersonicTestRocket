@@ -58,19 +58,13 @@ bool AISx120SXWrapper::setup(uint32_t attempts, uint32_t delayDuration)
   return active; // setup was not succesful
 }
 
-uint8_t AISx120SXWrapper::getSensorQty()
-{
-  return sensorQty;
-}
-
-bool AISx120SXWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
+bool AISx120SXWrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR))
 {
   bool returnVal = false;
   if (isDueByTime(currMicros))
   {
     // read the measurements from the sensor
-    int16_t *rawMeas;
-    rawMeas = aisObject.readAccel();
+    int16_t *rawMeas = aisObject.readAccel();
 
     if (lastPacket.getXaccel() != rawMeas[0] * SENSITIVITY ||
         lastPacket.getYaccel() != rawMeas[1] * SENSITIVITY) // data is new
