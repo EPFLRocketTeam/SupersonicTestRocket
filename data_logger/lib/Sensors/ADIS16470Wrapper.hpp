@@ -490,7 +490,7 @@ public:
    * @brief Generate a reference to ADIS16470Wrapper::lastPacket after updating it
    *
    * @param currMicros Current time, in microseconds
-   * @return ADIS16470Packet* : Reference to the updated lastPacket
+   * @return ADIS16470Packet* : Reference to the updated ADIS16470Wrapper::lastPacket
    */
   ADIS16470Packet *getPacket(uint32_t currMicros);
 
@@ -501,8 +501,6 @@ public:
    *
    * @param currMicros Current time, in microseconds
    * @return PacketHeader for ADIS16470
-   *
-   * @see Sensor::getHeader(packetType packetType_, uint8_t packetSize_, uint32_t currMicros)
    */
   PacketHeader getHeader(uint32_t currMicros);
 };
