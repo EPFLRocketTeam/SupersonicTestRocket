@@ -44,11 +44,11 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
     int16_t checksum = adisObject.checksum(wordBurstData); // get the checksum
 
     // get a zero vector to make sure the data we are getting isn't just zeros
-    uint16_t zeros[sizeof(uint16_t) * ADIS16470::wordBurstLength] = {0};
+    uint16_t zeros[sizeof(uint16_t) * wordBurstLength] = {0};
 
     // checksum ok AND didn't read just zeros --> setup successful!
     if (wordBurstData[9] == checksum &&
-        memcmp(wordBurstData, zeros, sizeof(uint16_t) * ADIS16470::wordBurstLength) != 0)
+        memcmp(wordBurstData, zeros, sizeof(uint16_t) * wordBurstLength) != 0)
     {
       active = true;
       return active;
