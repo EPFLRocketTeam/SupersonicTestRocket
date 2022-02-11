@@ -52,7 +52,7 @@ uint8_t MAX31855Wrapper::getSensorQty()
   return sensorQty;
 }
 
-bool MAX31855Wrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
+bool MAX31855Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR))
 {
   bool returnVal = false;
   if (isDueByTime(currMicros))
