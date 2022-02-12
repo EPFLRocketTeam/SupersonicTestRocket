@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -46,25 +56,113 @@ $(function() {
   <div class="headertitle"><div class="title">PacketHeader Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>8 byte header for all packets  
+ <a href="struct_packet_header.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_packet_8hpp_source.html">Packet.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aa586e35c57b3c7b052fac2789e93166d"><td class="memItemLeft" align="right" valign="top"><a id="aa586e35c57b3c7b052fac2789e93166d" name="aa586e35c57b3c7b052fac2789e93166d"></a>
-packetType&#160;</td><td class="memItemRight" valign="bottom"><b>packetType_</b> = NO_PACKET</td></tr>
+<tr class="memitem:aa586e35c57b3c7b052fac2789e93166d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4e">packetType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_packet_header.html#aa586e35c57b3c7b052fac2789e93166d">packetType_</a> = <a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4eabffc1c9c0f9302dab94637d04f9bb49e">NO_PACKET</a></td></tr>
+<tr class="memdesc:aa586e35c57b3c7b052fac2789e93166d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the packet, 1 byte.  <a href="struct_packet_header.html#aa586e35c57b3c7b052fac2789e93166d">More...</a><br /></td></tr>
 <tr class="separator:aa586e35c57b3c7b052fac2789e93166d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba9030dab37cf2b322cd6c6274615733"><td class="memItemLeft" align="right" valign="top"><a id="aba9030dab37cf2b322cd6c6274615733" name="aba9030dab37cf2b322cd6c6274615733"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>packetSize</b> = 0</td></tr>
+<tr class="memitem:aba9030dab37cf2b322cd6c6274615733"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_packet_header.html#aba9030dab37cf2b322cd6c6274615733">packetSize</a> = 0</td></tr>
+<tr class="memdesc:aba9030dab37cf2b322cd6c6274615733"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size in bytes of the packet, 1 byte.  <a href="struct_packet_header.html#aba9030dab37cf2b322cd6c6274615733">More...</a><br /></td></tr>
 <tr class="separator:aba9030dab37cf2b322cd6c6274615733"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0a85543693c4af1a1781b12fce39843"><td class="memItemLeft" align="right" valign="top"><a id="af0a85543693c4af1a1781b12fce39843" name="af0a85543693c4af1a1781b12fce39843"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>sensorID</b> = 0</td></tr>
+<tr class="memitem:af0a85543693c4af1a1781b12fce39843"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_packet_header.html#af0a85543693c4af1a1781b12fce39843">sensorID</a> = 0</td></tr>
+<tr class="memdesc:af0a85543693c4af1a1781b12fce39843"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the sensor which produced the packet, 1 byte.  <a href="struct_packet_header.html#af0a85543693c4af1a1781b12fce39843">More...</a><br /></td></tr>
 <tr class="separator:af0a85543693c4af1a1781b12fce39843"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8779a361b420a4dd3984181d506031ab"><td class="memItemLeft" align="right" valign="top"><a id="a8779a361b420a4dd3984181d506031ab" name="a8779a361b420a4dd3984181d506031ab"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>errorCode</b> = 0xff</td></tr>
+<tr class="memitem:a8779a361b420a4dd3984181d506031ab"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_packet_header.html#a8779a361b420a4dd3984181d506031ab">errorCode</a> = 0xff</td></tr>
+<tr class="memdesc:a8779a361b420a4dd3984181d506031ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error code, 1 byte.  <a href="struct_packet_header.html#a8779a361b420a4dd3984181d506031ab">More...</a><br /></td></tr>
 <tr class="separator:a8779a361b420a4dd3984181d506031ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5999ff45fc550d1fd6bd476d67bcdc0"><td class="memItemLeft" align="right" valign="top"><a id="ad5999ff45fc550d1fd6bd476d67bcdc0" name="ad5999ff45fc550d1fd6bd476d67bcdc0"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>timestamp</b> = 0</td></tr>
+<tr class="memitem:ad5999ff45fc550d1fd6bd476d67bcdc0"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_packet_header.html#ad5999ff45fc550d1fd6bd476d67bcdc0">timestamp</a> = 0</td></tr>
+<tr class="memdesc:ad5999ff45fc550d1fd6bd476d67bcdc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timestamp, in microseconds, 4 bytes.  <a href="struct_packet_header.html#ad5999ff45fc550d1fd6bd476d67bcdc0">More...</a><br /></td></tr>
 <tr class="separator:ad5999ff45fc550d1fd6bd476d67bcdc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >8 byte header for all packets </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a8779a361b420a4dd3984181d506031ab" name="a8779a361b420a4dd3984181d506031ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8779a361b420a4dd3984181d506031ab">&#9670;&nbsp;</a></span>errorCode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PacketHeader::errorCode = 0xff</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Error code, 1 byte. </p>
+
+</div>
+</div>
+<a id="aba9030dab37cf2b322cd6c6274615733" name="aba9030dab37cf2b322cd6c6274615733"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba9030dab37cf2b322cd6c6274615733">&#9670;&nbsp;</a></span>packetSize</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PacketHeader::packetSize = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Size in bytes of the packet, 1 byte. </p>
+
+</div>
+</div>
+<a id="aa586e35c57b3c7b052fac2789e93166d" name="aa586e35c57b3c7b052fac2789e93166d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa586e35c57b3c7b052fac2789e93166d">&#9670;&nbsp;</a></span>packetType_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4e">packetType</a> PacketHeader::packetType_ = <a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4eabffc1c9c0f9302dab94637d04f9bb49e">NO_PACKET</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type of the packet, 1 byte. </p>
+
+</div>
+</div>
+<a id="af0a85543693c4af1a1781b12fce39843" name="af0a85543693c4af1a1781b12fce39843"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0a85543693c4af1a1781b12fce39843">&#9670;&nbsp;</a></span>sensorID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t PacketHeader::sensorID = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>ID of the sensor which produced the packet, 1 byte. </p>
+
+</div>
+</div>
+<a id="ad5999ff45fc550d1fd6bd476d67bcdc0" name="ad5999ff45fc550d1fd6bd476d67bcdc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5999ff45fc550d1fd6bd476d67bcdc0">&#9670;&nbsp;</a></span>timestamp</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t PacketHeader::timestamp = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Timestamp, in microseconds, 4 bytes. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>data_logger/include/<a class="el" href="_packet_8hpp_source.html">Packet.hpp</a></li>
 </ul>

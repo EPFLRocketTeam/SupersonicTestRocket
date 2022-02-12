@@ -13,7 +13,7 @@ uint8_t ADIS16470Wrapper::sensorQty = 0;
 // ----- Constructor ----- //
 ADIS16470Wrapper::
     ADIS16470Wrapper(int CS, int DR, int RST) : Sensor(sensorQty),
-                                                DR_PIN(DR),
+                                                // DR_PIN(DR),
                                                 adisObject(CS, DR, RST),
                                                 lastPacket(getHeader(0))
 {
@@ -39,17 +39,16 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
   for (uint32_t i = 0; i < attempts; i++)
   {
     // acquire some data
-    uint16_t *wordBurstData;
-    wordBurstData = adisObject.wordBurst(); // Read data and insert into array
+    uint16_t *wordBurstData = adisObject.wordBurst(); // Read data and insert into array
 
     int16_t checksum = adisObject.checksum(wordBurstData); // get the checksum
 
     // get a zero vector to make sure the data we are getting isn't just zeros
-    uint16_t zeros[sizeof(uint16_t) * ADIS16470::wordBurstLength] = {0};
+    uint16_t zeros[sizeof(uint16_t) * wordBurstLength] = {0};
 
     // checksum ok AND didn't read just zeros --> setup successful!
     if (wordBurstData[9] == checksum &&
-        memcmp(wordBurstData, zeros, sizeof(uint16_t) * ADIS16470::wordBurstLength) != 0)
+        memcmp(wordBurstData, zeros, sizeof(uint16_t) * wordBurstLength) != 0)
     {
       active = true;
       return active;
@@ -61,11 +60,6 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
   }
   active = false;
   return active; // setup was not succesful
-}
-
-uint8_t ADIS16470Wrapper::getSensorQty()
-{
-  return sensorQty;
 }
 
 bool ADIS16470Wrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)

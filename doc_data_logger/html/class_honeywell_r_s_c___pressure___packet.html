@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -46,6 +56,8 @@ $(function() {
   <div class="headertitle"><div class="title">HoneywellRSC_Pressure_Packet Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="_honeywell_rsc_wrapper_8hpp_source.html">HoneywellRscWrapper.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for HoneywellRSC_Pressure_Packet:</div>
 <div class="dyncontent">
@@ -59,79 +71,136 @@ Inheritance diagram for HoneywellRSC_Pressure_Packet:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a36a11c26bbaba2c532742b9b630f3cca"><td class="memItemLeft" align="right" valign="top"><a id="a36a11c26bbaba2c532742b9b630f3cca" name="a36a11c26bbaba2c532742b9b630f3cca"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HoneywellRSC_Pressure_Packet</b> (<a class="el" href="struct_packet_header.html">PacketHeader</a> h)</td></tr>
+<tr class="memitem:aecb0deb31a8c10a130b12860be4916ed"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_honeywell_r_s_c___pressure___packet.html#aecb0deb31a8c10a130b12860be4916ed">HoneywellRSC_Pressure_Packet</a> ()</td></tr>
+<tr class="separator:aecb0deb31a8c10a130b12860be4916ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36a11c26bbaba2c532742b9b630f3cca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_honeywell_r_s_c___pressure___packet.html#a36a11c26bbaba2c532742b9b630f3cca">HoneywellRSC_Pressure_Packet</a> (<a class="el" href="struct_packet_header.html">PacketHeader</a> h)</td></tr>
 <tr class="separator:a36a11c26bbaba2c532742b9b630f3cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_honeywell_r_s_c_packet"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_honeywell_r_s_c_packet')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_honeywell_r_s_c_packet.html">HoneywellRSCPacket</a></td></tr>
-<tr class="memitem:a3884402ec36fbc44d0cd5b366613039a inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memItemLeft" align="right" valign="top"><a id="a3884402ec36fbc44d0cd5b366613039a" name="a3884402ec36fbc44d0cd5b366613039a"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>getMeasurement</b> ()</td></tr>
+<tr class="memitem:a0e45c449ef9a5737063a83fa5d53d13d inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_honeywell_r_s_c_packet.html#a0e45c449ef9a5737063a83fa5d53d13d">HoneywellRSCPacket</a> ()</td></tr>
+<tr class="separator:a0e45c449ef9a5737063a83fa5d53d13d inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3884402ec36fbc44d0cd5b366613039a inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_honeywell_r_s_c_packet.html#a3884402ec36fbc44d0cd5b366613039a">getMeasurement</a> ()</td></tr>
 <tr class="separator:a3884402ec36fbc44d0cd5b366613039a inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6635f597014e15eecba80fa74747fa6 inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memItemLeft" align="right" valign="top"><a id="af6635f597014e15eecba80fa74747fa6" name="af6635f597014e15eecba80fa74747fa6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setMeasurement</b> (float m)</td></tr>
+<tr class="memitem:af6635f597014e15eecba80fa74747fa6 inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_honeywell_r_s_c_packet.html#af6635f597014e15eecba80fa74747fa6">setMeasurement</a> (float m)</td></tr>
 <tr class="separator:af6635f597014e15eecba80fa74747fa6 inherit pub_methods_class_honeywell_r_s_c_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_packet"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_packet')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_packet.html">Packet</a></td></tr>
-<tr class="memitem:acc42abcd0514e9d96e555531aa22546c inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="acc42abcd0514e9d96e555531aa22546c" name="acc42abcd0514e9d96e555531aa22546c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Packet</b> (uint8_t size)</td></tr>
+<tr class="memitem:aabcfb963c0d5bc0fa554668f92989622 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#aabcfb963c0d5bc0fa554668f92989622">Packet</a> ()</td></tr>
+<tr class="memdesc:aabcfb963c0d5bc0fa554668f92989622 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new empty <a class="el" href="class_packet.html">Packet</a> object.  <a href="class_packet.html#aabcfb963c0d5bc0fa554668f92989622">More...</a><br /></td></tr>
+<tr class="separator:aabcfb963c0d5bc0fa554668f92989622 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc42abcd0514e9d96e555531aa22546c inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#acc42abcd0514e9d96e555531aa22546c">Packet</a> (uint8_t size)</td></tr>
+<tr class="memdesc:acc42abcd0514e9d96e555531aa22546c inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_packet.html">Packet</a> object and allocate memory for data.  <a href="class_packet.html#acc42abcd0514e9d96e555531aa22546c">More...</a><br /></td></tr>
 <tr class="separator:acc42abcd0514e9d96e555531aa22546c inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac179a01952235ac9e73bc5edb3237aeb inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="ac179a01952235ac9e73bc5edb3237aeb" name="ac179a01952235ac9e73bc5edb3237aeb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Packet</b> (<a class="el" href="struct_packet_header.html">PacketHeader</a> header)</td></tr>
-<tr class="separator:ac179a01952235ac9e73bc5edb3237aeb inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02522b253746f9c05727ac05b391a035 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a02522b253746f9c05727ac05b391a035" name="a02522b253746f9c05727ac05b391a035"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Packet</b> (<a class="el" href="class_packet.html">Packet</a> &amp;other)</td></tr>
+<tr class="memitem:a5353650001b5fe4f592ce24abfee46de inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a5353650001b5fe4f592ce24abfee46de">Packet</a> (<a class="el" href="struct_packet_header.html">PacketHeader</a> &amp;<a class="el" href="class_packet.html#a4ffe27b98b750e7b4d9201b7c0713f24">header</a>)</td></tr>
+<tr class="memdesc:a5353650001b5fe4f592ce24abfee46de inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_packet.html">Packet</a> object from a given header.  <a href="class_packet.html#a5353650001b5fe4f592ce24abfee46de">More...</a><br /></td></tr>
+<tr class="separator:a5353650001b5fe4f592ce24abfee46de inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02522b253746f9c05727ac05b391a035 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a02522b253746f9c05727ac05b391a035">Packet</a> (<a class="el" href="class_packet.html">Packet</a> &amp;other)</td></tr>
+<tr class="memdesc:a02522b253746f9c05727ac05b391a035 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="class_packet.html#a02522b253746f9c05727ac05b391a035">More...</a><br /></td></tr>
 <tr class="separator:a02522b253746f9c05727ac05b391a035 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a727647e052a395dccad62b34a1345847 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a727647e052a395dccad62b34a1345847" name="a727647e052a395dccad62b34a1345847"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>setContent</b> (void *data, size_t s)</td></tr>
+<tr class="memitem:a48938391fb7e07460bb0e01198ae5ede inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a48938391fb7e07460bb0e01198ae5ede">~Packet</a> ()</td></tr>
+<tr class="memdesc:a48938391fb7e07460bb0e01198ae5ede inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the <a class="el" href="class_packet.html">Packet</a> object.  <a href="class_packet.html#a48938391fb7e07460bb0e01198ae5ede">More...</a><br /></td></tr>
+<tr class="separator:a48938391fb7e07460bb0e01198ae5ede inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a727647e052a395dccad62b34a1345847 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a727647e052a395dccad62b34a1345847">setContent</a> (void *data, size_t s)</td></tr>
+<tr class="memdesc:a727647e052a395dccad62b34a1345847 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the packet's content.  <a href="class_packet.html#a727647e052a395dccad62b34a1345847">More...</a><br /></td></tr>
 <tr class="separator:a727647e052a395dccad62b34a1345847 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab41e69c94c5113b8b5c8b46320db2bc5 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="ab41e69c94c5113b8b5c8b46320db2bc5" name="ab41e69c94c5113b8b5c8b46320db2bc5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPacketType</b> (packetType pt)</td></tr>
+<tr class="memitem:ab41e69c94c5113b8b5c8b46320db2bc5 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#ab41e69c94c5113b8b5c8b46320db2bc5">setPacketType</a> (<a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4e">packetType</a> pt)</td></tr>
+<tr class="memdesc:ab41e69c94c5113b8b5c8b46320db2bc5 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the packet Type in the header.  <a href="class_packet.html#ab41e69c94c5113b8b5c8b46320db2bc5">More...</a><br /></td></tr>
 <tr class="separator:ab41e69c94c5113b8b5c8b46320db2bc5 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7e222aaf674503f822e9c44811a41c7 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="ac7e222aaf674503f822e9c44811a41c7" name="ac7e222aaf674503f822e9c44811a41c7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSensorID</b> (uint8_t id)</td></tr>
+<tr class="memitem:ac7e222aaf674503f822e9c44811a41c7 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#ac7e222aaf674503f822e9c44811a41c7">setSensorID</a> (uint8_t id)</td></tr>
+<tr class="memdesc:ac7e222aaf674503f822e9c44811a41c7 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the sensor ID in the header.  <a href="class_packet.html#ac7e222aaf674503f822e9c44811a41c7">More...</a><br /></td></tr>
 <tr class="separator:ac7e222aaf674503f822e9c44811a41c7 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a710761be3a0e774d71e5319b93156036 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a710761be3a0e774d71e5319b93156036" name="a710761be3a0e774d71e5319b93156036"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setErrorCode</b> (uint8_t errCode)</td></tr>
+<tr class="memitem:a710761be3a0e774d71e5319b93156036 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a710761be3a0e774d71e5319b93156036">setErrorCode</a> (uint8_t errCode)</td></tr>
+<tr class="memdesc:a710761be3a0e774d71e5319b93156036 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the error code in the header.  <a href="class_packet.html#a710761be3a0e774d71e5319b93156036">More...</a><br /></td></tr>
 <tr class="separator:a710761be3a0e774d71e5319b93156036 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1aa0076b1ff63d7e25466f635b99f32b inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a1aa0076b1ff63d7e25466f635b99f32b" name="a1aa0076b1ff63d7e25466f635b99f32b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setTimestamp</b> (uint32_t ts)</td></tr>
+<tr class="memitem:a1aa0076b1ff63d7e25466f635b99f32b inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a1aa0076b1ff63d7e25466f635b99f32b">setTimestamp</a> (uint32_t ts)</td></tr>
+<tr class="memdesc:a1aa0076b1ff63d7e25466f635b99f32b inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the timestamp in the header.  <a href="class_packet.html#a1aa0076b1ff63d7e25466f635b99f32b">More...</a><br /></td></tr>
 <tr class="separator:a1aa0076b1ff63d7e25466f635b99f32b inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c85338a37cdaa6a45d147ee47ed4939 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a7c85338a37cdaa6a45d147ee47ed4939" name="a7c85338a37cdaa6a45d147ee47ed4939"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>updateHeader</b> (<a class="el" href="struct_packet_header.html">PacketHeader</a> h)</td></tr>
+<tr class="memitem:a7c85338a37cdaa6a45d147ee47ed4939 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a7c85338a37cdaa6a45d147ee47ed4939">updateHeader</a> (<a class="el" href="struct_packet_header.html">PacketHeader</a> h)</td></tr>
+<tr class="memdesc:a7c85338a37cdaa6a45d147ee47ed4939 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the header with the one given.  <a href="class_packet.html#a7c85338a37cdaa6a45d147ee47ed4939">More...</a><br /></td></tr>
 <tr class="separator:a7c85338a37cdaa6a45d147ee47ed4939 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae772f9d433022aebb3484fab6b09ab1f inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="ae772f9d433022aebb3484fab6b09ab1f" name="ae772f9d433022aebb3484fab6b09ab1f"></a>
-packetType&#160;</td><td class="memItemRight" valign="bottom"><b>getPacketType</b> ()</td></tr>
+<tr class="memitem:ae772f9d433022aebb3484fab6b09ab1f inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_custom_types_8hpp.html#ac4b7e08cf757114fb2e841754e6dbe4e">packetType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#ae772f9d433022aebb3484fab6b09ab1f">getPacketType</a> ()</td></tr>
+<tr class="memdesc:ae772f9d433022aebb3484fab6b09ab1f inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the packet type from header.  <a href="class_packet.html#ae772f9d433022aebb3484fab6b09ab1f">More...</a><br /></td></tr>
 <tr class="separator:ae772f9d433022aebb3484fab6b09ab1f inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad432be2667efbd3530047d9e189935c4 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="ad432be2667efbd3530047d9e189935c4" name="ad432be2667efbd3530047d9e189935c4"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getPacketSize</b> ()</td></tr>
+<tr class="memitem:ad432be2667efbd3530047d9e189935c4 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#ad432be2667efbd3530047d9e189935c4">getPacketSize</a> ()</td></tr>
+<tr class="memdesc:ad432be2667efbd3530047d9e189935c4 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the packet size from header.  <a href="class_packet.html#ad432be2667efbd3530047d9e189935c4">More...</a><br /></td></tr>
 <tr class="separator:ad432be2667efbd3530047d9e189935c4 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a24360e005bb542ee01d3d957fc7a81 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a8a24360e005bb542ee01d3d957fc7a81" name="a8a24360e005bb542ee01d3d957fc7a81"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getSensorID</b> ()</td></tr>
+<tr class="memitem:a8a24360e005bb542ee01d3d957fc7a81 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a8a24360e005bb542ee01d3d957fc7a81">getSensorID</a> ()</td></tr>
+<tr class="memdesc:a8a24360e005bb542ee01d3d957fc7a81 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the sensor ID from header.  <a href="class_packet.html#a8a24360e005bb542ee01d3d957fc7a81">More...</a><br /></td></tr>
 <tr class="separator:a8a24360e005bb542ee01d3d957fc7a81 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9d50f8c1c702616d921b57e056845fd inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="ad9d50f8c1c702616d921b57e056845fd" name="ad9d50f8c1c702616d921b57e056845fd"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getErrorCode</b> ()</td></tr>
+<tr class="memitem:ad9d50f8c1c702616d921b57e056845fd inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#ad9d50f8c1c702616d921b57e056845fd">getErrorCode</a> ()</td></tr>
+<tr class="memdesc:ad9d50f8c1c702616d921b57e056845fd inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the error code from header.  <a href="class_packet.html#ad9d50f8c1c702616d921b57e056845fd">More...</a><br /></td></tr>
 <tr class="separator:ad9d50f8c1c702616d921b57e056845fd inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cf31685fe9736a3627f7ad71ab8b60d inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a8cf31685fe9736a3627f7ad71ab8b60d" name="a8cf31685fe9736a3627f7ad71ab8b60d"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getTimestamp</b> ()</td></tr>
+<tr class="memitem:a8cf31685fe9736a3627f7ad71ab8b60d inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a8cf31685fe9736a3627f7ad71ab8b60d">getTimestamp</a> ()</td></tr>
+<tr class="memdesc:a8cf31685fe9736a3627f7ad71ab8b60d inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the timestamp from header.  <a href="class_packet.html#a8cf31685fe9736a3627f7ad71ab8b60d">More...</a><br /></td></tr>
 <tr class="separator:a8cf31685fe9736a3627f7ad71ab8b60d inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89b667e969a23c15438d6c20fc4b0d60 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a89b667e969a23c15438d6c20fc4b0d60" name="a89b667e969a23c15438d6c20fc4b0d60"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>getContent</b> (void *holder)</td></tr>
+<tr class="memitem:a89b667e969a23c15438d6c20fc4b0d60 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a89b667e969a23c15438d6c20fc4b0d60">getContent</a> (void *holder)</td></tr>
+<tr class="memdesc:a89b667e969a23c15438d6c20fc4b0d60 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy <a class="el" href="class_packet.html#a31628cd89ec4db7de00618ef2c8f9d0c">Packet::content</a> to holder.  <a href="class_packet.html#a89b667e969a23c15438d6c20fc4b0d60">More...</a><br /></td></tr>
 <tr class="separator:a89b667e969a23c15438d6c20fc4b0d60 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24775f82deeeaf92bfbb3c2e238c47f6 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a24775f82deeeaf92bfbb3c2e238c47f6" name="a24775f82deeeaf92bfbb3c2e238c47f6"></a>
-<a class="el" href="struct_packet_header.html">PacketHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>accessHeader</b> ()</td></tr>
+<tr class="memitem:a24775f82deeeaf92bfbb3c2e238c47f6 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_packet_header.html">PacketHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a24775f82deeeaf92bfbb3c2e238c47f6">accessHeader</a> ()</td></tr>
+<tr class="memdesc:a24775f82deeeaf92bfbb3c2e238c47f6 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a pointer to the packet's header.  <a href="class_packet.html#a24775f82deeeaf92bfbb3c2e238c47f6">More...</a><br /></td></tr>
 <tr class="separator:a24775f82deeeaf92bfbb3c2e238c47f6 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ae97ac4e20cf53344cfc0246952cf78 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a0ae97ac4e20cf53344cfc0246952cf78" name="a0ae97ac4e20cf53344cfc0246952cf78"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>accessContent</b> ()</td></tr>
+<tr class="memitem:a0ae97ac4e20cf53344cfc0246952cf78 inherit pub_methods_class_packet"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a0ae97ac4e20cf53344cfc0246952cf78">accessContent</a> ()</td></tr>
+<tr class="memdesc:a0ae97ac4e20cf53344cfc0246952cf78 inherit pub_methods_class_packet"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a copy of the data pointer.  <a href="class_packet.html#a0ae97ac4e20cf53344cfc0246952cf78">More...</a><br /></td></tr>
 <tr class="separator:a0ae97ac4e20cf53344cfc0246952cf78 inherit pub_methods_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_packet"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_packet')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_packet.html">Packet</a></td></tr>
-<tr class="memitem:a4ffe27b98b750e7b4d9201b7c0713f24 inherit pro_attribs_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a4ffe27b98b750e7b4d9201b7c0713f24" name="a4ffe27b98b750e7b4d9201b7c0713f24"></a>
-<a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><b>header</b></td></tr>
+<tr class="memitem:a4ffe27b98b750e7b4d9201b7c0713f24 inherit pro_attribs_class_packet"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a4ffe27b98b750e7b4d9201b7c0713f24">header</a></td></tr>
 <tr class="separator:a4ffe27b98b750e7b4d9201b7c0713f24 inherit pro_attribs_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31628cd89ec4db7de00618ef2c8f9d0c inherit pro_attribs_class_packet"><td class="memItemLeft" align="right" valign="top"><a id="a31628cd89ec4db7de00618ef2c8f9d0c" name="a31628cd89ec4db7de00618ef2c8f9d0c"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>content</b> = NULL</td></tr>
+<tr class="memitem:a31628cd89ec4db7de00618ef2c8f9d0c inherit pro_attribs_class_packet"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet.html#a31628cd89ec4db7de00618ef2c8f9d0c">content</a> = NULL</td></tr>
 <tr class="separator:a31628cd89ec4db7de00618ef2c8f9d0c inherit pro_attribs_class_packet"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aecb0deb31a8c10a130b12860be4916ed" name="aecb0deb31a8c10a130b12860be4916ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecb0deb31a8c10a130b12860be4916ed">&#9670;&nbsp;</a></span>HoneywellRSC_Pressure_Packet() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HoneywellRSC_Pressure_Packet::HoneywellRSC_Pressure_Packet </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a36a11c26bbaba2c532742b9b630f3cca" name="a36a11c26bbaba2c532742b9b630f3cca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36a11c26bbaba2c532742b9b630f3cca">&#9670;&nbsp;</a></span>HoneywellRSC_Pressure_Packet() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HoneywellRSC_Pressure_Packet::HoneywellRSC_Pressure_Packet </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_packet_header.html">PacketHeader</a>&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>data_logger/lib/Sensors/<a class="el" href="_honeywell_rsc_wrapper_8hpp_source.html">HoneywellRscWrapper.hpp</a></li>
 </ul>

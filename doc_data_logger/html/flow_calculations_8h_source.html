@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -47,7 +57,7 @@ $(function() {
   <div class="headertitle"><div class="title">flowCalculations.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="flow_calculations_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * flowCalculations.h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> *  Created on: 2021-07-18</span></div>
@@ -57,19 +67,30 @@ $(function() {
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">const</span> <span class="keywordtype">float</span> GAMMA = 1.4;                <span class="comment">// heat capacity ratio</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">const</span> <span class="keywordtype">float</span> R = 287;                    <span class="comment">// gas constant</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">const</span> <span class="keywordtype">float</span> CELSIUS_TO_KELVIN = 273.15; <span class="comment">// conversion factor from C to K</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">const</span> <span class="keywordtype">float</span> PSI_TO_PA = 6894.76;        <span class="comment">// conversion factor from PSI to Pa</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">const</span> <span class="keywordtype">float</span> G0 = 9.80665;               <span class="comment">// gravitational acceleration</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">const</span> <span class="keywordtype">float</span> STANDARD_PRESSURE = 101325; <span class="comment">// pressure at sea level</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">const</span> <span class="keywordtype">float</span> STANDARD_TEMP = 288.15;     <span class="comment">// temperature at sea level</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#a9224becc7cfbd461f31586c9ab99de77">   11</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#a9224becc7cfbd461f31586c9ab99de77">GAMMA</a> = 1.4;                <span class="comment">// heat capacity ratio</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#a247aeeed35717bee85fc2540c3591fd3">   12</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#a247aeeed35717bee85fc2540c3591fd3">R</a> = 287;                    <span class="comment">// gas constant</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#a7a1cdc810066b8bd876e438b037e49dd">   13</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#a7a1cdc810066b8bd876e438b037e49dd">CELSIUS_TO_KELVIN</a> = 273.15; <span class="comment">// conversion factor from C to K</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#a03ab3fd4a46f91aae03b2653406fa098">   14</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#a03ab3fd4a46f91aae03b2653406fa098">PSI_TO_PA</a> = 6894.76;        <span class="comment">// conversion factor from PSI to Pa</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#a32ba0ea1842958ef3c552fb0db75b976">   15</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#a32ba0ea1842958ef3c552fb0db75b976">G0</a> = 9.80665;               <span class="comment">// gravitational acceleration</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#ab9115a0c4d7039b202f61a9ffd89e50a">   16</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#ab9115a0c4d7039b202f61a9ffd89e50a">STANDARD_PRESSURE</a> = 101325; <span class="comment">// pressure at sea level</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="flow_calculations_8h.html#aedd0622ecee09d5978a3a318acc63154">   17</a></span><span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="flow_calculations_8h.html#aedd0622ecee09d5978a3a318acc63154">STANDARD_TEMP</a> = 288.15;     <span class="comment">// temperature at sea level</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment">// isentropic relations</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">float</span> calcMachFromPressure(<span class="keywordtype">float</span> staticPressure, <span class="keywordtype">float</span> totalPressure);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">float</span> calcStaticTemperature(<span class="keywordtype">float</span> mach, <span class="keywordtype">float</span> totalTemperature);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keywordtype">float</span> calcAirspeed(<span class="keywordtype">float</span> mach, <span class="keywordtype">float</span> staticTemperature);</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">float</span> calcAltitude(<span class="keywordtype">float</span> pressure);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">float</span> <a class="code hl_function" href="flow_calculations_8h.html#a8ec41333c0816522d5b80e62a0a1ef73">calcMachFromPressure</a>(<span class="keywordtype">float</span> staticPressure, <span class="keywordtype">float</span> totalPressure);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">float</span> <a class="code hl_function" href="flow_calculations_8h.html#a67813ba7f05945979072d0df832dc48d">calcStaticTemperature</a>(<span class="keywordtype">float</span> mach, <span class="keywordtype">float</span> totalTemperature);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keywordtype">float</span> <a class="code hl_function" href="flow_calculations_8h.html#a5a884764a7eb9a84f6eb493762f6785a">calcAirspeed</a>(<span class="keywordtype">float</span> mach, <span class="keywordtype">float</span> staticTemperature);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">float</span> <a class="code hl_function" href="flow_calculations_8h.html#a636029cbe40057d8c4e7464ed1f51df2">calcAltitude</a>(<span class="keywordtype">float</span> pressure);</div>
+<div class="ttc" id="aflow_calculations_8h_html_a03ab3fd4a46f91aae03b2653406fa098"><div class="ttname"><a href="flow_calculations_8h.html#a03ab3fd4a46f91aae03b2653406fa098">PSI_TO_PA</a></div><div class="ttdeci">const float PSI_TO_PA</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:14</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a247aeeed35717bee85fc2540c3591fd3"><div class="ttname"><a href="flow_calculations_8h.html#a247aeeed35717bee85fc2540c3591fd3">R</a></div><div class="ttdeci">const float R</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:12</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a32ba0ea1842958ef3c552fb0db75b976"><div class="ttname"><a href="flow_calculations_8h.html#a32ba0ea1842958ef3c552fb0db75b976">G0</a></div><div class="ttdeci">const float G0</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:15</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a5a884764a7eb9a84f6eb493762f6785a"><div class="ttname"><a href="flow_calculations_8h.html#a5a884764a7eb9a84f6eb493762f6785a">calcAirspeed</a></div><div class="ttdeci">float calcAirspeed(float mach, float staticTemperature)</div><div class="ttdef"><b>Definition:</b> flowCalculations.cpp:26</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a636029cbe40057d8c4e7464ed1f51df2"><div class="ttname"><a href="flow_calculations_8h.html#a636029cbe40057d8c4e7464ed1f51df2">calcAltitude</a></div><div class="ttdeci">float calcAltitude(float pressure)</div><div class="ttdef"><b>Definition:</b> flowCalculations.cpp:34</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a67813ba7f05945979072d0df832dc48d"><div class="ttname"><a href="flow_calculations_8h.html#a67813ba7f05945979072d0df832dc48d">calcStaticTemperature</a></div><div class="ttdeci">float calcStaticTemperature(float mach, float totalTemperature)</div><div class="ttdef"><b>Definition:</b> flowCalculations.cpp:18</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a7a1cdc810066b8bd876e438b037e49dd"><div class="ttname"><a href="flow_calculations_8h.html#a7a1cdc810066b8bd876e438b037e49dd">CELSIUS_TO_KELVIN</a></div><div class="ttdeci">const float CELSIUS_TO_KELVIN</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:13</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a8ec41333c0816522d5b80e62a0a1ef73"><div class="ttname"><a href="flow_calculations_8h.html#a8ec41333c0816522d5b80e62a0a1ef73">calcMachFromPressure</a></div><div class="ttdeci">float calcMachFromPressure(float staticPressure, float totalPressure)</div><div class="ttdef"><b>Definition:</b> flowCalculations.cpp:10</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_a9224becc7cfbd461f31586c9ab99de77"><div class="ttname"><a href="flow_calculations_8h.html#a9224becc7cfbd461f31586c9ab99de77">GAMMA</a></div><div class="ttdeci">const float GAMMA</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:11</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_ab9115a0c4d7039b202f61a9ffd89e50a"><div class="ttname"><a href="flow_calculations_8h.html#ab9115a0c4d7039b202f61a9ffd89e50a">STANDARD_PRESSURE</a></div><div class="ttdeci">const float STANDARD_PRESSURE</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:16</div></div>
+<div class="ttc" id="aflow_calculations_8h_html_aedd0622ecee09d5978a3a318acc63154"><div class="ttname"><a href="flow_calculations_8h.html#aedd0622ecee09d5978a3a318acc63154">STANDARD_TEMP</a></div><div class="ttdeci">const float STANDARD_TEMP</div><div class="ttdef"><b>Definition:</b> flowCalculations.h:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

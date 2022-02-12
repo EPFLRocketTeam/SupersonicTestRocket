@@ -11,9 +11,9 @@
 volatile bool flagArray[NUM_SENSORS];
 
 // Use lambda function for arbitrary interruptions
-#define INTERRUPT(i) [](){flagArray[i] = true;}
+#define INTERRUPT(i) []() { flagArray[i] = true; }
 
-void acquireData(Sensor* sArray[], size_t sSize)
+void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
 {
   // SETUP phase
 
@@ -55,27 +55,19 @@ void acquireData(Sensor* sArray[], size_t sSize)
                   INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]),
                   INTERRUPT(Altimax_INDEX), RISING);
-  // Pins 1 and 2 are not implemented
-  // attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[1]),
-  //                 INTERRUPT(Altimax_INDEX), RISING);
-  // attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[2]),
-  //                 INTERRUPT(Altimax_INDEX), RISING);
-  
 
-  
   // set the last time for every check to now
   uint32_t prevSyncLoop = micros();   // timing for syncing
-  uint32_t prevSerialLoop = micros(); // timing for serial monitor output 
-
+  uint32_t prevSerialLoop = micros(); // timing for serial monitor output
 
   // checking if the sensors are due will update their check times even if we
   // don't use the boolean they return
   // doing regardless of active status since objects are still created
   // if they are inactive, this value will simply never be used
 
-  for(size_t i = 0; i < sSize; i++)
+  for (size_t i = 0; i < sSize; i++)
   {
-    sArray[i]->isDue(micros(),flagArray[i]);
+    sArray[i]->isDue(micros(), flagArray[i]);
   }
 
   // Start acquiring data
@@ -85,16 +77,23 @@ void acquireData(Sensor* sArray[], size_t sSize)
 
   int errorCount = 0;
   // acquire data as long as button sequence is not initated
-  Packet* pkt;
+  Packet *pkt;
   while (checkButtons(buttonArray, stopEvent))
   {
-    for(size_t i = 0; i< sSize; i++)
+    for (size_t i = 0; i < sSize; i++)
     {
-      if (sArray[i]->active && sArray[i]->isDue(micros(),flagArray[i]))
+      if (sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
       {
         pkt = sArray[i]->getPacket(micros());
-        rb.write(pkt->accessHeader(),sizeof(PacketHeader));
-        rb.write(pkt->accessContent(),pkt->getPacketSize());
+        rb.write(pkt->accessHeader(), sizeof(PacketHeader));
+        rb.write(pkt->accessContent(), pkt->getPacketSize());
+
+        if (micros() - prevSerialLoop > SERIAL_INTERVAL)
+        {
+          Serial.println(pkt->getPrintableHeader());
+          Serial.print(pkt->getPrintableContent());
+          prevSerialLoop = micros();
+        }
       }
     }
 

@@ -16,7 +16,7 @@ Packet::Packet(uint8_t size)
     content = malloc(size);
 }
 
-Packet::Packet(PacketHeader h)
+Packet::Packet(PacketHeader &h)
 {
     assert(h.packetSize == 0);
     header = h;

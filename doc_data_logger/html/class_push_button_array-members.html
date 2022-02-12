@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -46,14 +56,23 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="class_push_button_array.html">PushButtonArray</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>activateEvent</b>(uint8_t idx) (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>addEvent</b>(uint8_t state, uint8_t nextState, uint32_t windowStart, uint32_t windowEnd) (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>checkEvents</b>(uint32_t currMillis, bool individualButtonStates[BUTTON_NUM]) (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>deactivateEvent</b>(uint8_t idx) (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>deleteEvent</b>(uint8_t idx) (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>getState</b>() (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>PushButtonArray</b>() (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>translateState</b>(bool individualButtonStates[BUTTON_NUM]) (defined in <a class="el" href="class_push_button_array.html">PushButtonArray</a>)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a9fb92004d7566ad8501ee002518920f5">activateEvent</a>(uint8_t idx)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#ab439db86459fe7e1d578367379a740d1">addEvent</a>(uint8_t state, uint8_t nextState, uint32_t windowStart, uint32_t windowEnd)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a41e5da9b52cad7719e820c1b1e379345">BUTTON_NUM</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#a703edc6e8a61a0df21980d3403695635">checkEvents</a>(uint32_t currMillis, bool individualButtonStates[BUTTON_NUM])</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a55ee277b731f99ac434ddc549ff3e2a0">deactivateEvent</a>(uint8_t idx)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#a44060feecb166359a85b45faafb42bbe">deleteEvent</a>(uint8_t idx)</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#afc031e11a10cafa70166c7972e5d512e">EVENT_NUM</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#af2bfa25cacce3a6906afdb4735199d60">Events</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a6081fd3d1ddb2f5248b72ec4bbf7accc">getState</a>()</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#a02bb668f6fce1bed1a67ab295894eaf8">lastState</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a39b25445c38f39fd1e3722cf83745781">PushButtonArray</a>()</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#a199edc5422e0dbe546029bde3652d4ba">state</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a8294460178bbf2b5ab2274a8f519b825">STATE_NUM</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#ab74c655529916c581e77bff32902202c">stateDuration</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a9f23e12b1a0df35b94c6fe152c6ad2f6">stateEndTime</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="class_push_button_array.html#a81f417b5bd79c6bcbe42e162ac9f917e">stateStartTime</a></td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_push_button_array.html#a42c223511d68284fc0338af442469177">translateState</a>(bool individualButtonStates[BUTTON_NUM])</td><td class="entry"><a class="el" href="class_push_button_array.html">PushButtonArray</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

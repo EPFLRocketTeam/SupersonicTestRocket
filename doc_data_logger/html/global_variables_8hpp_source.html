@@ -9,6 +9,16 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -47,7 +57,7 @@ $(function() {
   <div class="headertitle"><div class="title">globalVariables.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<a href="global_variables_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
@@ -59,39 +69,63 @@ $(function() {
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">// Pinout ----------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">// I/O</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t GREEN_LED_PIN,</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    RED_LED_PIN,</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    BUTTON0_PIN,</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    BUTTON1_PIN;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#a4cc57301563e3c5c906dbad9f19a7d94">GREEN_LED_PIN</a>,</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#ac0898632b4f41259a96489c662bfe836">   14</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#ac0898632b4f41259a96489c662bfe836">RED_LED_PIN</a>,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#a032fa36f3f182b14c5c69cebea7f0137">   15</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#a032fa36f3f182b14c5c69cebea7f0137">BUTTON0_PIN</a>,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#a38663bd5a4d81a962cb97578f94e2022">   16</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#a38663bd5a4d81a962cb97578f94e2022">BUTTON1_PIN</a>;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">// ADIS164760</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t DR_ADIS16470_PIN,</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    SYNC_ADIS16470_PIN,</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    RST_ADIS16470_PIN,</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    CS_ADIS16470_PIN;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#af22814e75f93b53452fc071826b00aa2">DR_ADIS16470_PIN</a>,</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#abaad39fdd01edc4bb6c3e4ac3468b9e9">   19</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#abaad39fdd01edc4bb6c3e4ac3468b9e9">SYNC_ADIS16470_PIN</a>,</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#a7ada0700fe36730bf242b94e9e2f59dd">   20</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#a7ada0700fe36730bf242b94e9e2f59dd">RST_ADIS16470_PIN</a>,</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#a1e1041c69e42b60ac50a2f296cf3c363">   21</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#a1e1041c69e42b60ac50a2f296cf3c363">CS_ADIS16470_PIN</a>;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">// AIS1120SX</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t CS_AIS1120SX_PIN;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#ab51af808e2173e0e28cfabaa12faa2a4">CS_AIS1120SX_PIN</a>;</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">// Pressure sensors</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t staticRSC;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t totalRSC;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t CS_RS_EE_PIN[2],</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    CS_RSC_ADC_PIN[2],</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    DR_RSC[2];</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#a0b8b6e7eb2c3f7dcab1bc892bd3d0fe3">staticRSC</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#aca31625353c50e7f7765743cf2015122">totalRSC</a>;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#aef6b9ff0dd54e648b3d1d53aa2d409a8">CS_RS_EE_PIN</a>[2],</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#a9a95b4ed85822abaf6dc460acaa51eb8">   28</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#a9a95b4ed85822abaf6dc460acaa51eb8">CS_RSC_ADC_PIN</a>[2],</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#ab133486a0c94308b89c2c55418be481c">   29</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#ab133486a0c94308b89c2c55418be481c">DR_RSC</a>[2];</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">// Thermocouples</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t TAT_TC;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t CS_TCS_PIN[4];</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#a9a2db802c267298d38487c0589a3d4c6">TAT_TC</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#af0bcca2ac54d208f4fec7731f75dde51">CS_TCS_PIN</a>[4];</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment">// Altimax</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t ALTIMAX_DR_PIN;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#a01af12c3c08097c3872c0a6c2bab247d">ALTIMAX_DR_PIN</a>;</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment">// Sensors ----------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> NUM_SENSORS = 9; <span class="comment">//Should hold in uint8_t</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#afae60ebcd296429e55d554fe4c8d72d1">   38</a></span><span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> <a class="code hl_variable" href="global_variables_8hpp.html#afae60ebcd296429e55d554fe4c8d72d1">NUM_SENSORS</a> = 9; <span class="comment">//Should hold in uint8_t</span></div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t ADIS16470_INDEX,</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    AISx120SX_INDEX,</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    Honeywell_Rsc_0_INDEX,</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    Honeywell_Rsc_1_INDEX,</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    MAX31855_START_INDEX,</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    Altimax_INDEX;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">extern</span> <span class="keyword">const</span> uint8_t <a class="code hl_variable" href="global_variables_8hpp.html#a84b7fcf768817c0e0e0589e39762fb0a">ADIS16470_INDEX</a>,</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#adb5dedad536abf24dd800d6ec74f70fd">   41</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#adb5dedad536abf24dd800d6ec74f70fd">AISx120SX_INDEX</a>,</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#a5f9fe7db68fd72d78ee7f2e8f8cf160a">   42</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#a5f9fe7db68fd72d78ee7f2e8f8cf160a">Honeywell_Rsc_0_INDEX</a>,</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#aa86a6cbe0c43ae74a526c5c3df625292">   43</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#aa86a6cbe0c43ae74a526c5c3df625292">Honeywell_Rsc_1_INDEX</a>,</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#ab9198eab9303612ebdf31d7245be39d0">   44</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#ab9198eab9303612ebdf31d7245be39d0">MAX31855_START_INDEX</a>,</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="global_variables_8hpp.html#ade189782edd614e80f784e27f5e4d2f9">   45</a></span>    <a class="code hl_variable" href="global_variables_8hpp.html#ade189782edd614e80f784e27f5e4d2f9">Altimax_INDEX</a>;</div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a01af12c3c08097c3872c0a6c2bab247d"><div class="ttname"><a href="global_variables_8hpp.html#a01af12c3c08097c3872c0a6c2bab247d">ALTIMAX_DR_PIN</a></div><div class="ttdeci">const uint8_t ALTIMAX_DR_PIN</div><div class="ttdef"><b>Definition:</b> main.cpp:65</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a032fa36f3f182b14c5c69cebea7f0137"><div class="ttname"><a href="global_variables_8hpp.html#a032fa36f3f182b14c5c69cebea7f0137">BUTTON0_PIN</a></div><div class="ttdeci">const uint8_t BUTTON0_PIN</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:15</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a0b8b6e7eb2c3f7dcab1bc892bd3d0fe3"><div class="ttname"><a href="global_variables_8hpp.html#a0b8b6e7eb2c3f7dcab1bc892bd3d0fe3">staticRSC</a></div><div class="ttdeci">const uint8_t staticRSC</div><div class="ttdef"><b>Definition:</b> main.cpp:52</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a1e1041c69e42b60ac50a2f296cf3c363"><div class="ttname"><a href="global_variables_8hpp.html#a1e1041c69e42b60ac50a2f296cf3c363">CS_ADIS16470_PIN</a></div><div class="ttdeci">const uint8_t CS_ADIS16470_PIN</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:21</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a38663bd5a4d81a962cb97578f94e2022"><div class="ttname"><a href="global_variables_8hpp.html#a38663bd5a4d81a962cb97578f94e2022">BUTTON1_PIN</a></div><div class="ttdeci">const uint8_t BUTTON1_PIN</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:16</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a4cc57301563e3c5c906dbad9f19a7d94"><div class="ttname"><a href="global_variables_8hpp.html#a4cc57301563e3c5c906dbad9f19a7d94">GREEN_LED_PIN</a></div><div class="ttdeci">const uint8_t GREEN_LED_PIN</div><div class="ttdef"><b>Definition:</b> main.cpp:40</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a5f9fe7db68fd72d78ee7f2e8f8cf160a"><div class="ttname"><a href="global_variables_8hpp.html#a5f9fe7db68fd72d78ee7f2e8f8cf160a">Honeywell_Rsc_0_INDEX</a></div><div class="ttdeci">const uint8_t Honeywell_Rsc_0_INDEX</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:42</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a7ada0700fe36730bf242b94e9e2f59dd"><div class="ttname"><a href="global_variables_8hpp.html#a7ada0700fe36730bf242b94e9e2f59dd">RST_ADIS16470_PIN</a></div><div class="ttdeci">const uint8_t RST_ADIS16470_PIN</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:20</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a84b7fcf768817c0e0e0589e39762fb0a"><div class="ttname"><a href="global_variables_8hpp.html#a84b7fcf768817c0e0e0589e39762fb0a">ADIS16470_INDEX</a></div><div class="ttdeci">const uint8_t ADIS16470_INDEX</div><div class="ttdef"><b>Definition:</b> main.cpp:96</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a9a2db802c267298d38487c0589a3d4c6"><div class="ttname"><a href="global_variables_8hpp.html#a9a2db802c267298d38487c0589a3d4c6">TAT_TC</a></div><div class="ttdeci">const uint8_t TAT_TC</div><div class="ttdef"><b>Definition:</b> main.cpp:62</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_a9a95b4ed85822abaf6dc460acaa51eb8"><div class="ttname"><a href="global_variables_8hpp.html#a9a95b4ed85822abaf6dc460acaa51eb8">CS_RSC_ADC_PIN</a></div><div class="ttdeci">const uint8_t CS_RSC_ADC_PIN[2]</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:28</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_aa86a6cbe0c43ae74a526c5c3df625292"><div class="ttname"><a href="global_variables_8hpp.html#aa86a6cbe0c43ae74a526c5c3df625292">Honeywell_Rsc_1_INDEX</a></div><div class="ttdeci">const uint8_t Honeywell_Rsc_1_INDEX</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:43</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_ab133486a0c94308b89c2c55418be481c"><div class="ttname"><a href="global_variables_8hpp.html#ab133486a0c94308b89c2c55418be481c">DR_RSC</a></div><div class="ttdeci">const uint8_t DR_RSC[2]</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:29</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_ab51af808e2173e0e28cfabaa12faa2a4"><div class="ttname"><a href="global_variables_8hpp.html#ab51af808e2173e0e28cfabaa12faa2a4">CS_AIS1120SX_PIN</a></div><div class="ttdeci">const uint8_t CS_AIS1120SX_PIN</div><div class="ttdef"><b>Definition:</b> main.cpp:50</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_ab9198eab9303612ebdf31d7245be39d0"><div class="ttname"><a href="global_variables_8hpp.html#ab9198eab9303612ebdf31d7245be39d0">MAX31855_START_INDEX</a></div><div class="ttdeci">const uint8_t MAX31855_START_INDEX</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:44</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_abaad39fdd01edc4bb6c3e4ac3468b9e9"><div class="ttname"><a href="global_variables_8hpp.html#abaad39fdd01edc4bb6c3e4ac3468b9e9">SYNC_ADIS16470_PIN</a></div><div class="ttdeci">const uint8_t SYNC_ADIS16470_PIN</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:19</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_ac0898632b4f41259a96489c662bfe836"><div class="ttname"><a href="global_variables_8hpp.html#ac0898632b4f41259a96489c662bfe836">RED_LED_PIN</a></div><div class="ttdeci">const uint8_t RED_LED_PIN</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:14</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_aca31625353c50e7f7765743cf2015122"><div class="ttname"><a href="global_variables_8hpp.html#aca31625353c50e7f7765743cf2015122">totalRSC</a></div><div class="ttdeci">const uint8_t totalRSC</div><div class="ttdef"><b>Definition:</b> main.cpp:53</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_adb5dedad536abf24dd800d6ec74f70fd"><div class="ttname"><a href="global_variables_8hpp.html#adb5dedad536abf24dd800d6ec74f70fd">AISx120SX_INDEX</a></div><div class="ttdeci">const uint8_t AISx120SX_INDEX</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:41</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_ade189782edd614e80f784e27f5e4d2f9"><div class="ttname"><a href="global_variables_8hpp.html#ade189782edd614e80f784e27f5e4d2f9">Altimax_INDEX</a></div><div class="ttdeci">const uint8_t Altimax_INDEX</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:45</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_aef6b9ff0dd54e648b3d1d53aa2d409a8"><div class="ttname"><a href="global_variables_8hpp.html#aef6b9ff0dd54e648b3d1d53aa2d409a8">CS_RS_EE_PIN</a></div><div class="ttdeci">const uint8_t CS_RS_EE_PIN[2]</div><div class="ttdef"><b>Definition:</b> main.cpp:54</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_af0bcca2ac54d208f4fec7731f75dde51"><div class="ttname"><a href="global_variables_8hpp.html#af0bcca2ac54d208f4fec7731f75dde51">CS_TCS_PIN</a></div><div class="ttdeci">const uint8_t CS_TCS_PIN[4]</div><div class="ttdef"><b>Definition:</b> main.cpp:63</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_af22814e75f93b53452fc071826b00aa2"><div class="ttname"><a href="global_variables_8hpp.html#af22814e75f93b53452fc071826b00aa2">DR_ADIS16470_PIN</a></div><div class="ttdeci">const uint8_t DR_ADIS16470_PIN</div><div class="ttdef"><b>Definition:</b> main.cpp:45</div></div>
+<div class="ttc" id="aglobal_variables_8hpp_html_afae60ebcd296429e55d554fe4c8d72d1"><div class="ttname"><a href="global_variables_8hpp.html#afae60ebcd296429e55d554fe4c8d72d1">NUM_SENSORS</a></div><div class="ttdeci">constexpr size_t NUM_SENSORS</div><div class="ttdef"><b>Definition:</b> globalVariables.hpp:38</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
