@@ -73,11 +73,6 @@ public:
    * @param checkIntervalMargin_ Value for Sensor::CHECK_INTERVAL_MARGIN
    * @param measInterval_ Value for Sensor::MEAS_INTERVAL
    * @param DR_driven_ Value for Sensor::DR_DRIVEN
-   *
-   * @see Sensor::CHECK_INTERVAL
-   * @see Sensor::CHECK_INTERVAL_MARGIN
-   * @see Sensor::MEAS_INTERVAL
-   * @see Sensor::DR_DRIVEN
    */
   void setupProperties(uint32_t checkInterval_, uint32_t checkIntervalMargin_,
                        uint32_t measInterval_, bool DR_driven_);
@@ -117,14 +112,6 @@ public:
    * @param currMicros Current time, in microseconds
    * @return true : A measurement is due because of the time elapsed since the last collected one
    * @return false : No measurement due by time
-   *
-   * @see Sensor::checkBeatsSkipped
-   * @see Sensor::dueMethod
-   * @see Sensor::CHECK_INTERVAL
-   * @see Sensor::CHECK_INTERVAL_MARGIN
-   * @see Sensor::prevCheck
-   * @see Sensor::isDueByDR(uint32_t currMicros, volatile bool &triggeredDR)
-   * @see dueType
    */
   bool isDueByTime(uint32_t currMicros);
 
@@ -140,9 +127,6 @@ public:
    * @return true :  A measurement is due because of the DR line
    * @return false : No measurement due by the DR line
    *
-   * @see Sensor::dueMethod
-   * @see Sensor::DR_DRIVEN
-   * @see Sensor::prevCheck
    * @see Sensor::isDueByTime(uint32_t currMicros)
    */
   bool isDueByDR(uint32_t currMicros, volatile bool &triggeredDR);
@@ -168,9 +152,6 @@ public:
    * @param currMicros Current time, in microseconds
    * @return true : A measurement should be done
    * @return false : No measurement to be done
-   * 
-   * @see Sensor::prevMeasTime
-   * @see Sensor::MEAS_INTERVAL
    */
   bool isMeasurementLate(uint32_t currMicros);
 
@@ -188,7 +169,7 @@ public:
   void updateErrors(uint32_t currMicros);
 
   /**
-   * @brief Generate a \p PacketHeader from the sensor and the explicitely given arguments
+   * @brief Generate a \c PacketHeader from the sensor and the explicitely given arguments
    * 
    * @note It is preferred to use its virtual counterpart, as both \p packetType_ and \p packetSize_
    * should be automatically well-chosen.
