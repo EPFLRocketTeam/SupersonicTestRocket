@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "logging.h"
+#include "logging.hpp"
 
 void setupLoggingFile(FsFile &loggingFile,
                       RingBuf<FsFile, RING_BUF_CAPACITY> &rb)

@@ -1,0 +1,37 @@
+.TH "PushButtonArray" 3 "Mon Feb 7 2022" "SupersonicTestRocket Logger" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PushButtonArray
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "uint8_t \fBgetState\fP ()"
+.br
+.ti -1c
+.RI "uint8_t \fBtranslateState\fP (bool individualButtonStates[BUTTON_NUM])"
+.br
+.ti -1c
+.RI "uint8_t \fBaddEvent\fP (uint8_t state, uint8_t nextState, uint32_t windowStart, uint32_t windowEnd)"
+.br
+.ti -1c
+.RI "void \fBactivateEvent\fP (uint8_t idx)"
+.br
+.ti -1c
+.RI "void \fBdeactivateEvent\fP (uint8_t idx)"
+.br
+.ti -1c
+.RI "void \fBdeleteEvent\fP (uint8_t idx)"
+.br
+.ti -1c
+.RI "\fBeventOutput\fP \fBcheckEvents\fP (uint32_t currMillis, bool individualButtonStates[BUTTON_NUM])"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for SupersonicTestRocket Logger from the source code\&.

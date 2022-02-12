@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "serialOutput.h"
+#include "serialOutput.hpp"
 
 void ansiCommand(COMMAND_CODES commandCode, char argument)
 {
