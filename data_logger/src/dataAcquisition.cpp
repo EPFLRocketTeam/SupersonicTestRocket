@@ -53,7 +53,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
                   INTERRUPT(Honeywell_Rsc_0_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
                   INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
-  attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN),
+  attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]),
                   INTERRUPT(Altimax_INDEX), RISING);
 
   // set the last time for every check to now
