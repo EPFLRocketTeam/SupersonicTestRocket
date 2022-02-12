@@ -53,8 +53,13 @@ void acquireData(Sensor* sArray[], size_t sSize)
                   INTERRUPT(Honeywell_Rsc_0_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
                   INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
-  attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN),
+  attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]),
                   INTERRUPT(Altimax_INDEX), RISING);
+  // Pins 1 and 2 are not implemented
+  // attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[1]),
+  //                 INTERRUPT(Altimax_INDEX), RISING);
+  // attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[2]),
+  //                 INTERRUPT(Altimax_INDEX), RISING);
   
 
   

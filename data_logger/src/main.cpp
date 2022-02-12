@@ -1,3 +1,32 @@
+/**
+ * @file main.cpp
+ * @author Joshua Cayetano-Emond (joshua.cayetano.emond@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-04-21
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
+/*! \mainpage My Personal Index Page
+ *
+ * \section intro_sec Introduction
+ *
+ * This is the introduction.
+ *
+ * \section install_sec Installation
+ *
+ * \subsection step1 Step 1: Opening the box
+ *
+ * etc...
+ */
+
+/*! \page fooPage foo Functions
+ * 
+ * - \subpage Copy
+ */
+
 /*
  * main.cpp Main file that will be used to log data on the Teensy.
  *
@@ -62,7 +91,7 @@ const uint8_t DR_RSC[2] = {15, 26};
 const uint8_t TAT_TC = 3;
 const uint8_t CS_TCS_PIN[4] = {7, 8, 9, 10};
 // Altimax
-const uint8_t ALTIMAX_DR_PIN = 33;
+const uint8_t ALTIMAX_DR_PINS[3] = {33, 255, 255}; // 255 for not implemented
 
 // I/O -------------------------------------------------------------------------
 // Button event
