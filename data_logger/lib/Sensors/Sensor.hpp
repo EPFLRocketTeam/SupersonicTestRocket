@@ -18,11 +18,11 @@
  */
 class Sensor
 {
-private:
-  uint32_t prevCheck;             ///< When the sensor was last checked for data (in microseconds)
-  uint32_t CHECK_INTERVAL;        ///< How often to check for data (in microseconds)
-  uint32_t CHECK_INTERVAL_MARGIN; ///< Margin to start checking by time (in microseconds)
-  uint32_t MEAS_INTERVAL;         ///< Nominal interval for data measurement (in microseconds)
+protected:
+  uint32_t prevCheck = 0;               ///< When the sensor was last checked for data (in microseconds)
+  uint32_t CHECK_INTERVAL = UINT32_MAX; ///< How often to check for data (in microseconds)
+  uint32_t CHECK_INTERVAL_MARGIN = 0;   ///< Margin to start checking by time (in microseconds)
+  uint32_t MEAS_INTERVAL = UINT32_MAX;  ///< Nominal interval for data measurement (in microseconds)
 
   bool DR_DRIVEN; ///< If the sensor has a data ready line
 
@@ -145,10 +145,10 @@ public:
 
   /**
    * @brief Update the value of Sensor::measurementLate and returns it
-   * 
+   *
    * A measurement is considered late is the time elapsed since the last one ( Sensor::prevMeasTime )
    * is at least twice the measurement interval ( Sensor::MEAS_INTERVAL )
-   * 
+   *
    * @param currMicros Current time, in microseconds
    * @return true : A measurement should be done
    * @return false : No measurement to be done
@@ -162,7 +162,7 @@ public:
 
   /**
    * @brief Update the \p errors bool array
-   * 
+   *
    * @param currMicros Current time, in microseconds
    * @see Sensor::errors
    */
@@ -170,15 +170,15 @@ public:
 
   /**
    * @brief Generate a \c PacketHeader from the sensor and the explicitely given arguments
-   * 
+   *
    * @note It is preferred to use its virtual counterpart, as both \p packetType_ and \p packetSize_
    * should be automatically well-chosen.
-   * 
+   *
    * @param packetType_ Type of the packet
    * @param packetSize_ Size of the packet, in bytes
    * @param currMicros  Current time, in microseconds
-   * @return PacketHeader 
-   * 
+   * @return PacketHeader
+   *
    * @see PacketHeader
    * @see packetType
    * @see Sensor::getHeader(uint32_t currMicros)
@@ -198,12 +198,12 @@ public:
 
   /**
    * @brief Get a reference to the last packet provided by the sensor
-   * 
+   *
    * This function may be in charge of actualizing the content of the packet buffer.
-   * 
+   *
    * @param currMicros Current time, in microseconds
    * @return Packet* : Reference to the current packet held
-   * 
+   *
    * @see Packet
    */
   virtual Packet *getPacket(uint32_t currMicros) = 0;
@@ -230,20 +230,20 @@ float generateFakeData(float minValue, float maxValue,
 
 /**
  * @brief Convert a boolean errors' array to an error code (binary encoding)
- * 
+ *
  * @param errorArray An error code array, of size ERROR_TYPE_NUM
  * @return uint8_t : The corresponding error code
- * 
+ *
  * @see Sensor::errors
  */
 uint8_t getErrorCode(bool *errorArray);
 
 /**
  * @brief Convert an error code into the corresponding boolean array
- * 
+ *
  * @param errorArray An error to store the result
  * @param errorCode An error code (errors encoded in binary)
- * 
+ *
  * @see Sensor::errors
  */
 void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode);
