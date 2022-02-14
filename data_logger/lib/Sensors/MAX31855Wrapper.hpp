@@ -23,13 +23,13 @@
 /// Describe the content of a MAX31855 packet
 struct MAX31855Body
 {
-  float probeTemperature = 0;  ///< 4 bytes
-  float sensorTemperature = 0; ///< 4 bytes
+  float probeTemperature = 0;  ///< [degC]; 4 bytes
+  float sensorTemperature = 0; ///< [degC]; 4 bytes
 };
 
 #define MAX31855_BODY_FORMAT "**************** MAX31855 Packet ***************\n" \
-                             "Probe temperature: %12e\n"                          \
-                             "Sensor temperature: %12e\n"                         \
+                             "Probe temperature: %12e °C\n"                          \
+                             "Sensor temperature: %12e °C\n"                         \
                              "***************** END OF PACKET ****************\n"
 
 /**

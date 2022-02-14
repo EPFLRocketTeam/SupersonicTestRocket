@@ -23,13 +23,13 @@
 /// Describe the content of a AISx120SX packet
 struct AISx120SXBody
 {
-  float accel[2] = {0}; ///< 2 * 4 = 8 bytes
+  float accel[2] = {0}; ///< Linear acceleration [g] along X,Y axis; 2 * 4 = 8 bytes
 };
 
 #define AISx120SX_BODY_FORMAT "*************** AISx120SX Packet ***************\n" \
                               "Linear accelerations:\n"                            \
-                              "\t- X: %12e\n"                                      \
-                              "\t- Y: %12e\n"                                      \
+                              "\t- X: %12e g\n"                                      \
+                              "\t- Y: %12e g\n"                                      \
                               "***************** END OF PACKET ****************\n"
 
 /**

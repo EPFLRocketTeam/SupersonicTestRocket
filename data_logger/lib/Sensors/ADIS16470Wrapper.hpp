@@ -22,21 +22,21 @@
 /// Describe the content of a ADIS16470 packet
 struct ADIS16470Body
 {
-  float gyros[3] = {0}; ///< Angular velocities around X,Y,Z axis; 3 * 4 = 12 bytes
-  float acc[3] = {0};   ///< Linear velocities along X,Y,Z axis; 3 * 4 = 12 bytes
-  float temp = 0;       ///< Temperature; 4 bytes
+  float gyros[3] = {0}; ///< Angular velocities [deg/s] around X,Y,Z axis; 3 * 4 = 12 bytes
+  float acc[3] = {0};   ///< Linear acceleration [g] along X,Y,Z axis; 3 * 4 = 12 bytes
+  float temp = 0;       ///< Temperature [degC]; 4 bytes
 };
 
 #define ADIS16470_BODY_FORMAT "*************** ADIS16470 Packet ***************\n" \
                               "Angular velocities:\n"                              \
-                              "\t- X: %12e\n"                                      \
-                              "\t- Y: %12e\n"                                      \
-                              "\t- Z: %12e\n"                                      \
-                              "Linear velocities:\n"                               \
-                              "\t- X: %12e\n"                                      \
-                              "\t- Y: %12e\n"                                      \
-                              "\t- Z: %12e\n"                                      \
-                              "Temperature: %12e\n"                                \
+                              "\t- X: %12e °/s\n"                                      \
+                              "\t- Y: %12e °/s\n"                                      \
+                              "\t- Z: %12e °/s\n"                                      \
+                              "Linear acceleration:\n"                             \
+                              "\t- X: %12e g\n"                                      \
+                              "\t- Y: %12e g\n"                                      \
+                              "\t- Z: %12e g\n"                                      \
+                              "Temperature: %12e °C\n"                                \
                               "***************** END OF PACKET ****************\n"
 
 /**
@@ -148,9 +148,9 @@ public:
   }
 
   /**
-   * @brief Get the wanted linear velocity
+   * @brief Get the wanted linear acceleration
    *
-   * @param i Index of the wanted linear velocity (0 for X, 1 for Y and 2 for Z)
+   * @param i Index of the wanted linear acceleration (0 for X, 1 for Y and 2 for Z)
    * @return float : corresponding value
    */
   float getAcc(size_t i)
@@ -160,7 +160,7 @@ public:
   }
 
   /**
-   * @brief Given an array of 3 floats, fill it with the XYZ values of linear velocity
+   * @brief Given an array of 3 floats, fill it with the XYZ values of linear acceleration
    *
    * @param a Array to be filled
    */
@@ -172,7 +172,7 @@ public:
   }
 
   /**
-   * @brief Get the linear velocity along the X axis
+   * @brief Get the linear acceleration along the X axis
    *
    * @return float
    * @see getAcc(size_t i)
@@ -183,7 +183,7 @@ public:
   }
 
   /**
-   * @brief Get the linear velocity along the Y axis
+   * @brief Get the linear acceleration along the Y axis
    *
    * @return float
    * @see getAcc(size_t i)
@@ -194,7 +194,7 @@ public:
   }
 
   /**
-   * @brief Get the linear velocity along the Z axis
+   * @brief Get the linear acceleration along the Z axis
    *
    * @return float
    * @see getAcc(size_t i)
@@ -295,9 +295,9 @@ public:
   }
 
   /**
-   * @brief Set the wanted linear velocity according to the provided value
+   * @brief Set the wanted linear acceleration according to the provided value
    *
-   * @param i Index of the wanted linear velocity (0 for X, 1 for Y and 2 for Z)
+   * @param i Index of the wanted linear acceleration (0 for X, 1 for Y and 2 for Z)
    * @param a Provided value
    */
   void setAcc(size_t i, float a)
@@ -307,7 +307,7 @@ public:
   }
 
   /**
-   * @brief Given an array of 3 floats, set the XYZ values of linear velocity in the packet
+   * @brief Given an array of 3 floats, set the XYZ values of linear acceleration in the packet
    *
    * @param a Source array
    */
@@ -319,7 +319,7 @@ public:
   }
 
   /**
-   * @brief Set the linear velocity along the X axis
+   * @brief Set the linear acceleration along the X axis
    *
    * @param a
    * @see setAcc(size_t i, float a)
@@ -330,7 +330,7 @@ public:
   }
 
   /**
-   * @brief Set the linear velocity along the Y axis
+   * @brief Set the linear acceleration along the Y axis
    *
    * @param a
    * @see setAcc(size_t i, float a)
@@ -341,7 +341,7 @@ public:
   }
 
   /**
-   * @brief Set the linear velocity along the Z axis
+   * @brief Set the linear acceleration along the Z axis
    *
    * @param a
    * @see setAcc(size_t i, float a)
