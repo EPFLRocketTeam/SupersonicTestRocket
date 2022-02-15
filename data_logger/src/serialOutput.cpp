@@ -5,7 +5,7 @@
  *      Author: Joshua Cayetano-Emond
  */
 
-#include "serialOutput.h"
+#include "serialOutput.hpp"
 
 const char *ansiCommand(COMMAND_CODES commandCode, uint8_t argument,
                         bool print)
