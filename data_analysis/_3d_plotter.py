@@ -15,6 +15,14 @@ class RocketMesh:
     
     def __init__(self, body_length, nosecone_length, cg_location_relative,
                  radius, discretization_theta):
+        """
+        
+        :param body_length:
+        :param nosecone_length:
+        :param cg_location_relative:
+        :param radius:
+        :param discretization_theta:
+        """
         self._body_length = body_length
         self._nosecone_length = nosecone_length
         self.cg_location = cg_location_relative
