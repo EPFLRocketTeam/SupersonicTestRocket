@@ -209,6 +209,7 @@ ax.plot(or_data["Vertical velocity (m/s)"] / A,
         or_data["Altitude (m)"], label="OR")
 ax.set_xlabel("Mach number, M [-]")
 ax.set_ylabel("Altitude, y [m]")
+ax.vlines(1,0,400)
 ax.legend()
 
 # acceleration vs Mach graph
@@ -220,6 +221,7 @@ ax.plot(or_data["Vertical velocity (m/s)"] / A,
         or_data["Vertical acceleration (m/s²)"], label="OR")
 ax.set_xlabel("Mach number, M [-]")
 ax.set_ylabel(r"Vertical acceleration, a [$m/s^2$]")
+ax.vlines(1,-500,1000)
 ax.legend()
 
 # pressure vs Mach graph
