@@ -12,7 +12,7 @@ import os
 import matplotlib.pyplot as plt
 
 # variables
-directory = "data/decodedData/cernier_supersonic_09_10_2021"
+directory = "data/logs/decodedData/cernier_supersonic_09_10_2021"
 # launch start/end window. obtained after graphs first shown
 launch_start = 669e6
 launch_end = 1200e6
