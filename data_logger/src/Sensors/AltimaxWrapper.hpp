@@ -205,11 +205,11 @@ class AltimaxWrapper : public Sensor
 private:
   static uint8_t sensorQty; ///< How many sensors of this type exist
 
-  AltimaxPacket lastPacket; ///< Underlying object
-
   const uint8_t PIN_0; ///< Index for Pin 0
   const uint8_t PIN_1; ///< Index for Pin 1
   const uint8_t PIN_2; ///< Index for Pin 2
+
+  AltimaxPacket lastPacket; ///< Underlying object
 
 public:
   // constructor

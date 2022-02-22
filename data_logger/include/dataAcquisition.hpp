@@ -22,11 +22,11 @@
 #include "io.hpp"
 
 //    Sensors
-#include "ADIS16470Wrapper.hpp"
-#include "AISx120SXWrapper.hpp"
-#include "AltimaxWrapper.hpp"
-#include "HoneywellRscWrapper.hpp"
-#include "MAX31855Wrapper.hpp"
+#include "Sensors/ADIS16470Wrapper.hpp"
+#include "Sensors/AISx120SXWrapper.hpp"
+#include "Sensors/AltimaxWrapper.hpp"
+#include "Sensors/HoneywellRscWrapper.hpp"
+#include "Sensors/MAX31855Wrapper.hpp"
 
 // Button events settings
 const int STOP_STATES[3] = {1, 0, 2};                     ///< States to stop

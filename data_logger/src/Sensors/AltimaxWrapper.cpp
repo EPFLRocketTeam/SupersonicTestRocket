@@ -75,10 +75,10 @@ bool AltimaxWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 bool AltimaxWrapper::isMeasurementInvalid()
 {
   // should not be more than 1 pin high
-  // a && (b || c) || (b && c) checks if at least two out of 3 are high
-  if (lastPacket.getPin0state() &&
-          (lastPacket.getPin1state() || lastPacket.getPin2state()) ||
-      (lastPacket.getPin1state() && lastPacket.getPin2state()))
+  // (a && b) || (a && c) || (b && c) checks if at least two out of 3 are high
+  if ((lastPacket.getPin0state() && lastPacket.getPin1state()) 
+  || (lastPacket.getPin0state() && lastPacket.getPin2state()) 
+  || (lastPacket.getPin1state() && lastPacket.getPin2state()))
   {
     return true;
   }

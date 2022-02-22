@@ -196,8 +196,8 @@ private:
   bandwidth bandwidthX;  ///< TODO
   bandwidth bandwidthY;  ///< TODO
   bool x_offset_monitor; ///< TODO
-  bool x_offset_canc;    ///< TODO
   bool y_offset_monitor; ///< TODO
+  bool x_offset_canc;    ///< TODO
   bool y_offset_canc;    ///< TODO
 
 public:

@@ -54,10 +54,10 @@
 #include "dataAcquisition.hpp"
 #include "io.hpp"
 //    Sensors
-#include "ADIS16470Wrapper.hpp"
-#include "AISx120SXWrapper.hpp"
-#include "HoneywellRscWrapper.hpp"
-#include "MAX31855Wrapper.hpp"
+#include "Sensors/ADIS16470Wrapper.hpp"
+#include "Sensors/AISx120SXWrapper.hpp"
+#include "Sensors/HoneywellRscWrapper.hpp"
+#include "Sensors/MAX31855Wrapper.hpp"
 
 // DEFINE VARIABLES ============================================================
 

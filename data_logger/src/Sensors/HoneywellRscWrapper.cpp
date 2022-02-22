@@ -27,7 +27,7 @@ HoneywellRscWrapper::HoneywellRscWrapper(int DR,
           RSC_TEMP_PACKET_TYPE,
           sizeof(HoneywellRSCBody),
           0)),
-      lastPackets({&lastPressurePacket, &lastTempPacket}),
+      lastPackets{&lastPressurePacket, &lastTempPacket},
       data_rate(data_r),
       desiredTempPeriod(desired_P)
 {
