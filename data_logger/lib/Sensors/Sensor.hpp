@@ -227,23 +227,3 @@ public:
 float generateFakeData(float minValue, float maxValue,
                        uint32_t currMicros,
                        float offset = 0, uint32_t period = 5000000);
-
-/**
- * @brief Convert a boolean errors' array to an error code (binary encoding)
- *
- * @param errorArray An error code array, of size ERROR_TYPE_NUM
- * @return uint8_t : The corresponding error code
- *
- * @see Sensor::errors
- */
-uint8_t getErrorCode(bool *errorArray);
-
-/**
- * @brief Convert an error code into the corresponding boolean array
- *
- * @param errorArray An error to store the result
- * @param errorCode An error code (errors encoded in binary)
- *
- * @see Sensor::errors
- */
-void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode);

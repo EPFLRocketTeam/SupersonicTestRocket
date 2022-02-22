@@ -117,27 +117,3 @@ float generateFakeData(float minValue, float maxValue,
 
   return sin(2 * PI * currMicros / period) * amplitude + mid + offset;
 }
-
-uint8_t getErrorCode(bool *errorArray)
-{
-  uint8_t errorCode = 0;
-
-  for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
-  {
-    if (errorArray[i])
-    {
-      bitSet(errorCode, 7 - i);
-    }
-  }
-
-  return errorCode;
-}
-
-// takes an error code and transforms it into a boolean array
-void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode)
-{
-  for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
-  {
-    errorArray[i] = bitRead(errorCode, 7 - i);
-  }
-}

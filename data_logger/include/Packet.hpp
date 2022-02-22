@@ -9,6 +9,8 @@
 #include <exception>
 #include <string>
 
+#include <Arduino.h>
+
 #include "CustomTypes.hpp"
 
 const uint8_t ERROR_TYPE_NUM = 5; ///< Number of errors
@@ -33,7 +35,7 @@ struct PacketHeader
                              "\t- DR pin didn't trigger read: %2d\n"              \
                              "\t- Checksum error:             %2d\n"              \
                              "\t- Measurement invalid:        %2d\n"              \
-                             "Timestamp:   %12d\n"                                \
+                             "Timestamp:   %12ld\n"                               \
                              "**************** END OF HEADER *****************\n"
 
 /**
@@ -232,40 +234,39 @@ public:
     }
 
     /**
-     * @brief Return a pointer toward a printable description of the header
+     * @brief Fill the input buffer with a printable description of the packet's header
      *
-     * @return char* : Pointer toward formated header description
+     * @param output A buffer to fill with data, of size \c PACKET_HEADER_PRINT_SIZE
      */
-    char *getPrintableHeader()
-    {
-        char output[PACKET_HEADER_PRINT_SIZE];
-
-        bool error_array[ERROR_TYPE_NUM] = {false};
-
-        decodeErrorCode(error_array, header.errorCode);
-
-        snprintf(output, PACKET_HEADER_PRINT_SIZE, PACKET_HEADER_FORMAT,
-                 packetTypeStr(header.packetType_),
-                 header.packetSize,
-                 header.sensorID,
-                 error_array[0],
-                 error_array[1],
-                 error_array[2],
-                 error_array[3],
-                 error_array[4],
-                 header.timestamp);
-
-        return output;
-    }
+    void getPrintableHeader(char *buff);
 
     /**
-     * @brief Return a pointer toward a printable description of the content
+     * @brief Fill the given \c char* buffer with a printable description of the packet's content
      *
-     * @return char* : Pointer toward formated content description
      */
-    virtual char *getPrintableContent() = 0;
+    virtual void getPrintableContent(char *) = 0;
 
 protected:
     PacketHeader header;
     void *content = NULL;
 };
+
+/**
+ * @brief Convert a boolean errors' array to an error code (binary encoding)
+ *
+ * @param errorArray An error code array, of size ERROR_TYPE_NUM
+ * @return uint8_t : The corresponding error code
+ *
+ * @see Sensor::errors
+ */
+uint8_t getErrorCode(bool *errorArray);
+
+/**
+ * @brief Convert an error code into the corresponding boolean array
+ *
+ * @param errorArray An error to store the result
+ * @param errorCode An error code (errors encoded in binary)
+ *
+ * @see Sensor::errors
+ */
+void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode);
