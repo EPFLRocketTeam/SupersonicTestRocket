@@ -22,15 +22,19 @@
 /// Describe the content of a HoneywellRSC packet
 struct HoneywellRSCBody
 {
-  float measurement = 0; ///< Using floats since the computation is hard to do after acquistion; 4 bytes
+  /**
+   * Using floats since the computation is hard to do after acquistion; 4 bytes
+   * Temperature is in degC and pressure in bar
+   */
+  float measurement = 0;
 };
 
 #define HoneywellRSC_BODY_TEMP_FORMAT "************** HoneywellRSC Packet *************\n" \
-                                      "Temperature: %12e\n"                                \
+                                      "Temperature: %12e °C\n"                            \
                                       "***************** END OF PACKET ****************\n"
 
 #define HoneywellRSC_BODY_PRESSURE_FORMAT "************** HoneywellRSC Packet *************\n" \
-                                          "Pressure: %12e\n"                                   \
+                                          "Pressure: %12e bar\n"                               \
                                           "***************** END OF PACKET ****************\n"
 
 /**
@@ -133,18 +137,14 @@ public:
   }
 
   /**
-   * @brief Return a pointer toward a printable description of an HoneywellRSC Pressure content
+   * @brief Fill the given \p buffer with a printable description of the packet's content
    *
-   * @return char* : Pointer toward formated content description
    */
-  char *getPrintableContent()
+  void getPrintableContent(char *buffer)
   {
-    char output[HoneywellRSC_BODY_PRINT_SIZE] = "";
 
-    snprintf(output, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_PRESSURE_FORMAT,
+    snprintf(buffer, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_PRESSURE_FORMAT,
              getMeasurement());
-
-    return output;
   }
 };
 
@@ -186,18 +186,14 @@ public:
   }
 
   /**
-   * @brief Return a pointer toward a printable description of an HoneywellRSC Temperature content
+   * @brief Fill the given \p buffer with a printable description of the packet's content
    *
-   * @return char* : Pointer toward formated content description
    */
-  char *getPrintableContent()
+  void getPrintableContent(char *buffer)
   {
-    char output[HoneywellRSC_BODY_PRINT_SIZE] = "";
 
-    snprintf(output, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_TEMP_FORMAT,
+    snprintf(buffer, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_TEMP_FORMAT,
              getMeasurement());
-
-    return output;
   }
 };
 
@@ -219,20 +215,20 @@ private:
   int measurementAmountModulo = 0; ///< Number of measurements modulo HoneywellRscWrapper::temp_frequency
 
   // sensor min/max values for error checking
-  float pressureMax = 15;                ///< TODO: add unit
-  float pressureMin = 0;                 ///< TODO: add unit
-  static constexpr float TEMP_MAX = 85;  ///< TODO: add unit
-  static constexpr float TEMP_MIN = -40; ///< TODO: add unit
+  float pressureMax = 15;                ///< [bar]
+  float pressureMin = 0;                 ///< [bar]
+  static constexpr float TEMP_MAX = 85;  ///< [degC]
+  static constexpr float TEMP_MIN = -40; ///< [degC]
 
-  Honeywell_RSC rscObject; ///< Underlying object
+  Honeywell_RSC rscObject;  ///< Underlying object
   static uint8_t sensorQty; ///< How many sensors of this type exist
 
   HoneywellRSC_Pressure_Packet lastPressurePacket; ///< Holder for the pressure packet, actualized by measurements
-  HoneywellRSC_Temp_Packet lastTempPacket; ///< Holder for the temperature packet, actualized by measurements
-  HoneywellRSCPacket *lastPackets[2]; ///< Holder for HoneywellRscWrapper::lastPressurePacket and HoneywellRscWrapper::lastTempPacket pointers (in that order)
+  HoneywellRSC_Temp_Packet lastTempPacket;         ///< Holder for the temperature packet, actualized by measurements
+  HoneywellRSCPacket *lastPackets[2];              ///< Holder for HoneywellRscWrapper::lastPressurePacket and HoneywellRscWrapper::lastTempPacket pointers (in that order)
 
   // Parameters for setup
-  RSC_DATA_RATE data_rate;///< Desired data rate provided to HoneywellRscWrapper::rscObject at initialization
+  RSC_DATA_RATE data_rate;    ///< Desired data rate provided to HoneywellRscWrapper::rscObject at initialization
   uint32_t desiredTempPeriod; ///< TODO: Look at how effective it is
 
 public:

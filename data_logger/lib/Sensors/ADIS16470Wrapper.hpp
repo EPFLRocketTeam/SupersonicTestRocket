@@ -29,14 +29,14 @@ struct ADIS16470Body
 
 #define ADIS16470_BODY_FORMAT "*************** ADIS16470 Packet ***************\n" \
                               "Angular velocities:\n"                              \
-                              "\t- X: %12e °/s\n"                                      \
-                              "\t- Y: %12e °/s\n"                                      \
-                              "\t- Z: %12e °/s\n"                                      \
+                              "\t- X: %12e °/s\n"                                 \
+                              "\t- Y: %12e °/s\n"                                 \
+                              "\t- Z: %12e °/s\n"                                 \
                               "Linear acceleration:\n"                             \
-                              "\t- X: %12e g\n"                                      \
-                              "\t- Y: %12e g\n"                                      \
-                              "\t- Z: %12e g\n"                                      \
-                              "Temperature: %12e °C\n"                                \
+                              "\t- X: %12e g\n"                                    \
+                              "\t- Y: %12e g\n"                                    \
+                              "\t- Z: %12e g\n"                                    \
+                              "Temperature: %12e °C\n"                            \
                               "***************** END OF PACKET ****************\n"
 
 /**
@@ -215,15 +215,13 @@ public:
   }
 
   /**
-   * @brief Return a pointer toward a printable description of an ADIS16470 content
+   * @brief Fill the given \p buffer with a printable description of the packet's content
    *
-   * @return char* : Pointer toward formated content description
    */
-  char *getPrintableContent()
+  void getPrintableContent(char *buffer)
   {
-    char output[ADIS16470_BODY_PRINT_SIZE] = "";
 
-    snprintf(output, ADIS16470_BODY_PRINT_SIZE, ADIS16470_BODY_FORMAT,
+    snprintf(buffer, ADIS16470_BODY_PRINT_SIZE, ADIS16470_BODY_FORMAT,
              getXGyro(),
              getYGyro(),
              getZGyro(),
@@ -231,8 +229,6 @@ public:
              getYAcc(),
              getZAcc(),
              getTemp());
-
-    return output;
   }
 
   // ----- Setters ----- //

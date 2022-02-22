@@ -75,9 +75,11 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
-  int errorCount = 0;
+  //int errorCount = 0;
   // acquire data as long as button sequence is not initated
   Packet *pkt;
+  char header_serial_buffer[PACKET_HEADER_PRINT_SIZE];
+  char content_serial_buffer[PACKET_CONTENT_PRINT_SIZE];
   while (checkButtons(buttonArray, stopEvent))
   {
     for (size_t i = 0; i < sSize; i++)
@@ -90,8 +92,14 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
 
         if (micros() - prevSerialLoop > SERIAL_INTERVAL)
         {
-          Serial.println(pkt->getPrintableHeader());
-          Serial.print(pkt->getPrintableContent());
+          //Serial.flushOutput();
+          memset((void*)header_serial_buffer,'\0',PACKET_HEADER_PRINT_SIZE);
+          pkt->getPrintableHeader(header_serial_buffer);
+          Serial.write(header_serial_buffer,PACKET_HEADER_PRINT_SIZE);
+          Serial.write('\n');
+          memset((void*)content_serial_buffer,'\0',PACKET_CONTENT_PRINT_SIZE);
+          pkt->getPrintableContent(content_serial_buffer);
+          Serial.write(content_serial_buffer,PACKET_CONTENT_PRINT_SIZE);
           prevSerialLoop = micros();
         }
       }
@@ -195,7 +203,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
   detachInterrupt(digitalPinToInterrupt(DR_RSC[0]));
   detachInterrupt(digitalPinToInterrupt(DR_RSC[1]));
-  detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN));
+  detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]));
 
   // CLEANUP Phase
   // Write any RingBuf data to file.

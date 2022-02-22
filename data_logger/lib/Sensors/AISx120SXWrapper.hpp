@@ -28,8 +28,8 @@ struct AISx120SXBody
 
 #define AISx120SX_BODY_FORMAT "*************** AISx120SX Packet ***************\n" \
                               "Linear accelerations:\n"                            \
-                              "\t- X: %12e g\n"                                      \
-                              "\t- Y: %12e g\n"                                      \
+                              "\t- X: %12e g\n"                                    \
+                              "\t- Y: %12e g\n"                                    \
                               "***************** END OF PACKET ****************\n"
 
 /**
@@ -115,19 +115,15 @@ public:
   }
 
   /**
-   * @brief Return a pointer toward a printable description of an AISx120SX content
+   * @brief Fill the given \p buffer with a printable description of the packet's content
    *
-   * @return char* : Pointer toward formated content description
    */
-  char *getPrintableContent()
+  void getPrintableContent(char *buffer)
   {
-    char output[AISx120SX_BODY_PRINT_SIZE] = "";
 
-    snprintf(output, AISx120SX_BODY_PRINT_SIZE, AISx120SX_BODY_FORMAT,
+    snprintf(buffer, AISx120SX_BODY_PRINT_SIZE, AISx120SX_BODY_FORMAT,
              getXaccel(),
              getYaccel());
-
-    return output;
   }
 
   // ----- Setters ----- //
@@ -288,7 +284,7 @@ public:
 
   /**
    * @brief Generate a reference to AISx120SXWrapper::lastPacket after updating its header
-   * 
+   *
    * @param currMicros Current time, in microseconds
    * @return AISx120SXPacket* : Reference to the updated AISx120SXWrapper::lastPacket
    */

@@ -28,8 +28,8 @@ struct MAX31855Body
 };
 
 #define MAX31855_BODY_FORMAT "**************** MAX31855 Packet ***************\n" \
-                             "Probe temperature: %12e °C\n"                          \
-                             "Sensor temperature: %12e °C\n"                         \
+                             "Probe temperature: %12e °C\n"                      \
+                             "Sensor temperature: %12e °C\n"                     \
                              "***************** END OF PACKET ****************\n"
 
 /**
@@ -103,19 +103,15 @@ public:
   }
 
   /**
-   * @brief Return a pointer toward a printable description of an AISx120SX content
+   * @brief Fill the given \p buffer with a printable description of the packet's content
    *
-   * @return char* : Pointer toward formated content description
    */
-  char *getPrintableContent()
+  void getPrintableContent(char *buffer)
   {
-    char output[MAX31855_BODY_PRINT_SIZE] = "";
 
-    snprintf(output, MAX31855_BODY_PRINT_SIZE, MAX31855_BODY_FORMAT,
+    snprintf(buffer, MAX31855_BODY_PRINT_SIZE, MAX31855_BODY_FORMAT,
              getProbeTemperature(),
              getSensorTemperature());
-
-    return output;
   }
 
   // ----- Setters ----- //
@@ -174,7 +170,7 @@ private:
   MAX31855_Class max31855Object; ///< Underlying object
   static uint8_t sensorQty;      ///< How many sensors of this type exist
 
-    MAX31855Packet lastPacket; ///< Holder for the packet, actualized by measurements
+  MAX31855Packet lastPacket; ///< Holder for the packet, actualized by measurements
 
   // Setup parameter
   uint8_t CS; ///< For setup, index for CS pin

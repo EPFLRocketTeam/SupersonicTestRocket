@@ -7,6 +7,7 @@
 
 #pragma once
 #include <Arduino.h>
+#include <algorithm>
 
 // SdFat
 //    Available at: https://github.com/greiman/SdFat
@@ -19,10 +20,11 @@
 #include "logging.hpp"
 #include "PushButtonArray.h"
 #include "io.hpp"
-#include "serialOutput.hpp"
+
 //    Sensors
 #include "ADIS16470Wrapper.hpp"
 #include "AISx120SXWrapper.hpp"
+#include "AltimaxWrapper.hpp"
 #include "HoneywellRscWrapper.hpp"
 #include "MAX31855Wrapper.hpp"
 
@@ -39,6 +41,15 @@ const int AIS1120SX_NOM_INTERVAL = 2500;                          ///< [us] (400
 const int AIS1120SX_CHECK_INTERVAL = AIS1120SX_NOM_INTERVAL / 10; ///< [us]
 const int SYNC_INTERVAL = 100 * 1000;                             ///< [us] (100 ms)
 const int SERIAL_INTERVAL = 20 * 1000;                            ///< [us] (50 Hz)
+
+// Print buffer size
+constexpr size_t PACKET_CONTENT_PRINT_SIZE = std::max({
+    ADIS16470_BODY_PRINT_SIZE,
+    AISx120SX_BODY_PRINT_SIZE,
+    Altimax_BODY_PRINT_SIZE,
+    HoneywellRSC_BODY_PRINT_SIZE,
+    MAX31855_BODY_PRINT_SIZE
+});
 
 // Start to acquire data periodically from the sensors and log it in a file
 // Sets up the necessary things and then loops periodically

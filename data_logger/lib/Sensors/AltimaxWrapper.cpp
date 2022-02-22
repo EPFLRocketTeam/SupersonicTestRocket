@@ -18,8 +18,6 @@ AltimaxWrapper::AltimaxWrapper(uint8_t PIN_0_, uint8_t PIN_1_, uint8_t PIN_2_)
       PIN_2(PIN_2_),
       lastPacket(getHeader(0))
 {
-  setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN, MEASUREMENT_INTERVAL,
-                  true);
   sensorQty += 1;
   active = false;
 }
@@ -76,7 +74,6 @@ bool AltimaxWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 
 bool AltimaxWrapper::isMeasurementInvalid()
 {
-
   // should not be more than 1 pin high
   // a && (b || c) || (b && c) checks if at least two out of 3 are high
   if (lastPacket.getPin0state() &&
@@ -88,7 +85,7 @@ bool AltimaxWrapper::isMeasurementInvalid()
   return false;
 }
 
-AltimaxWrapper *AltimaxWrapper::getPacket(uint32_t currMicros)
+AltimaxPacket *AltimaxWrapper::getPacket(uint32_t currMicros)
 {
   // update the error on the packet
   lastPacket.updateHeader(getHeader(currMicros));
