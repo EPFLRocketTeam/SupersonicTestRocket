@@ -7,7 +7,7 @@
 
 #pragma once
 #include <Arduino.h>
-#include <algorithm>
+//#include <algorithm>
 
 // SdFat
 //    Available at: https://github.com/greiman/SdFat
@@ -43,13 +43,14 @@ const int SYNC_INTERVAL = 100 * 1000;                             ///< [us] (100
 const int SERIAL_INTERVAL = 20 * 1000;                            ///< [us] (50 Hz)
 
 // Print buffer size
-constexpr size_t PACKET_CONTENT_PRINT_SIZE = std::max({
+const size_t PACKET_CONTENT_PRINT_SIZE = 50*12;
+/* std::max({
     ADIS16470_BODY_PRINT_SIZE,
     AISx120SX_BODY_PRINT_SIZE,
     Altimax_BODY_PRINT_SIZE,
     HoneywellRSC_BODY_PRINT_SIZE,
     MAX31855_BODY_PRINT_SIZE
-});
+}); */
 
 // Start to acquire data periodically from the sensors and log it in a file
 // Sets up the necessary things and then loops periodically

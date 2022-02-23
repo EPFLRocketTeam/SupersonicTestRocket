@@ -6,9 +6,6 @@
 #include <cstdio>
 #include <cassert>
 
-#include <exception>
-#include <string>
-
 #include <Arduino.h>
 
 #include "CustomTypes.hpp"
