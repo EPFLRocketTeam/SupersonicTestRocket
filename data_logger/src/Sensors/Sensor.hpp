@@ -62,11 +62,6 @@ public:
   Sensor(uint8_t sensorID);
 
   /**
-   * @brief Destroy the Sensor object (default destructor)
-   */
-  ~Sensor();
-
-  /**
    * @brief Set the Sensor's measure attributes according to the provided arguments
    *
    * @param checkInterval_ Value for Sensor::CHECK_INTERVAL
