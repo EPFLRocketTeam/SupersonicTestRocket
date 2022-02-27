@@ -8,7 +8,7 @@
 
 // 80 characters ===============================================================
 
-#define SERIAL // if this line is not commented, serial output happens in loop
+//#define SERIAL_OUTPUT // if this line is not commented, serial output happens in loop
 
 
 // SENSOR SETUP ================================================================
@@ -47,11 +47,14 @@ File data_file;
 long liftoffTime;
 float baseAltitude;
 float peakAltitude;
+float measAltitude;
+float acceleration;
 long measTime;
+long iterationTime;
 
 // Recovery
-int chuteMargin = 30;               //Marge du main
-int stopMargin = 10;                //Marge pour arrêter le log
+uint8_t chuteMargin = 30;               //Marge du main
+uint8_t stopMargin = 10;                //Marge pour arrêter le log
 bool drogueStatus = 0;
 bool mainStatus = 0;
 
@@ -83,19 +86,16 @@ void setup() {
   Serial.println(F("SD"));
   if (!SD.begin(10)) {   //check de la SD
     Serial.println(F("Fail"));
-    continuousBeep(2, 3);
+    continuousBeep(2, 3000);
   }
   data_file = SD.open("test.txt", FILE_WRITE);
-  data_file.println(F("measTime,measAltitude, pressure, accX, accY, accZ,\
-                      gyroX, gyroY, gyroZ,\
-                      peakAltitude, miniChuteStatus, chuteStatus"));
-  data_file.close();
+  data_file.println(F("measTime, measAltitude, pressure, accX, accY, accZ, gyroX, gyroY, gyroZ"));
 
   // Setup barometer
   Serial.println(F("Baro"));
   if (!bmp.begin(0x76)) { //check de l'altimètre
     Serial.print(F("Fail"));
-    continuousBeep(2, 1);
+    continuousBeep(2, 1000);
   }
 
   // Setup IMU
@@ -112,37 +112,37 @@ void setup() {
     Serial.println("Incoherent launching conditions!");
     Serial.print("accel: ");
     Serial.print(mpu6050.getAccZ());
-    continuousBeep(2, 0.5);
+    continuousBeep(2, 500);
   }
 
   // success beeps
-  limitedBeep(2, 0.05, 3);
+  limitedBeep(2, 50, 3);
   delay(500);
-  limitedBeep(2, 0.05, 3);
+  limitedBeep(2, 50, 3);
   delay(500);
-  limitedBeep(2, 1, 1);
+  limitedBeep(2, 1000, 1);
 
   // loop waiting for liftoff
   uint8_t BT_flag = 5;
   uint8_t liftoffMargin = LIFTOFF_MARGIN_RESET;
   while (liftoffMargin) {
     mpu6050.update();
-    float acceleration = sqrt(pow(mpu6050.getAccX(), 2)
-                              + pow(mpu6050.getAccY(), 2)
-                              + pow(mpu6050.getAccZ(), 2));
-    if (!BT_flag) { // lower BT logging frequency or else app panics
-      if (MyBlue.available()) {
-        //module bluetooth pour check les données avant lancement, pas nécessaire
-        Serial.print("  ");
-        Serial.print(liftoffMargin);
-        Serial.print("  ");
-        Serial.print(acceleration);
-        Serial.print("  ");
-        Serial.println(bmp.readAltitude(1013.25));
-        BT_flag = 5;
-      }
-      BT_flag--;
-    }
+    acceleration = sqrt(pow(mpu6050.getAccX(), 2)
+                        + pow(mpu6050.getAccY(), 2)
+                        + pow(mpu6050.getAccZ(), 2));
+    //    if (!BT_flag) { // lower BT logging frequency or else app panics
+    //      if (MyBlue.available()) {
+    //module bluetooth pour check les données avant lancement, pas nécessaire
+    Serial.print("  ");
+    Serial.print(liftoffMargin);
+    Serial.print("  ");
+    Serial.print(acceleration);
+    Serial.print("  ");
+    Serial.println(bmp.readAltitude(1013.25));
+    //        BT_flag = 5;
+    //      }
+    //      BT_flag--;
+    //    }
 
     // Detect drop test/launch
     if (acceleration <= START_ACCELERATION) {
@@ -153,28 +153,24 @@ void setup() {
     }
   }
   Serial.println(F("LIFTOFF CONFIRMED"));
-  limitedBeep(2, 0.1, 1);               // A SUPPRIMER
+  limitedBeep(2, 100, 1);               // A SUPPRIMER
   liftoffTime = millis();
   baseAltitude = bmp.readAltitude(1013.25);
   peakAltitude = baseAltitude;
 }
 
-//float measAltitude;
-//long measTime;
-//long ittime;
-//long ittemp;
 void loop() {
   // update measurements
   mpu6050.update();
-  float measAltitude = bmp.readAltitude(1013.25) - baseAltitude;
-  float acceleration = sqrt(pow(mpu6050.getAccX(), 2)
-                            + pow(mpu6050.getAccY(), 2)
-                            + pow(mpu6050.getAccZ(), 2));
-  long iterationTime = millis() - measTime;
+  measAltitude = bmp.readAltitude(1013.25) - baseAltitude;
+  acceleration = sqrt(pow(mpu6050.getAccX(), 2)
+                      + pow(mpu6050.getAccY(), 2)
+                      + pow(mpu6050.getAccZ(), 2));
+  iterationTime = millis() - liftoffTime - measTime;
   measTime = millis() - liftoffTime;
 
   // Print data
-#ifdef SERIAL
+#ifdef SERIAL_OUTPUT
   Serial.print(iterationTime); Serial.print(", ");
   Serial.print(measTime); Serial.print(", ");
   Serial.print(measAltitude); Serial.print(", ");
@@ -192,19 +188,20 @@ void loop() {
 
   // Save data to file
   if (data_file) {
-    data_file.print(iterationTime); data_file.print(", ");
+//    data_file.print(iterationTime); data_file.print(", ");
     data_file.print(measTime); data_file.print(", ");
     data_file.print(measAltitude); data_file.print(", ");
-    data_file.print(bmp.readAltitude(1013.25)); data_file.print(", ");
+    data_file.print(bmp.readPressure()); data_file.print(", ");
     data_file.print(mpu6050.getAccX()); data_file.print(", ");
     data_file.print(mpu6050.getAccY()); data_file.print(", ");
     data_file.print(mpu6050.getAccZ()); data_file.print(", ");
     data_file.print(mpu6050.getAngleX()); data_file.print(", ");
     data_file.print(mpu6050.getAngleY()); data_file.print(", ");
-    data_file.print(mpu6050.getAngleZ()); data_file.print(", ");
-    data_file.print(peakAltitude); data_file.print(", ");
-    data_file.print(drogueStatus); data_file.print(", ");
-    data_file.println(mainStatus);
+    data_file.println(mpu6050.getAngleZ());// data_file.print(", ");
+//    data_file.print(peakAltitude); data_file.print(", ");
+//    data_file.print(drogueStatus); data_file.print(", ");
+//    data_file.println(mainStatus);
+    data_file.flush();
   }
 
   //  if (measTime >= TIMER and miniChuteStatus == 0) { //charge redondante du drogue
@@ -214,7 +211,7 @@ void loop() {
   //    if (delayDROGUE > 50) {
   //      digitalWrite(MINI_CHUTE_PIN, LOW);
   //      miniChuteStatus = 1;
-  //      limitedBeep(2,0.5,1); //RRRRaRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+  //      limitedBeep(2,500,1); //RRRRaRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
   //    }
   //  }
 
@@ -235,7 +232,7 @@ void loop() {
   //      if (delayMAIN > 300) {
   //        chuteStatus = 1;
   //        digitalWrite(7, LOW);
-  //        //limitedBeep(2,1,1);
+  //        //limitedBeep(2,1000,1);
   //      }
   //    }
   //
@@ -247,18 +244,18 @@ void loop() {
   if (acceleration >= STOP_ACCELERATION) { //détection du décollage
     if (!stopMargin) {
       stopMargin--;
-      Serial.println(stopMargin);
+      //Serial.println(stopMargin);
     }
     else {
-      limitedBeep(2, 0.3, 3);               // A SUPPRIMER
-      Serial.println("EXITING LOG");
+      limitedBeep(2, 300, 3);               // A SUPPRIMER
+      //Serial.println("EXITING LOG");
       data_file.close();
       exit(0);
     }
   }
   else {
     stopMargin = STOP_MARGIN_RESET;
-    Serial.println(stopMargin);
+    // Serial.println(stopMargin);
   }
 }
 
