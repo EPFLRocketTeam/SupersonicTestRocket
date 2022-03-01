@@ -29,10 +29,19 @@ dt = 0.05
 cd_a_reference = np.array([.233])
 time_reference = np.linspace(0, 5, 50)
 
-filenames = []
 datasets = []
-pressure_datasets = []
-acceleration_datasets = []
+labels = []
+
+# list of tests to graph
+main_open_1090 = [1, 2, 3]
+main_reef_619 = [14, 15]
+main_reef_1090 = [5, 6]
+main_reef_1101 = [7, 8]
+ballistic_1090 = [4]
+main_drogue_619 = [12, 13]
+main_drogue_808 = [16, 17]
+main_drogue_1101 = [9, 10, 11]
+graph_list = main_reef_619 + main_reef_1090 + main_reef_1101
 
 
 # user functions ==============================================================
@@ -48,14 +57,15 @@ def pressure_to_altitude(pressure, temperature):
 if __name__ == "__main__":
 
     # load files
-    for fileName in os.listdir(dataFolder):
-        if fileName.endswith(extension):
-            print(f"Loading {fileName}")
-            filenames.append(fileName)
-            dataset = pd.read_csv(os.path.join(dataFolder, fileName),
-                                  skipinitialspace=True)
-            datasets.append(dataset)
-            # altitude = dataset
+    for root, subdirs, fileNames in os.walk(dataFolder):
+        for fileName in fileNames:
+            if fileName is not None and fileName.endswith(extension):
+                print(f"Loading {fileName}")
+                labels.append(fileName)
+                dataset = pd.read_csv(os.path.join(root, fileName),
+                                      skipinitialspace=True)
+                datasets.append(dataset)
+                # altitude = dataset
 
     # process data
     for dataset in datasets:
@@ -117,11 +127,11 @@ if __name__ == "__main__":
             if idx == 0:
                 timestep = row["measTime"]
             else:
-                timestep = row["measTime"] - dataset.loc[idx-1, "measTime"]
+                timestep = row["measTime"] - dataset.loc[idx - 1, "measTime"]
             # update F to use the right timestep
             F = np.array([[1, timestep, timestep * timestep * 0.5],
-                         [0, 1, timestep],
-                         [0, 0, 1]])
+                          [0, 1, timestep],
+                          [0, 0, 1]])
             kf.predict(F=F)
             kf.update(np.array([row["measAltitude"],
                                 row["acceleration"] - G]))
@@ -130,24 +140,37 @@ if __name__ == "__main__":
     plt.close('all')
     fig_h, ax_h = plt.subplots()
     fig_h.suptitle("height according to BMP")
+    ax_h.set_xlabel("Time, t [s]")
+    ax_h.set_ylabel("Height, h [m]")
     fig_h2, ax_h2 = plt.subplots()
     fig_h2.suptitle("height according to ISA")
+    ax_h2.set_xlabel("Time, t [s]")
+    ax_h2.set_ylabel("Height, h [m]")
     fig_h_kf, ax_h_kf = plt.subplots()
     fig_h_kf.suptitle("height according to KF")
+    ax_h_kf.set_xlabel("Time, t [s]")
+    ax_h_kf.set_ylabel("Height, h [m]")
     fig_v_kf, ax_v_kf = plt.subplots()
     fig_v_kf.suptitle("velocity according to KF")
+    ax_v_kf.set_xlabel("Time, t [s]")
+    ax_v_kf.set_ylabel("Vertical Velocity, v [m/s]")
     fig_a, ax_a = plt.subplots()
     fig_a.suptitle("raw acceleration")
+    ax_a.set_xlabel("Time, t [s]")
+    ax_a.set_ylabel("Vertical Acceleration, a [m/s^2]")
     fig_a_kf, ax_a_kf = plt.subplots()
     fig_a_kf.suptitle("acceleration according to KF")
-    for filename, dataset in zip(filenames, datasets):
-        ax_h.plot(dataset["measTime"], dataset["measAltitude"], label=filename)
-        ax_h2.plot(dataset["measTime"], dataset["height_calc"], label=filename)
-        ax_h_kf.plot(dataset["measTime"], dataset["x_est_kf"], label=filename)
-        ax_v_kf.plot(dataset["measTime"], dataset["v_est_kf"], label=filename)
-        ax_a.plot(dataset["measTime"], dataset["acceleration"] - G,
-                  label=filename)
-        ax_a_kf.plot(dataset["measTime"], dataset["a_est_kf"], label=filename)
+    ax_a_kf.set_xlabel("Time, t [s]")
+    ax_a_kf.set_ylabel("Vertical Acceleration, a [m/s^2]")
+    for label, dataset in zip(labels, datasets):
+        if int(label.split("_")[0]) in graph_list:
+            ax_h.plot(dataset["measTime"], dataset["measAltitude"], label=label)
+            ax_h2.plot(dataset["measTime"], dataset["height_calc"], label=label)
+            ax_h_kf.plot(dataset["measTime"], dataset["x_est_kf"], label=label)
+            ax_v_kf.plot(dataset["measTime"], dataset["v_est_kf"], label=label)
+            ax_a.plot(dataset["measTime"], dataset["acceleration"] - G,
+                      label=label)
+            ax_a_kf.plot(dataset["measTime"], dataset["a_est_kf"], label=label)
     ax_h.legend()
     ax_h2.legend()
     ax_h_kf.legend()
