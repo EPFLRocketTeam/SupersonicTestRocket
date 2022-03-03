@@ -22,23 +22,31 @@ struct PacketHeader
     uint32_t timestamp = 0;             ///< Timestamp, in microseconds, 4 bytes
 };
 
-#define PACKET_HEADER_FORMAT "**************** PACKET HEADER *****************\n" \
-                             "Packet type: %s\n"                                  \
-                             "Packet size: %4d\n"                                 \
-                             "Sensor ID:   %4d\n"                                 \
-                             "Errors:\n"                                          \
-                             "\t- Measurement is late:        %2d\n"              \
-                             "\t- Several check beat skipped: %2d\n"              \
-                             "\t- DR pin didn't trigger read: %2d\n"              \
-                             "\t- Checksum error:             %2d\n"              \
-                             "\t- Measurement invalid:        %2d\n"              \
-                             "Timestamp:   %12ld\n"                               \
-                             "**************** END OF HEADER *****************\n"
+/// Description of errors bits in packet header                                                                                                 
+#define HEADER_ERROR_DESC \
+                    "\nErr code format: [Measure late] [Check beats skipped] [No DR trigger] [Checksum error] [Invalid measure]\n" 
 
-/**
- * @brief A line of Packet header is at most 47, and 11 lines
- */
-#define PACKET_HEADER_PRINT_SIZE 48 * 11
+/// Description of packet fields
+#define HEADER_LINE "--- Packet type --- | -- Packet size -- | -- Sensor ID -- | -- Error code -- | -- Timestamp -- | -- Data     \n"\
+
+/// Format for packet header's data 
+#define HEADER_FRMT ">: %-16.16s : %8.8u          : %8.8u        :   %1.1d  %1.1d  %1.1d  %1.1d  %1.1d  : %15.15lu :"
+
+/// Size of the packet header's format
+#define HEADER_SIZE 95
+
+/// Filler of size HEADER_WIDTH
+#define HEADER_FILLER_LINE \
+                    "                                                                                               |"
+
+/// Size left after header's data
+#define DATA_SIZE 25
+
+/// Total line size (with newline and end char)
+#define LINE_SIZE HEADER_SIZE + DATA_SIZE + 2
+
+/// Separator line
+#define SEPARATOR_LINE "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n"
 
 class Packet
 {
@@ -238,10 +246,11 @@ public:
     void getPrintableHeader(char *buff);
 
     /**
-     * @brief Fill the given \c char* buffer with a printable description of the packet's content
-     *
+     * @brief Fill the given \c char* buffer with the \c size_t line of printable description of the packet's content
+     * 
+     * @return int : 1 if there if another line to get, 0 if there no next line
      */
-    virtual void getPrintableContent(char *) = 0;
+    virtual int getPrintableContent(char *, size_t) = 0;
 
 protected:
     PacketHeader header;

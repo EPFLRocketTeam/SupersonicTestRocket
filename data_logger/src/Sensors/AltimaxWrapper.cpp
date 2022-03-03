@@ -90,11 +90,11 @@ AltimaxPacket *AltimaxWrapper::getPacket(uint32_t currMicros)
   // update the error on the packet
   lastPacket.updateHeader(getHeader(currMicros));
 #ifdef DEBUG
-  lastPacket.
+  lastPacket.setPin0state(rand());
 // when not debugging readings are updated in isDue()
 #endif
 
-      lastPacket.setPin0state(digitalRead(PIN_0));
+  lastPacket.setPin0state(digitalRead(PIN_0));
   lastPacket.setPin1state(digitalRead(PIN_1));
   lastPacket.setPin2state(digitalRead(PIN_2));
 

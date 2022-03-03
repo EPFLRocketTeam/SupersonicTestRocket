@@ -27,11 +27,10 @@ struct AltimaxBody
   bool pinStates[4] = {0};
 };
 
-#define Altimax_BODY_FORMAT "************** AltimaxBody Packet **************\n" \
-                            "PIN 0 Status: %2d\n"                                \
-                            "PIN 1 Status: %2d\n"                                \
-                            "PIN 2 Status: %2d\n"                                \
-                            "***************** END OF PACKET ****************\n"
+#define Altimax_LINE_0 "PIN 0 Status: %2d\n"
+#define Altimax_LINE_1 "PIN 1 Status: %2d\n"
+#define Altimax_LINE_2 "PIN 2 Status: %2d\n"
+#define Altimax_LINE_NBR 2
 
 /**
  * @brief Altimax_BODY_FORMAT has 5 lines,
@@ -127,16 +126,33 @@ public:
   }
 
   /**
-   * @brief Fill the given \p buffer with a printable description of the packet's content
+   * @brief Fill \p buffer with the \p lineNbr line of content to be displayed
    *
+   * If the line queried does not exist ( \p lineNbr too big), does nothing to \p buffer
+   *
+   * @param buffer Buffer to be filled (with up to DATA_SIZE chars)
+   * @param lineNbr Number of the queried line
+   * @return int : 1 if there are lines after \p lineNbr , 0 otherwise
    */
-  void getPrintableContent(char *buffer)
+  int getPrintableContent(char *buffer, size_t lineNbr)
   {
+    switch (lineNbr)
+    {
+    case 0:
+      snprintf(buffer, DATA_SIZE, Altimax_LINE_0, getPin0state());
+      return 1;
 
-    snprintf(buffer, Altimax_BODY_PRINT_SIZE, Altimax_BODY_FORMAT,
-             getPin0state(),
-             getPin1state(),
-             getPin2state());
+    case 1:
+      snprintf(buffer, DATA_SIZE, Altimax_LINE_1, getPin1state());
+      return 1;
+
+    case 2:
+      snprintf(buffer, DATA_SIZE, Altimax_LINE_2, getPin2state());
+      return 0;
+
+    default:
+      return 0;
+    }
   }
 
   // ----- Setters ----- //

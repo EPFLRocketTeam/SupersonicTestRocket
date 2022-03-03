@@ -171,16 +171,10 @@ HoneywellRSCPacket *HoneywellRscWrapper::getPacket(uint32_t currMicros)
 HoneywellRSCPacket **HoneywellRscWrapper::getSerialPackets(uint32_t currMicros)
 {
 #ifdef DEBUG
-  lastPressurePacket.measurement =
-      generateFakeData(0, 2, micros(), 14 * SENSOR_ID);
-  lastPressurePacket.header = getHeader(RSC_PRESSURE_PACKET_TYPE,
-                                        sizeof(HoneywellRSCBody),
-                                        currMicros);
-  lastTempPacket.measurement =
-      generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000);
-  lastTempPacket.header = getHeader(RSC_TEMP_PACKET_TYPE,
-                                    sizeof(HoneywellRSCBody),
-                                    currMicros);
+  lastPressurePacket.setMeasurement(generateFakeData(0, 2, micros(), 14 * SENSOR_ID));
+  lastPressurePacket.updateHeader(getHeader(currMicros));
+  lastTempPacket.setMeasurement(generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000));   
+  lastTempPacket.updateHeader(getHeader(currMicros));
 #endif
 
   return lastPackets;

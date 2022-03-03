@@ -16,6 +16,7 @@
 // User-defined headers
 #include "Packet.hpp"
 #include "Sensor.hpp"
+#include "globalVariables.hpp"
 
 // *************** HoneywellRsc Packets *************** //
 
@@ -29,13 +30,10 @@ struct HoneywellRSCBody
   float measurement = 0;
 };
 
-#define HoneywellRSC_BODY_TEMP_FORMAT "************** HoneywellRSC Packet *************\n" \
-                                      "Temperature: %12e °C\n"                            \
-                                      "***************** END OF PACKET ****************\n"
+#define HoneywellRSC_TEMP_LINE "Temperature: %6e °C\n"
+#define HoneywellRSC_PRESSURE_LINE "Pressure: %6e bar\n"
 
-#define HoneywellRSC_BODY_PRESSURE_FORMAT "************** HoneywellRSC Packet *************\n" \
-                                          "Pressure: %12e bar\n"                               \
-                                          "***************** END OF PACKET ****************\n"
+#define HoneywellRSC_LINE_NBR 0
 
 /**
  * @brief Both HoneywellRSC_BODY_TEMP_FORMAT and HoneywellRSC_BODY_PRESSURE_FORMAT
@@ -137,14 +135,25 @@ public:
   }
 
   /**
-   * @brief Fill the given \p buffer with a printable description of the packet's content
+   * @brief Fill \p buffer with the \p lineNbr line of content to be displayed
    *
+   * If the line queried does not exist ( \p lineNbr too big), does nothing to \p buffer
+   *
+   * @param buffer Buffer to be filled (with up to DATA_SIZE chars)
+   * @param lineNbr Number of the queried line
+   * @return int : 1 if there are lines after \p lineNbr , 0 otherwise
    */
-  void getPrintableContent(char *buffer)
+  int getPrintableContent(char *buffer, size_t lineNbr)
   {
+    switch (lineNbr)
+    {
+    case 0:
+      snprintf(buffer, DATA_SIZE, HoneywellRSC_TEMP_LINE, getMeasurement());
+      return 0;
 
-    snprintf(buffer, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_PRESSURE_FORMAT,
-             getMeasurement());
+    default:
+      return 0;
+    }
   }
 };
 
@@ -186,14 +195,25 @@ public:
   }
 
   /**
-   * @brief Fill the given \p buffer with a printable description of the packet's content
+   * @brief Fill \p buffer with the \p lineNbr line of content to be displayed
    *
+   * If the line queried does not exist ( \p lineNbr too big), does nothing to \p buffer
+   *
+   * @param buffer Buffer to be filled (with up to DATA_SIZE chars)
+   * @param lineNbr Number of the queried line
+   * @return int : 1 if there are lines after \p lineNbr , 0 otherwise
    */
-  void getPrintableContent(char *buffer)
+  int getPrintableContent(char *buffer, size_t lineNbr)
   {
+    switch (lineNbr)
+    {
+    case 0:
+      snprintf(buffer, DATA_SIZE, HoneywellRSC_PRESSURE_LINE, getMeasurement());
+      return 0;
 
-    snprintf(buffer, HoneywellRSC_BODY_PRINT_SIZE, HoneywellRSC_BODY_TEMP_FORMAT,
-             getMeasurement());
+    default:
+      return 0;
+    }
   }
 };
 

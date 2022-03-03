@@ -1,12 +1,12 @@
 /**
  * @file main.cpp
  * @author Joshua Cayetano-Emond (joshua.cayetano.emond@gmail.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2021-04-21
- * 
+ *
  * @copyright Copyright (c) 2021
- * 
+ *
  */
 
 /*! \mainpage My Personal Index Page
@@ -23,7 +23,7 @@
  */
 
 /*! \page fooPage foo Functions
- * 
+ *
  * - \subpage Copy
  */
 
@@ -48,6 +48,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 
+
 // User-defined headers
 #include "globalVariables.hpp"
 #include "PushButtonArray.h"
@@ -60,9 +61,6 @@
 #include "Sensors/MAX31855Wrapper.hpp"
 
 // DEFINE VARIABLES ============================================================
-
-#define DEBUG
-const bool SERIAL_PRINT = true;
 
 // Pins ------------------------------------------------------------------------
 // I/O
@@ -102,25 +100,39 @@ const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
 // Create the sensor wrapper objects -------------------------------------------
 
-/* Using Sensor* array instead
 ADIS16470Wrapper adis16470(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
                            RST_ADIS16470_PIN);
-AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN);
+AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN, _800Hz, _800Hz,
+                           false, false, false, false);
 
-HoneywellRscWrapper *rscs[2] = {NULL};
-MAX31855Wrapper *tcs[4];
-*/
+HoneywellRscWrapper rscs_0(DR_RSC[0], CS_RS_EE_PIN[0],
+                           CS_RSC_ADC_PIN[0], 1,
+                           F_DR_2000_SPS, 50000);
 
-/* TODO : MAKE AN ALTIMAX WRAPPER
-// the altimax doesn't have a wrapper because I'm lazy and it's just 1 DR pin
-Sensor altimax = Sensor(0);
-*/
+HoneywellRscWrapper rscs_1(DR_RSC[1], CS_RS_EE_PIN[1],
+                           CS_RSC_ADC_PIN[1], 0,
+                           F_DR_2000_SPS, 50000);
 
-// TODO: Put all sensors in an array and then all functions can simply loop
+MAX31855Wrapper tcs_0(CS_TCS_PIN[0]);
+MAX31855Wrapper tcs_1(CS_TCS_PIN[1]);
+MAX31855Wrapper tcs_2(CS_TCS_PIN[2]);
+MAX31855Wrapper tcs_3(CS_TCS_PIN[3]);
+
+AltimaxWrapper altimax(ALTIMAX_DR_PINS[0], ALTIMAX_DR_PINS[1], ALTIMAX_DR_PINS[2]);
+
+// Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
 // const uint8_t NUM_SENSORS = 9; //-> Set as constexpr in "globalVariables.hpp"
-Sensor *sensorArray[NUM_SENSORS];
+Sensor *sensorArray[NUM_SENSORS] = {&adis16470,
+                                    &ais1120sx,
+                                    &rscs_0,
+                                    &rscs_1,
+                                    &tcs_0,
+                                    &tcs_1,
+                                    &tcs_2,
+                                    &tcs_3,
+                                    &altimax};
 
 const uint8_t ADIS16470_INDEX = 0,
               AISx120SX_INDEX = 1,
@@ -130,12 +142,12 @@ const uint8_t ADIS16470_INDEX = 0,
               Altimax_INDEX = 8;
 
 const int SENSOR_SETUP_ATTEMPTS = 7;
-const int SETUP_DELAY = 100; // delay in ms to wait between setup attemps
+const int SETUP_DELAY = 1000; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
 
 // SETUP =======================================================================
-
+/*
 void buildSensorArray()
 {
   sensorArray[ADIS16470_INDEX] = new ADIS16470Wrapper(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
@@ -160,11 +172,14 @@ void buildSensorArray()
   // TODO:
   // sensorArray[Altimax_INDEX] = new AltimaxWrapper(args...);
 }
+*/
 
 void setup()
 {
   // Serial communication is started before setup on the Teensy
+  delay(10000); // Wait 10s to ensure Serial is ready
   Serial.println("----- Starting setup -----");
+  delay(10000); // Wait 10s more to ensure getting Serial feedback
 
   // Set up I/O
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -175,10 +190,15 @@ void setup()
   digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
   Serial.println("I/O has been set up");
   successFlash(); // visual feedback setup is happening
+  successFlash();
+  errorFlash();
+  
 
   SPI.begin();
   SPI1.begin();
   // SPI1.setSCK(20);
+
+  // buildSensorArray();
 
   for (size_t i = 0; i < NUM_SENSORS; i++)
   {

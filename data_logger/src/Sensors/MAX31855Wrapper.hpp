@@ -17,6 +17,7 @@
 #include "Sensor.hpp"
 #include "Packet.hpp"
 #include "macrofunctions.h"
+#include "globalVariables.hpp"
 
 // *************** MAX31855Packet *************** //
 
@@ -27,10 +28,9 @@ struct MAX31855Body
   float sensorTemperature = 0; ///< [degC]; 4 bytes
 };
 
-#define MAX31855_BODY_FORMAT "**************** MAX31855 Packet ***************\n" \
-                             "Probe temperature: %12e °C\n"                      \
-                             "Sensor temperature: %12e °C\n"                     \
-                             "***************** END OF PACKET ****************\n"
+#define MAX31855_LINE_0 "Probe temp: %6e °C\n"
+#define MAX31855_LINE_1 "Sensor temp: %6e °C\n"
+#define MAX31855_LINE_NBR 1
 
 /**
  * @brief MAX31855_BODY_FORMAT has 4 lines,
@@ -103,15 +103,29 @@ public:
   }
 
   /**
-   * @brief Fill the given \p buffer with a printable description of the packet's content
+   * @brief Fill \p buffer with the \p lineNbr line of content to be displayed
    *
+   * If the line queried does not exist ( \p lineNbr too big), does nothing to \p buffer
+   *
+   * @param buffer Buffer to be filled (with up to DATA_SIZE chars)
+   * @param lineNbr Number of the queried line
+   * @return int : 1 if there are lines after \p lineNbr , 0 otherwise
    */
-  void getPrintableContent(char *buffer)
+  int getPrintableContent(char *buffer, size_t lineNbr)
   {
+    switch (lineNbr)
+    {
+    case 0:
+      snprintf(buffer, DATA_SIZE, MAX31855_LINE_0, getProbeTemperature());
+      return 1;
 
-    snprintf(buffer, MAX31855_BODY_PRINT_SIZE, MAX31855_BODY_FORMAT,
-             getProbeTemperature(),
-             getSensorTemperature());
+    case 1:
+      snprintf(buffer, DATA_SIZE, MAX31855_LINE_1, getSensorTemperature());
+      return 0;
+
+    default:
+      return 0;
+    }
   }
 
   // ----- Setters ----- //

@@ -31,13 +31,22 @@ ADIS16470Wrapper::~ADIS16470Wrapper()
 
 bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
+  adisObject.resetDUT(100);             // Begin by reset
   adisObject.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
   adisObject.regWrite(DEC_RATE, 0x00);  // Set digital filter
   adisObject.regWrite(FILT_CTRL, 0x04); // Set digital filter
 
+  bool trDr;
   // Try to see if the ADIS is working
   for (uint32_t i = 0; i < attempts; i++)
   {
+    if (!isDueByDR(micros(),trDr))
+    {
+      if (SERIAL_PRINT)
+        Serial.printf("[ADIS16470 Setup] Waiting for DR\n");
+        delay(delayDuration);
+    }
+
     // acquire some data
     uint16_t *wordBurstData = adisObject.wordBurst(); // Read data and insert into array
 
@@ -55,6 +64,10 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
     }
     else // give it time before the next try
     {
+      if (SERIAL_PRINT)
+      {
+        Serial.printf("[ADIS16470 Setup] Seen %d VS Checksum %d\n", wordBurstData[9], checksum);
+      }
       delay(delayDuration);
     }
   }
@@ -117,15 +130,15 @@ ADIS16470Packet *ADIS16470Wrapper::getPacket(uint32_t currMicros)
 {
 #ifdef DEBUG
 
-  lastPacket.gyros[0] = generateFakeData(-2000, 2000, micros());
-  lastPacket.gyros[1] = generateFakeData(-2000, 2000, micros(),
-                                         500, 4800000);
-  lastPacket.gyros[2] = generateFakeData(-2000, 2000, micros(),
-                                         -200, 5200000);
-  lastPacket.acc[0] = generateFakeData(-40, 40, micros());
-  lastPacket.acc[1] = generateFakeData(-40, 40, micros(), 0, 4850000);
-  lastPacket.acc[2] = generateFakeData(-40, 40, micros(), 1, 5250000);
-  lastPacket.temp = generateFakeData(-5, 5, micros(), 23, 5000000);
+  lastPacket.setXGyro(generateFakeData(-2000, 2000, micros()));
+  lastPacket.setYGyro(generateFakeData(-2000, 2000, micros(),
+                                       500, 4800000));
+  lastPacket.setZGyro(generateFakeData(-2000, 2000, micros(),
+                                       -200, 5200000));
+  lastPacket.setXAcc(generateFakeData(-40, 40, micros()));
+  lastPacket.setYAcc(generateFakeData(-40, 40, micros(), 0, 4850000));
+  lastPacket.setZAcc(generateFakeData(-40, 40, micros(), 1, 5250000));
+  lastPacket.setTemp(generateFakeData(-5, 5, micros(), 23, 5000000));
 
 #endif
 

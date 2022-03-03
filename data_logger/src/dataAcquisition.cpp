@@ -75,13 +75,22 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
-  //int errorCount = 0;
-  // acquire data as long as button sequence is not initated
+  // int errorCount = 0;
+  //  acquire data as long as button sequence is not initated
   Packet *pkt;
-  char header_serial_buffer[PACKET_HEADER_PRINT_SIZE];
-  char content_serial_buffer[PACKET_CONTENT_PRINT_SIZE];
+  char line_serial_buffer[LINE_SIZE];
+  size_t line_nbr;
+  bool printSerial = false;
   while (checkButtons(buttonArray, stopEvent))
   {
+    printSerial = (micros() - prevSerialLoop > SERIAL_INTERVAL);
+
+    if (printSerial)
+    {
+      Serial.write(HEADER_ERROR_DESC);
+      Serial.write(HEADER_LINE);
+    }
+
     for (size_t i = 0; i < sSize; i++)
     {
       if (sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
@@ -89,22 +98,31 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
         pkt = sArray[i]->getPacket(micros());
         rb.write(pkt->accessHeader(), sizeof(PacketHeader));
         rb.write(pkt->accessContent(), pkt->getPacketSize());
+      }
 
-        if (micros() - prevSerialLoop > SERIAL_INTERVAL)
+      if (printSerial)
+      {
+        pkt = sArray[i]->getPacket(micros());
+        memset((void *)line_serial_buffer, '\0', LINE_SIZE);
+        pkt->getPrintableHeader(line_serial_buffer);
+        line_nbr = 0;
+        while(pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE],line_nbr))
         {
-          //Serial.flushOutput();
-          memset((void*)header_serial_buffer,'\0',PACKET_HEADER_PRINT_SIZE);
-          pkt->getPrintableHeader(header_serial_buffer);
-          Serial.write(header_serial_buffer,PACKET_HEADER_PRINT_SIZE);
-          Serial.write('\n');
-          memset((void*)content_serial_buffer,'\0',PACKET_CONTENT_PRINT_SIZE);
-          pkt->getPrintableContent(content_serial_buffer);
-          Serial.write(content_serial_buffer,PACKET_CONTENT_PRINT_SIZE);
-          prevSerialLoop = micros();
+          Serial.write(line_serial_buffer,LINE_SIZE);
+          memset((void *)line_serial_buffer, '\0', LINE_SIZE);
+          snprintf(line_serial_buffer,HEADER_SIZE,HEADER_FILLER_LINE);
+          line_nbr++;
         }
+        Serial.write(line_serial_buffer,LINE_SIZE);
+        Serial.write(SEPARATOR_LINE);
       }
     }
 
+    if (printSerial)
+    {
+      printSerial = false;
+      prevSerialLoop = micros();
+    }
     /* NOT IMPLEMENTED VERBATIM
     // ADIS16470
     if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))

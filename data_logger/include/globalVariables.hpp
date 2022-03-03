@@ -5,8 +5,10 @@
 // debugging mode
 // for now it's just whether to take real data or generate some fake one
 
-// CHANGE : Use preprocessor instruction instead (in main.cpp directly)
-//#define DEBUG
+#define DEBUG
+const bool SERIAL_PRINT = true;
+//#include "TeensyDebug.h"
+//#pragma GCC optimize ("O0")
 
 // Pinout ----------------------------------------------------------------------
 // I/O

@@ -17,6 +17,7 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 #include "macrofunctions.h"
+#include "globalVariables.hpp"
 
 // *************** AISx120SXPacket *************** //
 
@@ -26,11 +27,10 @@ struct AISx120SXBody
   float accel[2] = {0}; ///< Linear acceleration [g] along X,Y axis; 2 * 4 = 8 bytes
 };
 
-#define AISx120SX_BODY_FORMAT "*************** AISx120SX Packet ***************\n" \
-                              "Linear accelerations:\n"                            \
-                              "\t- X: %12e g\n"                                    \
-                              "\t- Y: %12e g\n"                                    \
-                              "***************** END OF PACKET ****************\n"
+#define AISx120SX_LINE_0 "Linear accelerations:\n"
+#define AISx120SX_LINE_1 "\t- X: %6e g\n"
+#define AISx120SX_LINE_2 "\t- Y: %6e g\n"
+#define AISx120SX_LINE_NBR 2
 
 /**
  * @brief AISx120SX_BODY_FORMAT has 5 lines,
@@ -115,15 +115,33 @@ public:
   }
 
   /**
-   * @brief Fill the given \p buffer with a printable description of the packet's content
+   * @brief Fill \p buffer with the \p lineNbr line of content to be displayed
    *
+   * If the line queried does not exist ( \p lineNbr too big), does nothing to \p buffer
+   *
+   * @param buffer Buffer to be filled (with up to DATA_SIZE chars)
+   * @param lineNbr Number of the queried line
+   * @return int : 1 if there are lines after \p lineNbr , 0 otherwise
    */
-  void getPrintableContent(char *buffer)
+  int getPrintableContent(char *buffer, size_t lineNbr)
   {
+    switch (lineNbr)
+    {
+    case 0:
+      snprintf(buffer, DATA_SIZE, AISx120SX_LINE_0);
+      return 1;
 
-    snprintf(buffer, AISx120SX_BODY_PRINT_SIZE, AISx120SX_BODY_FORMAT,
-             getXaccel(),
-             getYaccel());
+    case 1:
+      snprintf(buffer, DATA_SIZE, AISx120SX_LINE_1, getXaccel());
+      return 1;
+
+    case 2:
+      snprintf(buffer, DATA_SIZE, AISx120SX_LINE_2, getYaccel());
+      return 0;
+
+    default:
+      return 0;
+    }
   }
 
   // ----- Setters ----- //

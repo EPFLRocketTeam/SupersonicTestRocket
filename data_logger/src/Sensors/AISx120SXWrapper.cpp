@@ -94,8 +94,8 @@ AISx120SXPacket *AISx120SXWrapper::getPacket(uint32_t currMicros)
   // update the error on the packet
   lastPacket.updateHeader(getHeader(currMicros));
 #ifdef DEBUG
-  lastPacket.accel[0] = generateFakeData(-120, 120, micros());
-  lastPacket.accel[1] = generateFakeData(-120, 120, micros(), 1, 5800000);
+  lastPacket.setXaccel(generateFakeData(-120, 120, micros()));
+  lastPacket.setYaccel(generateFakeData(-120, 120, micros(), 1, 5800000));
 // when not debugging readings are updated in isDue()
 #endif
 
