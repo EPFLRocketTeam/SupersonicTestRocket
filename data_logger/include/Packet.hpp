@@ -30,23 +30,23 @@ struct PacketHeader
 #define HEADER_LINE "--- Packet type --- | -- Packet size -- | -- Sensor ID -- | -- Error code -- | -- Timestamp -- | -- Data     \n"\
 
 /// Format for packet header's data 
-#define HEADER_FRMT ">: %-16.16s : %8.8u          : %8.8u        :   %1.1d  %1.1d  %1.1d  %1.1d  %1.1d  : %15.15lu :"
+#define HEADER_FRMT ">: %-16.16s : %8.8u          : %8.8u        :   %1.1d  %1.1d  %1.1d  %1.1d  %1.1d  : %15.15lu | "
 
 /// Size of the packet header's format
-#define HEADER_SIZE 95
+#define HEADER_SIZE 98
 
 /// Filler of size HEADER_WIDTH
 #define HEADER_FILLER_LINE \
-                    "                                                                                               |"
+                    "                                                                                               | "
 
 /// Size left after header's data
-#define DATA_SIZE 25
+#define DATA_SIZE 32
 
 /// Total line size (with newline and end char)
 #define LINE_SIZE HEADER_SIZE + DATA_SIZE + 2
 
 /// Separator line
-#define SEPARATOR_LINE "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n"
+#define SEPARATOR_LINE "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n\n"
 
 class Packet
 {

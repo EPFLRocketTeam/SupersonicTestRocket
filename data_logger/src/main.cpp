@@ -142,7 +142,7 @@ const uint8_t ADIS16470_INDEX = 0,
               Altimax_INDEX = 8;
 
 const int SENSOR_SETUP_ATTEMPTS = 7;
-const int SETUP_DELAY = 1000; // delay in ms to wait between setup attemps
+const int SETUP_DELAY = 200; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
 

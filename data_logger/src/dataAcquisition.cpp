@@ -89,6 +89,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
     {
       Serial.write(HEADER_ERROR_DESC);
       Serial.write(HEADER_LINE);
+      Serial.write(SEPARATOR_LINE);
     }
 
     for (size_t i = 0; i < sSize; i++)
@@ -106,7 +107,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
         memset((void *)line_serial_buffer, '\0', LINE_SIZE);
         pkt->getPrintableHeader(line_serial_buffer);
         line_nbr = 0;
-        while(pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE],line_nbr))
+        while(pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE+1],line_nbr)) // SIZE does not include \0
         {
           Serial.write(line_serial_buffer,LINE_SIZE);
           memset((void *)line_serial_buffer, '\0', LINE_SIZE);
@@ -122,6 +123,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
     {
       printSerial = false;
       prevSerialLoop = micros();
+      Serial.write(RESET_TERMINAL);
     }
     /* NOT IMPLEMENTED VERBATIM
     // ADIS16470
