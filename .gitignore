@@ -1,3 +1,6 @@
 *.pyc
 workspace.code-workspace
 MyTools/**
+data_logger/platformio.ini
+SemesterProjectSchedule.pdf
+SemesterProjectSchedule.ods
