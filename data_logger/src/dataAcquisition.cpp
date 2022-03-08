@@ -87,6 +87,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
 
     if (printSerial)
     {
+      Serial.write(RESET_TERMINAL);
       Serial.write(HEADER_ERROR_DESC);
       Serial.write(HEADER_LINE);
       Serial.write(SEPARATOR_LINE);
@@ -123,7 +124,6 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
     {
       printSerial = false;
       prevSerialLoop = micros();
-      Serial.write(RESET_TERMINAL);
     }
     /* NOT IMPLEMENTED VERBATIM
     // ADIS16470
