@@ -23,7 +23,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   {
     sd.initErrorHalt(&Serial);
   }
-  Serial.println("SD Card has been set up");
+  monitor.writeMessage("SD Card has been set up", micros(), true);
 
   // Initialize the logging file and ring buffer
   FsFile loggingFile;
@@ -71,7 +71,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   }
 
   // Start acquiring data
-  Serial.println("Starting to acquire data.");
+  monitor.writeMessage("Starting to acquire data.", micros(), true);
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
@@ -164,7 +164,8 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
     // See if the file is full
     if ((n + loggingFile.curPosition()) > (LOG_FILE_SIZE - 100))
     {
-      Serial.println("File full - quiting.");
+
+      monitor.writeMessage("File full - quiting.", micros());
       break;
     }
     // Update maximum  used buffer size. For buffer overflow issues
@@ -178,7 +179,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
       // Write one sector from RingBuf to file.
       if (512 != rb.writeOut(512))
       {
-        Serial.println("writeOut failed");
+        monitor.writeMessage("writeOut failed.", micros());
         break;
       }
     }
@@ -186,7 +187,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
     if (rb.getWriteError())
     {
       // Error caused by too few free bytes in RingBuf.
-      Serial.println("WriteError - RingBuf full.");
+      monitor.writeMessage("WriteError - RingBuf full.", micros());
       break;
     }
   } // Finished acquiring data
@@ -209,10 +210,12 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   digitalWrite(GREEN_LED_PIN, LOW);
   digitalWrite(RED_LED_PIN, LOW);
   successFlash();
-  Serial.println("Finished acquiring data");
+
+  monitor.writeMessage("Finished acquiring data", micros(), true);
 }
 
-bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
+bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3],
+                  SerialMonitor monitor)
 {
   // see which buttons were pressed
   bool indivButtonState[2];
@@ -228,6 +231,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
+      monitor.writeMessage("First check to stop acquisition passed.", micros());
       Serial.println("First check to stop acquisition passed.");
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, LOW);
@@ -235,17 +239,17 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       buttonArray.activateEvent(stopEvent[1]);
       break;
     case BAD_TRANSITION:
-      Serial.println("Button input wrong. Left window.");
+      monitor.writeMessage("Button input wrong. Left window.", micros());
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       break;
     case WINDOW_START:
-      Serial.println("Within window for first check.");
+      monitor.writeMessage("Within window for first check.", micros());
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
-      Serial.println("Left window for first check.");
+      monitor.writeMessage("Left window for first check.", micros());
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       break;
@@ -258,25 +262,27 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      Serial.println("Second check to stop acquisition passed.");
+      monitor.writeMessage("Second check to stop "
+                           "acquisition passed.",
+                           micros());
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
       buttonArray.activateEvent(stopEvent[2]);
       break;
     case BAD_TRANSITION:
-      Serial.println("Button input wrong. Left window.");
+      monitor.writeMessage("Button input wrong. Left window.", micros());
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
       buttonArray.activateEvent(stopEvent[0]);
       break;
     case WINDOW_START:
-      Serial.println("Within window for second check.");
+      monitor.writeMessage("Within window for second check.", micros());
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
-      Serial.println("Left window for second check.");
+      monitor.writeMessage("Left window for second check.", micros());
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
@@ -291,7 +297,7 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      Serial.println("Passed all checks to stop acquisition.");
+      monitor.writeMessage("Passed all checks to stop acquisition.", micros());
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       buttonArray.deactivateEvent(stopEvent[2]);
@@ -299,19 +305,19 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       return false;
       break;
     case BAD_TRANSITION:
-      Serial.println("Button input wrong. Left window.");
+      monitor.writeMessage("Button input wrong. Left window.", micros());
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[2]);
       buttonArray.activateEvent(stopEvent[0]);
       break;
     case WINDOW_START:
-      Serial.println("Within window for third check.");
+      monitor.writeMessage("Within window for third check.", micros());
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
-      Serial.println("Left window for third check.");
+      monitor.writeMessage("Left window for third check.", micros());
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[2]);
