@@ -35,6 +35,12 @@ extern const uint8_t CS_TCS_PIN[4];
 // Altimax
 extern const uint8_t ALTIMAX_DR_PINS[3];
 
+// XBee
+extern const uint8_t XBEE_PINS[];
+
+// MAX-7
+extern const uint8_t MAX7_PINS[];
+
 // Sensors ----------------------------------------------------------------------
 
 constexpr size_t NUM_SENSORS = 9; //Should hold in uint8_t

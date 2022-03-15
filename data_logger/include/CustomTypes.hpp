@@ -28,12 +28,14 @@ enum packetType : uint8_t
     ALTIMAX_PACKET_TYPE,           ///< ALTIMAX packet
     ADIS16470_PACKET_TYPE,         ///< ADIS16470 Packet
     AISx120SX_PACKET_TYPE,         ///< AISx120SX Packet
-    MAX31855_PACKET_TYPE           ///< MAX31855 packet
+    MAX31855_PACKET_TYPE,          ///< MAX31855 packet
+    MAX7_PACKET_TYPE,              ///< MAX7 packet
+    XBee_PACKET_TYPE               ///< XBee packet
 };
 
 /**
- * @brief Convert from \p packetType to a printable string 
- * 
+ * @brief Convert from \p packetType to a printable string
+ *
  * @param t : The packet
  * @return const char* : Its string representation
  */

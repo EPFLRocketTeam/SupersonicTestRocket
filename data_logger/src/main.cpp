@@ -48,7 +48,6 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-
 // User-defined headers
 #include "globalVariables.hpp"
 #include "PushButtonArray.h"
@@ -90,6 +89,12 @@ const uint8_t TAT_TC = 3;
 const uint8_t CS_TCS_PIN[4] = {7, 8, 9, 10};
 // Altimax
 const uint8_t ALTIMAX_DR_PINS[3] = {33, 255, 255}; // 255 for not implemented
+
+// XBee
+const uint8_t XBEE_PINS[] = {255,255}; //Rx, Tx pins
+
+// MAX-7
+const uint8_t MAX7_PINS[] = {255,255}; //Rx, Tx pins
 
 // I/O -------------------------------------------------------------------------
 // Button event
