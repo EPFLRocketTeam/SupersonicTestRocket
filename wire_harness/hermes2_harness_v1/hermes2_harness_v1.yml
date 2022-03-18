@@ -1,0 +1,27 @@
+connectors:
+  X1: &template_total_pressure
+    pinlabels: [CS_TC2, CS_TC1, MISO, SCK, CS_RSC_TOTAL_EE, DR_RSC_TOTAL, 3V3, MOSI, GND, CS_RSC_TOTAL_ADC]
+    subtype: male
+  X2:
+    <<: *template_total_pressure
+  X3:
+    pinlabels: [TC1+, TC1-]
+    subtype: female
+  X4:
+    pinlabels: [TC1+, TC1-]
+    subtype: male
+
+cables:
+  W1:
+    wirecount: 10
+    length: 1
+  W2:
+    wirecount: 2
+    length: 1
+
+connections:
+  -
+    - <-
+    - X1: [1-10]
+    - W1: [1-10]
+    - X2: [1-10]

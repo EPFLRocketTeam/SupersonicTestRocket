@@ -1,0 +1,15 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, 1 x 3 mm	0.1	m	Pitot_tube
+2	Cable, 10 wires	0.3	m	Nosecone_PCB_ribbon, Static_port_PCB_ribbon
+3	Cable, 16 wires	0.1	m	ADIS_ribbon
+4	Cable, 2 wires	2.1	m	Altimax_power, Pyro1_cable, Pyro2_cable
+5	Cable, 2 x 0.13 mm	0.5	m	TC1_cable, TC2_cable, TC3_cable, TC4_cable
+6	Cable, 6 wires	2.12	m	Altimax_IO, Load_cell_PCB_ribbon
+7	Connector, 14 pins	1		Altimax
+8	Connector, 15 pins	2		Nosecone_PCB, Static_port_PCB
+9	Connector, 16 pins	1		ADIS
+10	Connector, 4 pins	1		Load_cell_PCB
+11	Connector, 48 pins	1		Main_PCB
+12	Connector, E-match	3		Pyro1, Pyro2, Secondary_charge
+13	Connector, K-type thermocouple, 0.13mm	4		TC1_probe, TC2_probe, TC3_probe, TC4_probe
+14	Connector, Metallic tube, 3mm ID	1		Pitot
