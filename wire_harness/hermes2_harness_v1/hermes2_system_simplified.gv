@@ -263,7 +263,7 @@ graph {
  </td></tr>
  <tr><td>
   <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
-   <td balign="left">1-pin</td>
+   <td balign="left">2-pin</td>
   </tr></table>
  </td></tr>
  <tr><td>
@@ -271,6 +271,12 @@ graph {
    <tr>
     <td port="p1l">1</td>
     <td>Main_PCB</td>
+    <td port="p1r">1</td>
+   </tr>
+   <tr>
+    <td port="p2l">2</td>
+    <td>Load_cell</td>
+    <td port="p2r">2</td>
    </tr>
   </table>
  </td></tr>
@@ -279,6 +285,37 @@ graph {
    <td balign="left">
     <table border="0" cellspacing="0" cellborder="0"><tr>
      <td width="300" height="300.0" fixedsize="true"><img scale="true" src="images/load_cell_pcb.png"/></td>
+    </tr></table>
+   </td>
+  </tr></table>
+ </td></tr>
+</table>
+> fillcolor="#FFFFFF" shape=box style=filled]
+	Load_cell [label=<
+<table border="0" cellspacing="0" cellpadding="0">
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
+   <td balign="left">Load_cell</td>
+  </tr></table>
+ </td></tr>
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
+   <td balign="left">1-pin</td>
+  </tr></table>
+ </td></tr>
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1">
+   <tr>
+    <td port="p1l">1</td>
+    <td>Load_cell_PCB</td>
+   </tr>
+  </table>
+ </td></tr>
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
+   <td balign="left">
+    <table border="0" cellspacing="0" cellborder="0"><tr>
+     <td width="300" height="300.0" fixedsize="true"><img scale="true" src="images/load_cell.png"/></td>
     </tr></table>
    </td>
   </tr></table>
@@ -919,6 +956,56 @@ graph {
      1:GY
     </td>
     <td>Load_cell_PCB:1:Main_PCB</td>
+   </tr>
+   <tr>
+    <td colspan="3" border="0" cellspacing="0" cellpadding="0" port="w1" height="6">
+     <table cellspacing="0" cellborder="0" border="0">
+      <tr><td colspan="3" cellpadding="0" height="2" bgcolor="#000000" border="0"></td></tr>
+      <tr><td colspan="3" cellpadding="0" height="2" bgcolor="#999999" border="0"></td></tr>
+      <tr><td colspan="3" cellpadding="0" height="2" bgcolor="#000000" border="0"></td></tr>
+     </table>
+    </td>
+   </tr>
+   <tr><td>&nbsp;</td></tr>
+  </table>
+ </td></tr>
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
+   <td balign="left">
+    <table border="0" cellspacing="0" cellborder="0"><tr>
+     <td width="300" height="300.0" fixedsize="true"><img scale="true" src="images/micromatch_ribbon.webp"/></td>
+    </tr></table>
+   </td>
+  </tr></table>
+ </td></tr>
+</table>
+> fillcolor="#FFFFFF" shape=box style=filled]
+	edge [color="#000000:#999999:#000000"]
+	Load_cell_PCB:p2r:e -- Load_cell_ribbon:w1:w
+	Load_cell_ribbon:w1:e -- Load_cell:p1l:w
+	Load_cell_ribbon [label=<
+<table border="0" cellspacing="0" cellpadding="0">
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
+   <td balign="left">Load_cell_ribbon</td>
+  </tr></table>
+ </td></tr>
+ <tr><td>
+  <table border="0" cellspacing="0" cellpadding="3" cellborder="1"><tr>
+   <td balign="left">4-pin TE connectivity ribbon cable</td>
+   <td balign="left">1x</td>
+   <td balign="left">0.1 m</td>
+  </tr></table>
+ </td></tr>
+ <tr><td>
+  <table border="0" cellspacing="0" cellborder="0">
+   <tr><td>&nbsp;</td></tr>
+   <tr>
+    <td>Load_cell_PCB:2:Load_cell</td>
+    <td>
+     1:GY
+    </td>
+    <td>Load_cell:1:Load_cell_PCB</td>
    </tr>
    <tr>
     <td colspan="3" border="0" cellspacing="0" cellpadding="0" port="w1" height="6">

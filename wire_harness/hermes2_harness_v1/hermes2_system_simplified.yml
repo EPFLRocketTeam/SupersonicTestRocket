@@ -41,9 +41,15 @@ connectors:
     type: Micro-match connector
     
   Load_cell_PCB:
-    pinlabels: [Main_PCB]
+    pinlabels: [Main_PCB, Load_cell]
     image:
       src: images/load_cell_pcb.png
+      width: 300
+      
+  Load_cell:
+    pinlabels: [Load_cell_PCB]
+    image:
+      src: images/load_cell.png
       width: 300
       
   Altimax:
@@ -143,6 +149,15 @@ cables:
     image:
       src: images/micromatch_ribbon.webp
       width: 300
+      
+  Load_cell_ribbon:
+    wirecount: 1
+    type: 4-pin TE connectivity ribbon cable
+    length: .1
+    colors: [GY]
+    image:
+      src: images/micromatch_ribbon.webp
+      width: 300
     
   Altimax_power:
     wirecount: 1
@@ -221,6 +236,11 @@ connections:
     - Motor_retainer_connexion: [Load_cell]
     - Load_cell_PCB_ribbon: [1]
     - Load_cell_PCB: [Main_PCB]
+  # Load cell to PCB
+  -
+    - Load_cell_PCB: [Load_cell]
+    - Load_cell_ribbon: [1]
+    - Load_cell: [Load_cell_PCB]
   #Altimax power
   -
     - Altimax: [Power]
