@@ -32,6 +32,16 @@ private:
      */
     void exitCmdMode();
 
+    /**
+     * @brief Set the destination in XBee (store it and update it)
+     * 
+     * @warning Needs to be Commad mode
+     * 
+     * @param destH 
+     * @param destL 
+     */
+    void setDestination(uint32_t destH, uint32_t destL);
+
 public:
     /**
      * @brief Construct a new XB8XWrapper object
@@ -42,13 +52,13 @@ public:
     XB8XWrapper(uint8_t Rx, uint8_t Tx);
 
     /**
-     * @brief Set the destination in XBee (store it and update it)
+     * @brief Change the destination in XBee (store it and update it)
      * 
      * @warning Needs to use Commad mode, which is slow. @see enterCmdMode()
      * 
      * @param destH 
      * @param destL 
      */
-    void setDestination(uint32_t destH, uint32_t destL);
+    void changeDestination(uint32_t destH, uint32_t destL);
 
 };

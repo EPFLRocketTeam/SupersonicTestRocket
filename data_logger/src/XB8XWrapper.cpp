@@ -48,12 +48,32 @@ void XB8XWrapper::setDestination(uint32_t dH, uint32_t dL)
     snprintf(destHBuffer,10,"%8.8lX",destH);
     snprintf(destLBuffer,10,"%8.8lX",destL);
 
-    enterCmdMode();
-    serial.write("ATDH");
+    serial.write("ATDH"); // Set high 32-bits of destination address
     serial.write(destHBuffer);
     serial.write('\r');
     
-    serial.write("ATDL");
+    serial.write("ATDL"); // Set low 32-bits of destination address
+    serial.write(destLBuffer);
+    serial.write('\r');
+}
+
+void XB8XWrapper::changeDestination(uint32_t dH, uint32_t dL)
+{
+    destH = dH;
+    destL = dL;
+
+    char destHBuffer[11] = "";
+    char destLBuffer[11] = "";
+
+    snprintf(destHBuffer,10,"%8.8lX",destH);
+    snprintf(destLBuffer,10,"%8.8lX",destL);
+
+    enterCmdMode();
+    serial.write("ATDH"); // Set high 32-bits of destination address
+    serial.write(destHBuffer);
+    serial.write('\r');
+    
+    serial.write("ATDL"); // Set low 32-bits of destination address
     serial.write(destLBuffer);
     serial.write('\r');
     exitCmdMode();
