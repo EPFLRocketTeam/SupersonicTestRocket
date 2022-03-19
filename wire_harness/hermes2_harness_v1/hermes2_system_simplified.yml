@@ -1,0 +1,265 @@
+connectors:  
+  Pitot:
+    style: simple
+    type: Metallic tube
+    subtype: 3mm ID
+  
+  Nosecone_PCB:
+    pinlabels: [TC3, TC4, Main_PCB, Pitot tube]
+    image:
+      src: images/nosecone_pcb.png
+      width: 300
+      
+  Main_PCB:
+    pinlabels: [Nosecone_PCB, ADIS, Static_port_PCB, Load_cell_PCB,
+                Altimax_power, Altimax_IO]
+    image:
+      src: images/main_pcb.png
+      width: 450
+      
+  ADIS:
+    pinlabels: [Main_PCB]
+    image:
+      src: images/adis.webp
+      width: 300
+      
+  Static_port_PCB:
+    pinlabels: [TC1, TC2, Main_PCB, Static_tube]
+    image:
+      src: images/static_port_pcb.png
+      width: 300
+  Static_port:
+    style: simple
+    type: Metallic tube
+    subtype: 3mm ID
+    image:
+      src: images/static_port.png
+      width: 300
+      
+  Motor_retainer_connexion:
+    pinlabels: [Load_cell, Secondary_charge]
+    type: Micro-match connector
+    
+  Load_cell_PCB:
+    pinlabels: [Main_PCB]
+    image:
+      src: images/load_cell_pcb.png
+      width: 300
+      
+  Altimax:
+    pinlabels: [Power, I/O, Pyro1, Pyro2, Pyro3]
+    image:
+      src: images/altimax.png
+      width: 450
+      
+  #pyros
+  
+  Pyro1: &template_pyro
+    style: simple
+    type: E-match
+  Pyro2:
+    <<: *template_pyro
+  Secondary_charge:
+    <<: *template_pyro
+    image:
+      src: images/secondary_charge.png
+      width: 300
+    
+
+cables:
+  # T~CS
+  TC1_cable: &template_TC_cable
+    wirecount: 1
+    type: K-type thermocouple
+    gauge: 0.13 mm
+    colors: [OL]
+    length: 0.10
+    notes: Connected via a terminal block.
+  TC2_cable:
+    <<: *template_TC_cable
+    length: 0.10
+  TC3_cable:
+    <<: *template_TC_cable
+    length: 0.15
+  TC4_cable:
+    <<: *template_TC_cable
+    length: 0.15
+  
+  # nosecone
+  Pitot_tube: &template_tubing
+    wirecount: 1
+    type: Transparent tubing
+    length: 0.1
+    gauge: 3 mm
+    colors: [LB]
+    image:
+      src: images/clear_tubing.jpg
+      width: 300
+  Nosecone_PCB_ribbon:
+    wirecount: 1
+    type: 10-pin Micro-match ribbon cable
+    length: .15
+    colors: [GY]
+    image:
+      src: images/micromatch_ribbon.webp
+      width: 300
+    
+  ADIS_ribbon:
+    wirecount: 1
+    type: 16-pin IDC ribbon cable
+    length: .1
+    colors: [GY]
+    image:
+      src: images/IDC_ribbon.png
+      width: 300
+    
+  Static_port_PCB_ribbon:
+    wirecount: 1
+    type: 10-pin Micro-match ribbon cable
+    length: .15
+    colors: [GY]
+    image:
+      src: images/micromatch_ribbon.webp
+      width: 300
+  Static_tube:
+    <<: *template_tubing
+    length: 0.1
+    
+  Motor_retainer_ribbon:
+    wirecount: 2
+    type: 6-pin Micro-match ribbon cable
+    length: 2
+    colors: [GY, GY]
+    image:
+      src: images/micromatch_ribbon.webp
+      width: 300
+    notes: Attached to parachute ropes
+    
+  Load_cell_PCB_ribbon:
+    wirecount: 1
+    type: 4-pin Micro-match ribbon cable
+    length: .15
+    colors: [GY]
+    image:
+      src: images/micromatch_ribbon.webp
+      width: 300
+    
+  Altimax_power:
+    wirecount: 1
+    type: Standard cables
+    gauge: 1
+    length: .1
+    colors: [RD]
+    
+  Altimax_IO:
+    wirecount: 1
+    type: 6-pin Micro-match ribbon
+    length: .12
+    colors: [GY]
+    image:
+      src: images/micromatch_ribbon.webp
+      width: 300
+    
+  Pyro1_cable:
+    wirecount: 1
+    length: 1
+  Pyro2_cable:
+    wirecount: 1
+    length: 1
+  Secondary_charge_cable:
+    wirecount: 1
+    length: .1
+    colors: [OG]
+   
+
+connections:
+  # TC1
+  -
+    - Static_port_PCB: [TC1]
+    - TC1_cable: [1]
+  # TC2
+  -
+    - Static_port_PCB: [TC2]
+    - TC2_cable: [1]
+  # TC3
+  -
+    - TC3_cable: [1]
+    - Nosecone_PCB: [TC3]
+  # TC4
+  -
+    - TC4_cable: [1]
+    - Nosecone_PCB: [TC4]
+  # Pitot
+  -
+    - [Pitot]
+    - Pitot_tube: [1]
+    - Nosecone_PCB: [Pitot tube]
+  # Nosecone PCB to main board
+  -
+    - Nosecone_PCB: [Main_PCB]
+    - Nosecone_PCB_ribbon: [1]
+    - Main_PCB: [Nosecone_PCB]
+  # ADIS
+  -
+    - ADIS: [1]
+    - ADIS_ribbon: [1]
+    - Main_PCB: [ADIS]
+  # Static port PCB to main board
+  -
+    - Main_PCB: [Static_port_PCB]
+    - Static_port_PCB_ribbon: [1]
+    - Static_port_PCB: [Main_PCB]
+  # Static port
+  -
+    - Static_port_PCB: [Static_tube]
+    - Static_tube: [1]
+    - [Static_port]
+  # Load cell PCB to main board
+  -
+    - Main_PCB: [Load_cell_PCB]
+    - Motor_retainer_ribbon: [1]
+    - Motor_retainer_connexion: [Load_cell]
+    - Load_cell_PCB_ribbon: [1]
+    - Load_cell_PCB: [Main_PCB]
+  #Altimax power
+  -
+    - Altimax: [Power]
+    - Altimax_power: [1]
+    - Main_PCB: [Altimax_power]
+  #Altimax I/O
+  -
+    - Altimax: [I/O]
+    - Altimax_IO: [1]
+    - Main_PCB: [Altimax_IO]
+  # Pyro 1
+  -
+    - Altimax: [Pyro1]
+    - Pyro1_cable: [1]
+    - [Pyro1]
+  # Pyro 2
+  -
+    - Altimax: [Pyro2]
+    - Pyro2_cable: [1]
+    - [Pyro2]
+  # Pyro 3
+  -
+    - Altimax: [Pyro3]
+    - Motor_retainer_ribbon: [2]
+    - Motor_retainer_connexion: [Secondary_charge]
+    - Secondary_charge_cable: [1]
+    - [Secondary_charge]
+    
+    
+    
+tweak:
+  override:
+    # graph:
+      # ranksep: "0.5"  # Reduce the horizontal spacing (default 2)
+    # Nosecone_PCB_board_connection_aux:
+      # shape: none  # Hide the surrounding frame
+      # fontsize: "12"  # Reduce the space needed for text
+      # fontcolor: white  # Same as background to hide the text
+    # Nosecone_PCB_board_connection_main:
+      # shape: none  # Hide the surrounding frame
+      # fontsize: "12"  # Reduce the space needed for text
+      # fontcolor: white  # Same as background to hide the text

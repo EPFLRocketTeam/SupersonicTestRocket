@@ -1,0 +1,17 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, 1 wires	2.1	m	Pyro1_cable, Pyro2_cable, Secondary_charge_cable
+2	Cable, 10-pin Micro-match ribbon cable, 1 wires	0.3	m	Nosecone_PCB_ribbon, Static_port_PCB_ribbon
+3	Cable, 16-pin IDC ribbon cable, 1 wires	0.1	m	ADIS_ribbon
+4	Cable, 4-pin Micro-match ribbon cable, 1 wires	0.15	m	Load_cell_PCB_ribbon
+5	Cable, 6-pin Micro-match ribbon cable, 2 wires	2	m	Motor_retainer_ribbon
+6	Cable, 6-pin Micro-match ribbon, 1 wires	0.12	m	Altimax_IO
+7	Cable, K-type thermocouple, 1 x 0.13 mm	0.5	m	TC1_cable, TC2_cable, TC3_cable, TC4_cable
+8	Cable, Standard cables, 1 x 1 mm²	0.1	m	Altimax_power
+9	Cable, Transparent tubing, 1 x 3 mm	0.2	m	Pitot_tube, Static_tube
+10	Connector, 1 pins	2		ADIS, Load_cell_PCB
+11	Connector, 4 pins	2		Nosecone_PCB, Static_port_PCB
+12	Connector, 5 pins	1		Altimax
+13	Connector, 6 pins	1		Main_PCB
+14	Connector, E-match	3		Pyro1, Pyro2, Secondary_charge
+15	Connector, Metallic tube, 3mm ID	2		Pitot, Static_port
+16	Connector, Micro-match connector, 2 pins	1		Motor_retainer_connexion
