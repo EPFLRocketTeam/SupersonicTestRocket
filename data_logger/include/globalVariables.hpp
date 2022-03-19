@@ -43,11 +43,12 @@ extern const uint8_t MAX7_PINS[];
 
 // Sensors ----------------------------------------------------------------------
 
-constexpr size_t NUM_SENSORS = 9; //Should hold in uint8_t
+constexpr size_t NUM_SENSORS = 10; //Should hold in uint8_t
 
 extern const uint8_t ADIS16470_INDEX,
     AISx120SX_INDEX,
     Honeywell_Rsc_0_INDEX,
     Honeywell_Rsc_1_INDEX,
     MAX31855_START_INDEX,
-    Altimax_INDEX;
+    Altimax_INDEX,
+    MAX7_INDEX;

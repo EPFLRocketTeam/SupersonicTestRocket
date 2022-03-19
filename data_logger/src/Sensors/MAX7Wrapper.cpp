@@ -24,7 +24,7 @@ MAX7Wrapper::~MAX7Wrapper()
 
 bool MAX7Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
-    SoftwareSerial mySerial(10, 11);
+    SoftwareSerial mySerial(Rx, Tx);
     mySerial.begin(38400);
 
     // Try to see if the MAX7 is working
@@ -35,6 +35,7 @@ bool MAX7Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
         {
             gnss.setUART1Output(COM_TYPE_UBX); // Set the UART port to output UBX only
             gnss.setI2COutput(COM_TYPE_UBX);   // Set the I2C port to output UBX only (turn off NMEA noise)
+            gnss.setAutoPVT(true);             // Ask for periodic updates
             gnss.saveConfiguration();          // Save the current settings to flash and BBR
             active = true;
             return active;
