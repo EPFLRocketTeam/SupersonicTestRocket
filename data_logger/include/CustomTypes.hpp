@@ -30,7 +30,8 @@ enum packetType : uint8_t
     AISx120SX_PACKET_TYPE,         ///< AISx120SX Packet
     MAX31855_PACKET_TYPE,          ///< MAX31855 packet
     MAX7_PACKET_TYPE,              ///< MAX7 packet
-    XBee_PACKET_TYPE               ///< XBee packet
+    XBee_PACKET_TYPE,              ///< XBee packet
+    AD8556_PACKET_TYPE             ///< AD8556 packet
 };
 
 /**
