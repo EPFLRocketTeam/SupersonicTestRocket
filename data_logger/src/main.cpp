@@ -58,6 +58,7 @@
 #include "Sensors/AISx120SXWrapper.hpp"
 #include "Sensors/HoneywellRscWrapper.hpp"
 #include "Sensors/MAX31855Wrapper.hpp"
+#include "Sensors/MAX7Wrapper.hpp"
 
 // DEFINE VARIABLES ============================================================
 
@@ -125,6 +126,8 @@ MAX31855Wrapper tcs_3(CS_TCS_PIN[3]);
 
 AltimaxWrapper altimax(ALTIMAX_DR_PINS[0], ALTIMAX_DR_PINS[1], ALTIMAX_DR_PINS[2]);
 
+MAX7Wrapper max7(MAX7_PINS[0],MAX7_PINS[1]);
+
 // Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
@@ -137,14 +140,16 @@ Sensor *sensorArray[NUM_SENSORS] = {&adis16470,
                                     &tcs_1,
                                     &tcs_2,
                                     &tcs_3,
-                                    &altimax};
+                                    &altimax,
+                                    &max7};
 
 const uint8_t ADIS16470_INDEX = 0,
               AISx120SX_INDEX = 1,
               Honeywell_Rsc_0_INDEX = 2,
               Honeywell_Rsc_1_INDEX = 3,
               MAX31855_START_INDEX = 4,
-              Altimax_INDEX = 8;
+              Altimax_INDEX = 8,
+              MAX7_INDEX = 9;
 
 const int SENSOR_SETUP_ATTEMPTS = 7;
 const int SETUP_DELAY = 200; // delay in ms to wait between setup attemps
@@ -152,32 +157,7 @@ const int SETUP_DELAY = 200; // delay in ms to wait between setup attemps
 // USER FUNCTIONS ==============================================================
 
 // SETUP =======================================================================
-/*
-void buildSensorArray()
-{
-  sensorArray[ADIS16470_INDEX] = new ADIS16470Wrapper(CS_ADIS16470_PIN, DR_ADIS16470_PIN,
-                                                      RST_ADIS16470_PIN);
 
-  sensorArray[AISx120SX_INDEX] = new AISx120SXWrapper(CS_AIS1120SX_PIN, _800Hz, _800Hz,
-                                                      false, false, false, false);
-
-  sensorArray[Honeywell_Rsc_0_INDEX] = new HoneywellRscWrapper(DR_RSC[0], CS_RS_EE_PIN[0],
-                                                               CS_RSC_ADC_PIN[0], 1,
-                                                               F_DR_2000_SPS, 50000);
-
-  sensorArray[Honeywell_Rsc_1_INDEX] = new HoneywellRscWrapper(DR_RSC[1], CS_RS_EE_PIN[1],
-                                                               CS_RSC_ADC_PIN[1], 0,
-                                                               F_DR_2000_SPS, 50000);
-
-  for (size_t t = 0; t < 4; t++)
-  {
-    sensorArray[MAX31855_START_INDEX + t] = new MAX31855Wrapper(CS_TCS_PIN[t]);
-  }
-
-  // TODO:
-  // sensorArray[Altimax_INDEX] = new AltimaxWrapper(args...);
-}
-*/
 
 void setup()
 {

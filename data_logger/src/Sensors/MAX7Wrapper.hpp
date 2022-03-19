@@ -138,7 +138,7 @@ public:
    *
    * @param l Provided value
    */
-  uint32_t setLongitude(uint32_t l)
+  void setLongitude(uint32_t l)
   {
     reinterpret_cast<MAX7Body *>(content)->longitude = l;
   }
@@ -148,7 +148,7 @@ public:
    *
    * @param l Provided value
    */
-  uint32_t setAltitude(uint32_t l)
+  void setAltitude(uint32_t l)
   {
     reinterpret_cast<MAX7Body *>(content)->altitude = l;
   }

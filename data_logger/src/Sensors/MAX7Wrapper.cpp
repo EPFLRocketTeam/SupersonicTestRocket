@@ -75,6 +75,7 @@ bool MAX7Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR))
             lastPacket.setAltitude(altitude);
         }
     }
+
     return returnVal;
 }
 
