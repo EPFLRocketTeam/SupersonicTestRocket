@@ -19,14 +19,9 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-// *************** MAX31855Packet *************** //
+#include "MAX31855Body.h"
 
-/// Describe the content of a MAX31855 packet
-struct MAX31855Body
-{
-  float probeTemperature = 0;  ///< [degC]; 4 bytes
-  float sensorTemperature = 0; ///< [degC]; 4 bytes
-};
+// *************** MAX31855Packet *************** //
 
 #define MAX31855_LINE_0 "Probe temp: %6e °C\n"
 #define MAX31855_LINE_1 "Sensor temp: %6e °C\n"
@@ -119,6 +114,23 @@ public:
     default:
       return 0;
     }
+  }
+
+  /**
+   * @brief Write MAX31855Body in Big Endian style in \p buffer
+   * 
+   * @warning Move \p buffer past the data
+   * 
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    uint8_t* reBuffer = (uint8_t*)buffer;
+    float probe = getProbeTemperature();
+    float sensor = getSensorTemperature();
+
+    BIG_ENDIAN_WRITE(probe,reBuffer);
+    BIG_ENDIAN_WRITE(sensor,reBuffer);
   }
 
   // ----- Setters ----- //

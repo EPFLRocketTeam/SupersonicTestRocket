@@ -11,12 +11,8 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-struct MAX7Body
-{
-  uint32_t latitude;  ///< [deg * 10^-7], 8 bytes
-  uint32_t longitude; ///< [deg * 10^-7], 8 bytes
-  uint32_t altitude;  ///< [mm], 8 bytes
-};
+#include "MAX7Body.h"
+
 
 #define MAX7_LINE_0 "Latitude:  %8ld deg.10^-7\n"
 #define MAX7_LINE_1 "Longitude: %8ld deg.10^-7\n"
@@ -120,6 +116,25 @@ public:
     default:
       return 0;
     }
+  }
+
+  /**
+   * @brief Write MAX7Body in Big Endian style in \p buffer
+   * 
+   * @warning Move \p buffer past the data
+   * 
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    uint8_t* reBuffer = (uint8_t*)buffer;
+    uint32_t latitude = getLatitude();
+    uint32_t longitude = getLongitude();
+    uint32_t altitude = getAltitude();
+
+    BIG_ENDIAN_WRITE(latitude,reBuffer);
+    BIG_ENDIAN_WRITE(longitude,reBuffer);
+    BIG_ENDIAN_WRITE(altitude,reBuffer);
   }
 
   // ----- Setters ----- //

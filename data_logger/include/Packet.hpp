@@ -197,11 +197,11 @@ public:
     }
 
     /**
-     * @brief Get the timestamp from header
+     * @brief Get the timestamp from header, in microseconds
      *
      * @return uint8_t
      */
-    uint8_t getTimestamp()
+    uint32_t getTimestamp()
     {
         return header.timestamp;
     }
@@ -209,12 +209,19 @@ public:
     /**
      * @brief Copy Packet::content to holder
      *
-     * @param holder A buffer of size as least packetSize
+     * @param holder A buffer of size at least packetSize
      */
     void getContent(void *holder)
     {
         memcpy(holder, content, header.packetSize);
     }
+    
+    /**
+     * @brief Write the content in Big Endian format into the buffer
+     * 
+     * @param buffer A buffer of size at least packetSize
+     */
+    virtual void getBigEndian(void* buffer);
 
     // ----- Accessors ----- //
 

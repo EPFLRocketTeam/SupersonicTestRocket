@@ -19,13 +19,9 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-// *************** AISx120SXPacket *************** //
+#include "AISx120SXBody.h"
 
-/// Describe the content of a AISx120SX packet
-struct AISx120SXBody
-{
-  float accel[2] = {0}; ///< Linear acceleration [g] along X,Y axis; 2 * 4 = 8 bytes
-};
+// *************** AISx120SXPacket *************** //
 
 #define AISx120SX_LINE_0 "Linear accelerations:\n"
 #define AISx120SX_LINE_1 "\t- X: %6e g\n"
@@ -142,6 +138,23 @@ public:
     default:
       return 0;
     }
+  }
+
+  /**
+   * @brief Write AISx120SXBody in Big Endian style in \p buffer
+   * 
+   * @warning Move \p buffer past the data
+   * 
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    uint8_t* reBuffer = (uint8_t*)buffer;
+    float accX = getXaccel();
+    float accY = getYaccel();
+
+    BIG_ENDIAN_WRITE(accX,reBuffer);
+    BIG_ENDIAN_WRITE(accY,reBuffer);
   }
 
   // ----- Setters ----- //

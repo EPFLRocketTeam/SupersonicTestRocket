@@ -14,18 +14,9 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 
-// *************** Altimax Packets *************** //
+#include "AltimaxBody.h"
 
-/// Describe the content of a Altimax pakcet
-struct AltimaxBody
-{
-  /**
-   * Altimax has 3 pins that can output data
-   * The 4th boolean is to ensure proper structure alignment (Teensy is 32-bit)
-   * 4 * 1 = 4 bytes
-   */
-  bool pinStates[4] = {0};
-};
+// *************** Altimax Packets *************** //
 
 #define Altimax_LINE_0 "PIN 0 Status: %2d\n"
 #define Altimax_LINE_1 "PIN 1 Status: %2d\n"
@@ -153,6 +144,23 @@ public:
     default:
       return 0;
     }
+  }
+
+  /**
+   * @brief Write AltimaxBody in Big Endian style in \p buffer
+   * 
+   * @warning Move \p buffer past the data
+   * 
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    uint8_t* reBuffer = (uint8_t*)buffer;
+
+    // Booleans are not endian-sensitive
+    *(reBuffer++) = getPin0state();
+    *(reBuffer++) = getPin1state();
+    *(reBuffer++) = getPin2state();
   }
 
   // ----- Setters ----- //
