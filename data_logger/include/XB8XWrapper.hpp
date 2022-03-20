@@ -10,7 +10,7 @@
 #include "globalVariables.hpp"
 
 // Fetch datagram IDs from GS part
-#include "../lib/ERT2020GS/Telecom/DataHandler/DatagramTypes.h"
+#include <DatagramTypes.h>
 
 /**
  * @brief Generic XBee API frame structure

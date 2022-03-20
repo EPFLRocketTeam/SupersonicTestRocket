@@ -22,14 +22,14 @@ struct PacketHeader
     uint32_t timestamp = 0;             ///< Timestamp, in microseconds, 4 bytes
 };
 
-/// Description of errors bits in packet header                                                                                                 
+/// Description of errors bits in packet header
 #define HEADER_ERROR_DESC \
-                    "\nErr code format: [Measure late] [Check beats skipped] [No DR trigger] [Checksum error] [Invalid measure]\n" 
+    "\nErr code format: [Measure late] [Check beats skipped] [No DR trigger] [Checksum error] [Invalid measure]\n"
 
 /// Description of packet fields
-#define HEADER_LINE "--- Packet type --- | -- Packet size -- | -- Sensor ID -- | -- Error code -- | -- Timestamp -- | -- Data     \n"\
+#define HEADER_LINE "--- Packet type --- | -- Packet size -- | -- Sensor ID -- | -- Error code -- | -- Timestamp -- | -- Data     \n"
 
-/// Format for packet header's data 
+/// Format for packet header's data
 #define HEADER_FRMT ">: %-16.16s : %8.8u          : %8.8u        :   %1.1d  %1.1d  %1.1d  %1.1d  %1.1d  : %15.15lu | "
 
 /// Size of the packet header's format
@@ -37,7 +37,7 @@ struct PacketHeader
 
 /// Filler of size HEADER_WIDTH
 #define HEADER_FILLER_LINE \
-                    "                                                                                               | "
+    "                                                                                               | "
 
 /// Size left after header's data
 #define DATA_SIZE 32
@@ -215,13 +215,13 @@ public:
     {
         memcpy(holder, content, header.packetSize);
     }
-    
+
     /**
      * @brief Write the content in Big Endian format into the buffer
-     * 
+     *
      * @param buffer A buffer of size at least packetSize
      */
-    virtual void getBigEndian(void* buffer);
+    virtual void getBigEndian(void *buffer) = 0;
 
     // ----- Accessors ----- //
 
@@ -254,7 +254,7 @@ public:
 
     /**
      * @brief Fill the given \c char* buffer with the \c size_t line of printable description of the packet's content
-     * 
+     *
      * @return int : 1 if there if another line to get, 0 if there no next line
      */
     virtual int getPrintableContent(char *, size_t) = 0;
