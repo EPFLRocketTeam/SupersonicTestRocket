@@ -5,8 +5,10 @@
 // debugging mode
 // for now it's just whether to take real data or generate some fake one
 
-// CHANGE : Use preprocessor instruction instead (in main.cpp directly)
-//#define DEBUG
+#define DEBUG
+const bool SERIAL_PRINT = true;
+//#include "TeensyDebug.h"
+//#pragma GCC optimize ("O0")
 
 // Pinout ----------------------------------------------------------------------
 // I/O
@@ -33,13 +35,20 @@ extern const uint8_t CS_TCS_PIN[4];
 // Altimax
 extern const uint8_t ALTIMAX_DR_PINS[3];
 
+// XBee
+extern const uint8_t XBEE_PINS[];
+
+// MAX-7
+extern const uint8_t MAX7_PINS[];
+
 // Sensors ----------------------------------------------------------------------
 
-constexpr size_t NUM_SENSORS = 9; //Should hold in uint8_t
+constexpr size_t NUM_SENSORS = 10; //Should hold in uint8_t
 
 extern const uint8_t ADIS16470_INDEX,
     AISx120SX_INDEX,
     Honeywell_Rsc_0_INDEX,
     Honeywell_Rsc_1_INDEX,
     MAX31855_START_INDEX,
-    Altimax_INDEX;
+    Altimax_INDEX,
+    MAX7_INDEX;

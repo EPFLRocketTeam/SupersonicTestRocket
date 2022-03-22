@@ -6,8 +6,7 @@
 #include <cstdio>
 #include <cassert>
 
-#include <exception>
-#include <string>
+#include <Arduino.h>
 
 #include "CustomTypes.hpp"
 
@@ -23,23 +22,31 @@ struct PacketHeader
     uint32_t timestamp = 0;             ///< Timestamp, in microseconds, 4 bytes
 };
 
-#define PACKET_HEADER_FORMAT "**************** PACKET HEADER *****************\n" \
-                             "Packet type: %s\n"                                  \
-                             "Packet size: %4d\n"                                 \
-                             "Sensor ID:   %4d\n"                                 \
-                             "Errors:\n"                                          \
-                             "\t- Measurement is late:        %2d\n"              \
-                             "\t- Several check beat skipped: %2d\n"              \
-                             "\t- DR pin didn't trigger read: %2d\n"              \
-                             "\t- Checksum error:             %2d\n"              \
-                             "\t- Measurement invalid:        %2d\n"              \
-                             "Timestamp:   %12d\n"                                \
-                             "**************** END OF HEADER *****************\n"
+/// Description of errors bits in packet header
+#define HEADER_ERROR_DESC \
+    "\nErr code format: [Measure late] [Check beats skipped] [No DR trigger] [Checksum error] [Invalid measure]\n"
 
-/**
- * @brief A line of Packet header is at most 47, and 11 lines
- */
-#define PACKET_HEADER_PRINT_SIZE 48 * 11
+/// Description of packet fields
+#define HEADER_LINE "--- Packet type --- | -- Packet size -- | -- Sensor ID -- | -- Error code -- | -- Timestamp -- | -- Data     \n"
+
+/// Format for packet header's data
+#define HEADER_FRMT ">: %-16.16s : %8.8u          : %8.8u        :   %1.1d  %1.1d  %1.1d  %1.1d  %1.1d  : %15.15lu | "
+
+/// Size of the packet header's format
+#define HEADER_SIZE 98
+
+/// Filler of size HEADER_WIDTH
+#define HEADER_FILLER_LINE \
+    "                                                                                               | "
+
+/// Size left after header's data
+#define DATA_SIZE 32
+
+/// Total line size (with newline and end char)
+#define LINE_SIZE HEADER_SIZE + DATA_SIZE + 2
+
+/// Separator line
+#define SEPARATOR_LINE "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n\n"
 
 class Packet
 {
@@ -190,11 +197,11 @@ public:
     }
 
     /**
-     * @brief Get the timestamp from header
+     * @brief Get the timestamp from header, in microseconds
      *
      * @return uint8_t
      */
-    uint8_t getTimestamp()
+    uint32_t getTimestamp()
     {
         return header.timestamp;
     }
@@ -202,12 +209,19 @@ public:
     /**
      * @brief Copy Packet::content to holder
      *
-     * @param holder A buffer of size as least packetSize
+     * @param holder A buffer of size at least packetSize
      */
     void getContent(void *holder)
     {
         memcpy(holder, content, header.packetSize);
     }
+
+    /**
+     * @brief Write the content in Big Endian format into the buffer
+     *
+     * @param buffer A buffer of size at least packetSize
+     */
+    virtual void getBigEndian(void *buffer) = 0;
 
     // ----- Accessors ----- //
 
@@ -232,40 +246,40 @@ public:
     }
 
     /**
-     * @brief Return a pointer toward a printable description of the header
+     * @brief Fill the input buffer with a printable description of the packet's header
      *
-     * @return char* : Pointer toward formated header description
+     * @param output A buffer to fill with data, of size \c PACKET_HEADER_PRINT_SIZE
      */
-    char *getPrintableHeader()
-    {
-        char output[PACKET_HEADER_PRINT_SIZE];
-
-        bool error_array[ERROR_TYPE_NUM] = {false};
-
-        decodeErrorCode(error_array, header.errorCode);
-
-        snprintf(output, PACKET_HEADER_PRINT_SIZE, PACKET_HEADER_FORMAT,
-                 packetTypeStr(header.packetType_),
-                 header.packetSize,
-                 header.sensorID,
-                 error_array[0],
-                 error_array[1],
-                 error_array[2],
-                 error_array[3],
-                 error_array[4],
-                 header.timestamp);
-
-        return output;
-    }
+    void getPrintableHeader(char *buff);
 
     /**
-     * @brief Return a pointer toward a printable description of the content
+     * @brief Fill the given \c char* buffer with the \c size_t line of printable description of the packet's content
      *
-     * @return char* : Pointer toward formated content description
+     * @return int : 1 if there if another line to get, 0 if there no next line
      */
-    virtual char *getPrintableContent() = 0;
+    virtual int getPrintableContent(char *, size_t) = 0;
 
 protected:
     PacketHeader header;
     void *content = NULL;
 };
+
+/**
+ * @brief Convert a boolean errors' array to an error code (binary encoding)
+ *
+ * @param errorArray An error code array, of size ERROR_TYPE_NUM
+ * @return uint8_t : The corresponding error code
+ *
+ * @see Sensor::errors
+ */
+uint8_t getErrorCode(bool *errorArray);
+
+/**
+ * @brief Convert an error code into the corresponding boolean array
+ *
+ * @param errorArray An error to store the result
+ * @param errorCode An error code (errors encoded in binary)
+ *
+ * @see Sensor::errors
+ */
+void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode);

@@ -13,7 +13,7 @@ volatile bool flagArray[NUM_SENSORS];
 // Use lambda function for arbitrary interruptions
 #define INTERRUPT(i) []() { flagArray[i] = true; }
 
-void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
+void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper* xbee)
 {
   // SETUP phase
 
@@ -59,6 +59,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   // set the last time for every check to now
   uint32_t prevSyncLoop = micros();   // timing for syncing
   uint32_t prevSerialLoop = micros(); // timing for serial monitor output
+  uint32_t prevRadioLoop = micros(); // timing for radio transmission
 
   // checking if the sensors are due will update their check times even if we
   // don't use the boolean they return
@@ -75,11 +76,24 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
-  int errorCount = 0;
-  // acquire data as long as button sequence is not initated
+  // int errorCount = 0;
+  //  acquire data as long as button sequence is not initated
   Packet *pkt;
+  char line_serial_buffer[LINE_SIZE];
+  size_t line_nbr;
+  bool printSerial = false;
   while (checkButtons(buttonArray, stopEvent))
   {
+    printSerial = (micros() - prevSerialLoop > SERIAL_INTERVAL);
+
+    if (printSerial)
+    {
+      Serial.write(RESET_TERMINAL);
+      Serial.write(HEADER_ERROR_DESC);
+      Serial.write(HEADER_LINE);
+      Serial.write(SEPARATOR_LINE);
+    }
+
     for (size_t i = 0; i < sSize; i++)
     {
       if (sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
@@ -87,16 +101,37 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
         pkt = sArray[i]->getPacket(micros());
         rb.write(pkt->accessHeader(), sizeof(PacketHeader));
         rb.write(pkt->accessContent(), pkt->getPacketSize());
+      }
 
-        if (micros() - prevSerialLoop > SERIAL_INTERVAL)
+      if (micros() - prevRadioLoop > RADIO_INTERVAL)
+      {
+        xbee->send(pkt);
+        prevRadioLoop = micros();
+      }
+
+      if (printSerial)
+      {
+        pkt = sArray[i]->getPacket(micros());
+        memset((void *)line_serial_buffer, '\0', LINE_SIZE);
+        pkt->getPrintableHeader(line_serial_buffer);
+        line_nbr = 0;
+        while(pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE+1],line_nbr)) // SIZE does not include \0
         {
-          Serial.println(pkt->getPrintableHeader());
-          Serial.print(pkt->getPrintableContent());
-          prevSerialLoop = micros();
+          Serial.write(line_serial_buffer,LINE_SIZE);
+          memset((void *)line_serial_buffer, '\0', LINE_SIZE);
+          snprintf(line_serial_buffer,HEADER_SIZE,HEADER_FILLER_LINE);
+          line_nbr++;
         }
+        Serial.write(line_serial_buffer,LINE_SIZE);
+        Serial.write(SEPARATOR_LINE);
       }
     }
 
+    if (printSerial)
+    {
+      printSerial = false;
+      prevSerialLoop = micros();
+    }
     /* NOT IMPLEMENTED VERBATIM
     // ADIS16470
     if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
@@ -196,7 +231,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
   detachInterrupt(digitalPinToInterrupt(DR_RSC[0]));
   detachInterrupt(digitalPinToInterrupt(DR_RSC[1]));
-  detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PIN));
+  detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]));
 
   // CLEANUP Phase
   // Write any RingBuf data to file.

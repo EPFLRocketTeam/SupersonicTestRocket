@@ -58,3 +58,47 @@ void Packet::updateHeader(PacketHeader h)
 
     header = h;
 }
+
+void Packet::getPrintableHeader(char *buff)
+    {
+        // char output[PACKET_HEADER_PRINT_SIZE];
+
+        bool error_array[ERROR_TYPE_NUM] = {false};
+
+        decodeErrorCode(error_array, header.errorCode);
+
+        snprintf(buff, HEADER_SIZE, HEADER_FRMT,
+                 packetTypeStr(header.packetType_),
+                 header.packetSize,
+                 header.sensorID,
+                 error_array[0],
+                 error_array[1],
+                 error_array[2],
+                 error_array[3],
+                 error_array[4],
+                 header.timestamp);
+    }
+
+uint8_t getErrorCode(bool *errorArray)
+{
+  uint8_t errorCode = 0;
+
+  for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
+  {
+    if (errorArray[i])
+    {
+      bitSet(errorCode, 7 - i);
+    }
+  }
+
+  return errorCode;
+}
+
+// takes an error code and transforms it into a boolean array
+void decodeErrorCode(bool errorArray[ERROR_TYPE_NUM], uint8_t errorCode)
+{
+  for (size_t i = 0; i < ERROR_TYPE_NUM; i++)
+  {
+    errorArray[i] = bitRead(errorCode, 7 - i);
+  }
+}
