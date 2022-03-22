@@ -107,8 +107,6 @@ const int ACQ_STATE = 1;                // State to turn on acquisition
 const int ACQ_NEXT_STATE = 0;           // Next state to turn on
 const uint32_t ACQ_WINDOW_START = 1000; // [ms]
 const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
-// Serial monitor
-SerialMonitor monitor = SerialMonitor();
 
 // XBee
 
@@ -184,7 +182,6 @@ void setup()
   pinMode(BUTTON1_PIN, INPUT);
   digitalWrite(GREEN_LED_PIN, LOW); // turn off LED in case
   digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
-  monitor.writeMessage("I/O has been set up", micros(), true);
   successFlash(); // visual feedback setup is happening
   successFlash();
   errorFlash();
@@ -222,7 +219,7 @@ void setup()
   Serial.println("----- Setup complete -----");
   successFlash();
 
-  acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT);
+  acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT, &xbee);
 }
 
 // LOOP ========================================================================
@@ -253,26 +250,23 @@ void loop()
       case NONE:
         break;
       case GOOD_TRANSITION:
-        monitor.writeMessage("Will begin data acquisition "
-                             "as button was pressed.",
-                             micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         successFlash();
-        acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT);
+        acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT, &xbee);
         break;
       case BAD_TRANSITION:
-        monitor.writeMessage("Button not pressed properly. Not doing anything.",
-                             micros(), true);
+        //monitor.writeMessage("Button not pressed properly. Not doing anything.",
+        //                     micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         break;
       case WINDOW_START:
-        monitor.writeMessage("Within window to start data acquisition.",
-                             micros(), true);
+        //monitor.writeMessage("Within window to start data acquisition.",
+        //                     micros(), true);
         digitalWrite(GREEN_LED_PIN, HIGH);
         break;
       case WINDOW_END:
-        monitor.writeMessage("Left window to start data acquisition.",
-                             micros(), true);
+        //monitor.writeMessage("Left window to start data acquisition.",
+        //                     micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         break;
       }
