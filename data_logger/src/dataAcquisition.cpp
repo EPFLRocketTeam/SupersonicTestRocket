@@ -13,7 +13,7 @@ volatile bool flagArray[NUM_SENSORS];
 // Use lambda function for arbitrary interruptions
 #define INTERRUPT(i) []() { flagArray[i] = true; }
 
-void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
+void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper* xbee)
 {
   // SETUP phase
 
@@ -59,6 +59,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
   // set the last time for every check to now
   uint32_t prevSyncLoop = micros();   // timing for syncing
   uint32_t prevSerialLoop = micros(); // timing for serial monitor output
+  uint32_t prevRadioLoop = micros(); // timing for radio transmission
 
   // checking if the sensors are due will update their check times even if we
   // don't use the boolean they return
@@ -100,6 +101,12 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput)
         pkt = sArray[i]->getPacket(micros());
         rb.write(pkt->accessHeader(), sizeof(PacketHeader));
         rb.write(pkt->accessContent(), pkt->getPacketSize());
+      }
+
+      if (micros() - prevRadioLoop > RADIO_INTERVAL)
+      {
+        xbee->send(pkt);
+        prevRadioLoop = micros();
       }
 
       if (printSerial)

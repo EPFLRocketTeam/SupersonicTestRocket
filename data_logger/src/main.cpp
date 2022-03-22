@@ -56,9 +56,13 @@
 //    Sensors
 #include "Sensors/ADIS16470Wrapper.hpp"
 #include "Sensors/AISx120SXWrapper.hpp"
+#include "Sensors/AltimaxWrapper.hpp"
 #include "Sensors/HoneywellRscWrapper.hpp"
 #include "Sensors/MAX31855Wrapper.hpp"
 #include "Sensors/MAX7Wrapper.hpp"
+
+// XBee
+#include "XB8XWrapper.hpp"
 
 // DEFINE VARIABLES ============================================================
 
@@ -103,6 +107,10 @@ const int ACQ_STATE = 1;                // State to turn on acquisition
 const int ACQ_NEXT_STATE = 0;           // Next state to turn on
 const uint32_t ACQ_WINDOW_START = 1000; // [ms]
 const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
+
+// XBee
+
+XB8XWrapper xbee(XBEE_PINS[0],XBEE_PINS[1]);
 
 // Create the sensor wrapper objects -------------------------------------------
 
@@ -198,11 +206,15 @@ void setup()
     }
   }
 
-  /* TODO : Use a proper wrapper instead
-  // Setup the Altimax
-  altimax.setupProperties(UINT32_MAX, 0, UINT32_MAX, true);
-  pinMode(ALTIMAX_DR_PIN, INPUT_PULLDOWN);
-  */
+  Serial.print("XBee ");
+  if (xbee.setup(SENSOR_SETUP_ATTEMPTS,SETUP_DELAY))
+  {
+    Serial.print("has been correctly setup");
+  }
+  else
+  {
+    Serial.print("could not be setup !!!");
+  }
 
   Serial.println("----- Setup complete -----");
   successFlash();
