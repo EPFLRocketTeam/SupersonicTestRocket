@@ -19,7 +19,7 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-#include "AISx120SXBody.h"
+#include "PacketBody/AISx120SXBody.h"
 
 // *************** AISx120SXPacket *************** //
 

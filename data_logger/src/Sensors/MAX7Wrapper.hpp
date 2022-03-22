@@ -11,7 +11,7 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-#include "MAX7Body.h"
+#include "PacketBody/MAX7Body.h"
 
 
 #define MAX7_LINE_0 "Latitude:  %8ld deg.10^-7\n"

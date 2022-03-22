@@ -14,7 +14,7 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 
-#include "AltimaxBody.h"
+#include "PacketBody/AltimaxBody.h"
 
 // *************** Altimax Packets *************** //
 
