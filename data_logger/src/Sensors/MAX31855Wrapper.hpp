@@ -19,7 +19,7 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-#include "MAX31855Body.h"
+#include "PacketBody/MAX31855Body.h"
 
 // *************** MAX31855Packet *************** //
 

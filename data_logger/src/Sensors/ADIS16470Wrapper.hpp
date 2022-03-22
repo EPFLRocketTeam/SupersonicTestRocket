@@ -19,7 +19,7 @@
 #include "globalVariables.hpp"
 #include "macrofunctions.h"
 
-#include "ADIS16470Body.h"
+#include "PacketBody/ADIS16470Body.h"
 
 // *************** ADIS16470Packet *************** //
 
