@@ -1,6 +1,11 @@
-//
-// Created by Michael Ha on 22.03.22.
-//
+/*!
+ * \file HERMES_GS.cpp
+ *
+ * \brief Hermes Ground Support Equipment Transceiver
+ *
+ * \author      HA Michael - EPFL EL BA6
+ * \date        23.03.2022
+ */
 
 #include <chrono>
 #include <thread>
@@ -61,12 +66,13 @@ int main(int argc, char** argv) {
             dataHandler.updateTx(ID);
             xbee.send(dataHandler.getPacket(ID));
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
             // Receiver
         else {
             if (xbee.receive(dataHandler)) {
                 dataHandler.printLastRxPacket();
+                dataHandler.logLastRxPacket();
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
