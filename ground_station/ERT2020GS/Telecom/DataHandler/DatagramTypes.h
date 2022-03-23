@@ -68,14 +68,14 @@ namespace DatagramType {
 
         //! HERMES Datagram
 
-            HERMES_TEST,
-            HERMES_ADIS16470,
-            HERMES_AISx120SX,
-            HERMES_Altimax,
-            HERMES_HoneywellRsc_Pressure,
-            HERMES_HoneywellRsc_Temp,
-            HERMES_MAX7,
-            HERMES_MAX31855,
+            HERMES_TEST,                    //ID: 27
+            HERMES_ADIS16470,               //ID: 28
+            HERMES_AISx120SX,               //ID: 29
+            HERMES_Altimax,                 //ID: 30
+            HERMES_HoneywellRsc_Pressure,   //ID: 31
+            HERMES_HoneywellRsc_Temp,       //ID: 32
+            HERMES_MAX7,                    //ID: 33
+            HERMES_MAX31855,                //ID: 34
 
         /// TEST PACKET
             TEST,
