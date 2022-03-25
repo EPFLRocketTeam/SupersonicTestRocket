@@ -13,7 +13,6 @@
 
 #include "PacketBody/MAX7Body.h"
 
-
 #define MAX7_LINE_0 "Latitude:  %8ld deg.10^-7\n"
 #define MAX7_LINE_1 "Longitude: %8ld deg.10^-7\n"
 #define MAX7_LINE_2 "Altitude:  %8ld mm\n"
@@ -120,21 +119,21 @@ public:
 
   /**
    * @brief Write MAX7Body in Big Endian style in \p buffer
-   * 
+   *
    * @warning Move \p buffer past the data
-   * 
+   *
    * @param buffer Buffer of size at least packetSize
    */
   void getBigEndian(void *buffer)
   {
-    uint8_t* reBuffer = (uint8_t*)buffer;
+    uint8_t *reBuffer = (uint8_t *)buffer;
     uint32_t latitude = getLatitude();
     uint32_t longitude = getLongitude();
     uint32_t altitude = getAltitude();
 
-    BIG_ENDIAN_WRITE(latitude,reBuffer);
-    BIG_ENDIAN_WRITE(longitude,reBuffer);
-    BIG_ENDIAN_WRITE(altitude,reBuffer);
+    BIG_ENDIAN_WRITE(latitude, reBuffer);
+    BIG_ENDIAN_WRITE(longitude, reBuffer);
+    BIG_ENDIAN_WRITE(altitude, reBuffer);
   }
 
   // ----- Setters ----- //
@@ -176,10 +175,10 @@ private:
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL / 10; ///< [us] (100 ms)
   static const uint32_t MEASUREMENT_MARGIN = 100;                   ///< [us], used to define how long to wait when fetching measurements
 
+  Stream *mySerial;         ///< Serial connection
   SFE_UBLOX_GNSS gnss;      ///< Underlying object
   static uint8_t sensorQty; ///< How many sensors of this type exist
   MAX7Packet lastPacket;    ///< Holder for the packet, actualized by measurements
-  uint8_t Rx, Tx;           ///< Data pins
 
 public:
   /**
@@ -193,7 +192,7 @@ public:
    * @param Rx Index for Rx pin
    * @param Tx Index for Tx pin
    */
-  MAX7Wrapper(uint8_t Rx, uint8_t Tx);
+  MAX7Wrapper(Stream* serial);
 
   /// Destructor; reduce MAX7Wrapper::sensorQty
   ~MAX7Wrapper();
@@ -242,7 +241,7 @@ public:
 
   /**
    * @brief No criteria for invalid measurement !
-   * 
+   *
    * @return true
    */
   bool isMeasurementInvalid();

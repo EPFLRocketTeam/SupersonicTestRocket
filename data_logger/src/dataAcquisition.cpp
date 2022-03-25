@@ -108,7 +108,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   Serial.print("[acquireData] Reached acquireData loop\n");
   while (checkButtons(buttonArray, stopEvent))
   {
-    printSerial = false;//(micros() - prevSerialLoop > SERIAL_INTERVAL);
+    printSerial = (micros() - prevSerialLoop > SERIAL_INTERVAL);
 
     if (printSerial)
     {
@@ -130,7 +130,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
       }
 
       
-      if (micros() - prevRadioLoop > RADIO_INTERVAL)
+      if (false)//(micros() - prevRadioLoop > RADIO_INTERVAL)
       {
         pkt = sArray[i]->getPacket(micros());
         if (SERIAL_PRINT)

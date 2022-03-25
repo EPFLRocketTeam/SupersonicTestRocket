@@ -4,16 +4,19 @@
 uint8_t MAX7Wrapper::sensorQty = 0;
 
 // constructor
-MAX7Wrapper::MAX7Wrapper(uint8_t rx, uint8_t tx)
+MAX7Wrapper::MAX7Wrapper(Stream* s)
     : Sensor(sensorQty),
-      lastPacket(getHeader(0)),
-      Rx(rx),
-      Tx(tx)
+      mySerial(s),
+      lastPacket(getHeader(0))
+
 {
     setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                     MEASUREMENT_INTERVAL, false);
     sensorQty += 1;
     active = false;
+
+    gnss.setFileBufferSize(100 * sizeof(MAX7Body));
+    gnss.enableDebugging(Serial);
 }
 
 // destructor
@@ -24,24 +27,17 @@ MAX7Wrapper::~MAX7Wrapper()
 
 bool MAX7Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
-
-    SoftwareSerial mySerial(Rx, Tx);
-    mySerial.begin(38400);
-
     // Try to see if the MAX7 is working
     for (uint32_t i = 0; i < attempts; i++)
     {
 
-        if (!gnss.begin(mySerial, delayDuration))
+        if (gnss.begin(*mySerial, 1000))
         {
-            gnss.enableDebugging(Serial);
-            gnss.setFileBufferSize(sizeof(struct MAX7Body) * 100);
+            gnss.setUART1Output(COM_TYPE_UBX);          // Set the UART port to output UBX only
+            gnss.setI2COutput(COM_TYPE_UBX);            // Set the I2C port to output UBX only (turn off NMEA noise)
+            gnss.setAutoPVT(true, true, 1000); // Ask for periodic updates
 
-            gnss.setUART1Output(COM_TYPE_UBX); // Set the UART port to output UBX only
-            gnss.setI2COutput(COM_TYPE_UBX);   // Set the I2C port to output UBX only (turn off NMEA noise)
-            gnss.setAutoPVT(true, true, delayDuration);    // Ask for periodic updates
-
-            if (gnss.saveConfiguration(delayDuration)) // Save the current settings to flash and BBR
+            if (gnss.saveConfiguration(1000)) // Save the current settings to flash and BBR
             {
                 active = true;
                 return active;

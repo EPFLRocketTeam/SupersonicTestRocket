@@ -96,10 +96,10 @@ const uint8_t CS_TCS_PIN[4] = {1, 0, 21, 35};
 const uint8_t ALTIMAX_DR_PINS[3] = {33, 255, 255}; // 255 for not implemented
 
 // XBee
-const uint8_t XBEE_PINS[] = {34,33}; //Rx, Tx pins
+const uint8_t XBEE_PINS[] = {34,33}; //Rx, Tx pins, connected to Serial5
 
 // MAX-7
-const uint8_t MAX7_PINS[] = {31,32}; //Rx, Tx pins
+const uint8_t MAX7_PINS[] = {31,32}; //Rx, Tx pins, connected to Serial4
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -110,7 +110,7 @@ const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
 // XBee
 
-XB8XWrapper xbee(XBEE_PINS[0],XBEE_PINS[1]);
+XB8XWrapper xbee(&Serial5);
 
 // Create the sensor wrapper objects -------------------------------------------
 
@@ -134,12 +134,11 @@ MAX31855Wrapper tcs_3(CS_TCS_PIN[3]);
 
 AltimaxWrapper altimax(ALTIMAX_DR_PINS[0], ALTIMAX_DR_PINS[1], ALTIMAX_DR_PINS[2]);
 
-MAX7Wrapper max7(MAX7_PINS[0],MAX7_PINS[1]);
+MAX7Wrapper max7(&Serial4);
 
 // Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
-// const uint8_t NUM_SENSORS = 9; //-> Set as constexpr in "globalVariables.hpp"
 Sensor *sensorArray[NUM_SENSORS] = {&adis16470,
                                     &ais1120sx,
                                     &rscs_0,
@@ -194,6 +193,8 @@ void setup()
   SPI.begin();
   SPI1.begin();
   // SPI1.setSCK(20);
+  Serial4.begin(9600);
+  Serial5.begin(9600);
 
   // buildSensorArray();
 
