@@ -80,7 +80,7 @@ struct XBeeAPI_EPFL_Transmit_Frame
 class XB8XWrapper
 {
 private:
-    SoftwareSerial serial;
+    Stream* serial;
     uint32_t destH, destL; ///< High and Low parts of the destination's address (XBee default is Broadcast)
     uint8_t API_mode = 0;  ///< API mode, 0 is transparent mode (no API, default), 1 is API without Escapes and 2 is API with Escapes
 
@@ -119,8 +119,7 @@ public:
     /**
      * @brief Construct a new XB8XWrapper object
      *
-     * @param Rx Index for Rx pin
-     * @param Tx Index for Tx pin
+     * @param serial Pointer toward the associated serial
      *
      * By default, the receiver address is 0x000000000000FFFF (Broadcast address)
      *
@@ -128,7 +127,7 @@ public:
      * @param destL Low 32-bits of the receiver MAC address
      *
      */
-    XB8XWrapper(uint8_t Rx, uint8_t Tx, uint32_t destH = 0, uint32_t destL = 0xFFFF);
+    XB8XWrapper(Stream* serial, uint32_t destH = 0, uint32_t destL = 0xFFFF);
 
     /**
      * @brief Change the destination in XBee (store it and update it)

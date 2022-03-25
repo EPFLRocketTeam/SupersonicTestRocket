@@ -1,17 +1,15 @@
 #include "XB8XWrapper.hpp"
 
-XB8XWrapper::XB8XWrapper(uint8_t Rx, uint8_t Tx, uint32_t dH, uint32_t dL)
-    : serial(Rx, Tx),
+XB8XWrapper::XB8XWrapper(Stream* s, uint32_t dH, uint32_t dL)
+    : serial(s),
       destH(dH),
       destL(dL)
-{
-    serial.begin(9600);
-}
+{}
 
 bool XB8XWrapper::enterCmdMode(uint32_t waitAns)
 {
     delay(1000);
-    serial.write("+++");
+    serial->write("+++");
     delay(1000);
 
     int ans[3];
@@ -20,9 +18,9 @@ bool XB8XWrapper::enterCmdMode(uint32_t waitAns)
 
     while (millis() - startTime < waitAns)
     {
-        if (serial.available())
+        if (serial->available())
         {
-            ans[i] = serial.read();
+            ans[i] = serial->read();
             i++;
         }
 
@@ -36,7 +34,7 @@ bool XB8XWrapper::enterCmdMode(uint32_t waitAns)
 
 void XB8XWrapper::exitCmdMode()
 {
-    serial.write("CN\r");
+    serial->write("CN\r");
 }
 
 void XB8XWrapper::setDestination(uint32_t dH, uint32_t dL)
@@ -50,13 +48,13 @@ void XB8XWrapper::setDestination(uint32_t dH, uint32_t dL)
     snprintf(destHBuffer, 10, "%8.8lX", destH);
     snprintf(destLBuffer, 10, "%8.8lX", destL);
 
-    serial.write("ATDH"); // Set high 32-bits of destination address
-    serial.write(destHBuffer);
-    serial.write('\r');
+    serial->write("ATDH"); // Set high 32-bits of destination address
+    serial->write(destHBuffer);
+    serial->write('\r');
 
-    serial.write("ATDL"); // Set low 32-bits of destination address
-    serial.write(destLBuffer);
-    serial.write('\r');
+    serial->write("ATDL"); // Set low 32-bits of destination address
+    serial->write(destLBuffer);
+    serial->write('\r');
 }
 
 void XB8XWrapper::changeDestination(uint32_t dH, uint32_t dL)
@@ -71,13 +69,13 @@ void XB8XWrapper::changeDestination(uint32_t dH, uint32_t dL)
     snprintf(destLBuffer, 10, "%8.8lX", destL);
 
     enterCmdMode();
-    serial.write("ATDH"); // Set high 32-bits of destination address
-    serial.write(destHBuffer);
-    serial.write('\r');
+    serial->write("ATDH"); // Set high 32-bits of destination address
+    serial->write(destHBuffer);
+    serial->write('\r');
 
-    serial.write("ATDL"); // Set low 32-bits of destination address
-    serial.write(destLBuffer);
-    serial.write('\r');
+    serial->write("ATDL"); // Set low 32-bits of destination address
+    serial->write(destLBuffer);
+    serial->write('\r');
     exitCmdMode();
 }
 
@@ -87,13 +85,14 @@ bool XB8XWrapper::setup(uint32_t attempts, uint32_t delayDuration)
     {
         if (!enterCmdMode()) // Enter the command mode
         {
+            Serial.write("[XBee] Could not get in CmdMode\n");
             delay(delayDuration);
         }
         else
         {
             setDestination(destH, destL); // Set the wanted destination
 
-            serial.write("ATAP 1\r"); // Set standard API mode
+            serial->write("ATAP 1\r"); // Set standard API mode
 
             exitCmdMode();
             return true;
@@ -118,6 +117,8 @@ void XB8XWrapper::send(Packet *pkt)
                       + sizeof(uint8_t) * 4   // EPFL prefix
                       + sizeof(uint32_t)      // Timestamp
                       + pkt->getPacketSize(); // Size of the 'data' field
+
+    Serial.print("[XBee:send] Setting datatype\n");
 
     // Data type
     uint8_t datagram_ID;
@@ -156,6 +157,8 @@ void XB8XWrapper::send(Packet *pkt)
     uint32_t timestamp = pkt->getTimestamp();
 
     // ----- Setting send buffer ----- //
+
+    Serial.print("[XBee:send] Setting send buffer\n");
 
     memset((void *)sendBuffer, 0, sizeof(sendBuffer));
 
@@ -211,5 +214,5 @@ void XB8XWrapper::send(Packet *pkt)
 
     // Length of content + 1 byte of start delimiter
     //  + 2 bytes of length + 1 byte of checksum
-    serial.write(sendBuffer, length + 4);
+    serial->write(sendBuffer, length + 4);
 }

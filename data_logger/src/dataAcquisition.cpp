@@ -13,9 +13,10 @@ volatile bool flagArray[NUM_SENSORS];
 // Use lambda function for arbitrary interruptions
 #define INTERRUPT(i) []() { flagArray[i] = true; }
 
-void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper* xbee)
+void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper *xbee)
 {
   // SETUP phase
+  Serial.print("[acquireData] Entered acquireData\n");
 
   // Initialize the SD.
   SdFs sd;
@@ -23,7 +24,11 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
   {
     sd.initErrorHalt(&Serial);
   }
-  //monitor.writeMessage("SD Card has been set up", micros(), true);
+
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] SD Card has been set up\n");
+  }
 
   // Initialize the logging file and ring buffer
   FsFile loggingFile;
@@ -46,6 +51,11 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
   buttonArray.deactivateEvent(stopEvent[1]);
   buttonArray.deactivateEvent(stopEvent[2]);
 
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] Buttons has been set up\n");
+  }
+
   // attach the interrupts
   attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
                   INTERRUPT(ADIS16470_INDEX), RISING);
@@ -56,10 +66,15 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
   attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]),
                   INTERRUPT(Altimax_INDEX), RISING);
 
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] Attached interrupts\n");
+  }
+
   // set the last time for every check to now
   uint32_t prevSyncLoop = micros();   // timing for syncing
   uint32_t prevSerialLoop = micros(); // timing for serial monitor output
-  uint32_t prevRadioLoop = micros(); // timing for radio transmission
+  uint32_t prevRadioLoop = micros();  // timing for radio transmission
 
   // checking if the sensors are due will update their check times even if we
   // don't use the boolean they return
@@ -69,10 +84,17 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
   for (size_t i = 0; i < sSize; i++)
   {
     sArray[i]->isDue(micros(), flagArray[i]);
+    if (SERIAL_PRINT)
+    {
+      Serial.printf("[acquireData] Init sensor number %2d : %s \n", i, sArray[i]->myName());
+    }
   }
 
   // Start acquiring data
-  //monitor.writeMessage("Starting to acquire data.", micros(), true);
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] Starting to acquire data.\n");
+  }
   digitalWrite(GREEN_LED_PIN, HIGH);
   digitalWrite(RED_LED_PIN, LOW);
 
@@ -82,6 +104,8 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
   char line_serial_buffer[LINE_SIZE];
   size_t line_nbr;
   bool printSerial = false;
+
+  Serial.print("[acquireData] Reached acquireData loop\n");
   while (checkButtons(buttonArray, stopEvent))
   {
     printSerial = (micros() - prevSerialLoop > SERIAL_INTERVAL);
@@ -96,18 +120,27 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
 
     for (size_t i = 0; i < sSize; i++)
     {
+
       if (sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
       {
+        Serial.printf("[dataAcquisition] going for sensor %d : %s\n",i,sArray[i]->myName());
         pkt = sArray[i]->getPacket(micros());
         rb.write(pkt->accessHeader(), sizeof(PacketHeader));
         rb.write(pkt->accessContent(), pkt->getPacketSize());
       }
 
-      if (micros() - prevRadioLoop > RADIO_INTERVAL)
+      
+      if (false)//(micros() - prevRadioLoop > RADIO_INTERVAL)
       {
+        pkt = sArray[i]->getPacket(micros());
+        if (SERIAL_PRINT)
+        {
+          Serial.printf("[dataAcquisition] XBee send packet %s\n", packetTypeStr(pkt->getPacketType()));
+        }
         xbee->send(pkt);
         prevRadioLoop = micros();
       }
+      
 
       if (printSerial)
       {
@@ -115,14 +148,14 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
         memset((void *)line_serial_buffer, '\0', LINE_SIZE);
         pkt->getPrintableHeader(line_serial_buffer);
         line_nbr = 0;
-        while(pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE+1],line_nbr)) // SIZE does not include \0
+        while (pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE + 1], line_nbr)) // SIZE does not include \0
         {
-          Serial.write(line_serial_buffer,LINE_SIZE);
+          Serial.write(line_serial_buffer, LINE_SIZE);
           memset((void *)line_serial_buffer, '\0', LINE_SIZE);
-          snprintf(line_serial_buffer,HEADER_SIZE,HEADER_FILLER_LINE);
+          snprintf(line_serial_buffer, HEADER_SIZE, HEADER_FILLER_LINE);
           line_nbr++;
         }
-        Serial.write(line_serial_buffer,LINE_SIZE);
+        Serial.write(line_serial_buffer, LINE_SIZE);
         Serial.write(SEPARATOR_LINE);
       }
     }
@@ -200,7 +233,10 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
     if ((n + loggingFile.curPosition()) > (LOG_FILE_SIZE - 100))
     {
 
-      //monitor.writeMessage("File full - quiting.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("[acquireData] File full - quiting.\n");
+      }
       break;
     }
     // Update maximum  used buffer size. For buffer overflow issues
@@ -214,7 +250,10 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
       // Write one sector from RingBuf to file.
       if (512 != rb.writeOut(512))
       {
-        //monitor.writeMessage("writeOut failed.", micros());
+        if (SERIAL_PRINT)
+        {
+          Serial.print("[acquireData] writeOut failed.\n");
+        }
         break;
       }
     }
@@ -222,7 +261,10 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
     if (rb.getWriteError())
     {
       // Error caused by too few free bytes in RingBuf.
-      //monitor.writeMessage("WriteError - RingBuf full.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("[acquireData] WriteError - RingBuf full.\n");
+      }
       break;
     }
   } // Finished acquiring data
@@ -246,11 +288,14 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper*
   digitalWrite(RED_LED_PIN, LOW);
   successFlash();
 
-  //monitor.writeMessage("Finished acquiring data", micros(), true);
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] Finished acquiring data\n");
+  }
 }
 
 bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
-                  //SerialMonitor monitor)
+// SerialMonitor monitor)
 {
   // see which buttons were pressed
   bool indivButtonState[2];
@@ -266,7 +311,10 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      //monitor.writeMessage("First check to stop acquisition passed.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("First check to stop acquisition passed.\n");
+      }
       Serial.println("First check to stop acquisition passed.");
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, LOW);
@@ -274,17 +322,26 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       buttonArray.activateEvent(stopEvent[1]);
       break;
     case BAD_TRANSITION:
-      //monitor.writeMessage("Button input wrong. Left window.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Button input wrong. Left window.\n");
+      }
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       break;
     case WINDOW_START:
-      //monitor.writeMessage("Within window for first check.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Within window for first check.\n");
+      }
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
-      //monitor.writeMessage("Left window for first check.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Left window for first check.\n");
+      }
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       break;
@@ -297,27 +354,36 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      //monitor.writeMessage("Second check to stop "
-      //                     "acquisition passed.",
-      //                     micros());
+      // monitor.writeMessage("Second check to stop "
+      //                      "acquisition passed.",
+      //                      micros());
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
       buttonArray.activateEvent(stopEvent[2]);
       break;
     case BAD_TRANSITION:
-      //monitor.writeMessage("Button input wrong. Left window.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Button input wrong. Left window.\n");
+      }
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
       buttonArray.activateEvent(stopEvent[0]);
       break;
     case WINDOW_START:
-      //monitor.writeMessage("Within window for second check.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Within window for second check.\n");
+      }
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
-      //monitor.writeMessage("Left window for second check.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Left window for second check.\n");
+      }
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[1]);
@@ -332,7 +398,10 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
     case NONE:
       break;
     case GOOD_TRANSITION:
-      //monitor.writeMessage("Passed all checks to stop acquisition.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Passed all checks to stop acquisition.\n");
+      }
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       buttonArray.deactivateEvent(stopEvent[2]);
@@ -340,19 +409,28 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       return false;
       break;
     case BAD_TRANSITION:
-      //monitor.writeMessage("Button input wrong. Left window.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Button input wrong. Left window.\n");
+      }
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[2]);
       buttonArray.activateEvent(stopEvent[0]);
       break;
     case WINDOW_START:
-      //monitor.writeMessage("Within window for third check.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Within window for third check.\n");
+      }
       digitalWrite(GREEN_LED_PIN, LOW);
       digitalWrite(RED_LED_PIN, HIGH);
       break;
     case WINDOW_END:
-      //monitor.writeMessage("Left window for third check.", micros());
+      if (SERIAL_PRINT)
+      {
+        Serial.print("Left window for third check.\n");
+      }
       digitalWrite(GREEN_LED_PIN, HIGH);
       digitalWrite(RED_LED_PIN, LOW);
       buttonArray.deactivateEvent(stopEvent[2]);

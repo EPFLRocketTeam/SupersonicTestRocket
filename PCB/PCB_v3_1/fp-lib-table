@@ -1,4 +1,5 @@
 (fp_lib_table
-  (lib (name CustomLib)(type KiCad)(uri ${KIPRJMOD}/CustomLib.pretty)(options "")(descr ""))
-  (lib (name Connector_AMASS)(type KiCad)(uri "C:/Users/newbi/Google Drive/Rocket Team/Semester2 project/avionics/PCB/Connector_AMASS.pretty")(options "")(descr ""))
+  (lib (name "CustomLib")(type "KiCad")(uri "${KIPRJMOD}/CustomLib.pretty")(options "")(descr ""))
+  (lib (name "Connector_AMASS")(type "KiCad")(uri "C:/Users/newbi/Google Drive/Rocket Team/Semester2 project/avionics/PCB/Connector_AMASS.pretty")(options "")(descr ""))
+  (lib (name "Library")(type "KiCad")(uri "${KIPRJMOD}/Library.pretty")(options "")(descr ""))
 )

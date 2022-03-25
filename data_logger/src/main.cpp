@@ -68,38 +68,38 @@
 
 // Pins ------------------------------------------------------------------------
 // I/O
-const uint8_t GREEN_LED_PIN = 23,
-              RED_LED_PIN = 22,
+const uint8_t GREEN_LED_PIN = 5,
+              RED_LED_PIN = 3,
               BUTTON0_PIN = 21,
-              BUTTON1_PIN = 20;
+              BUTTON1_PIN = 36;
 // ADIS164760
-const uint8_t DR_ADIS16470_PIN = 24,
-              SYNC_ADIS16470_PIN = 25,
-              RST_ADIS16470_PIN = 35,
-              CS_ADIS16470_PIN = 2;
+const uint8_t DR_ADIS16470_PIN = 10,
+              SYNC_ADIS16470_PIN = 24,
+              RST_ADIS16470_PIN = 29,
+              CS_ADIS16470_PIN = 28;
 // AIS1120SX
-const uint8_t CS_AIS1120SX_PIN = 31;
+const uint8_t CS_AIS1120SX_PIN = 7;
 // Pressure sensors
 const uint8_t staticRSC = 0;
 const uint8_t totalRSC = 1;
-const uint8_t CS_RS_EE_PIN[2] = {17, 28};
-const uint8_t CS_RSC_ADC_PIN[2] = {16, 27};
+const uint8_t CS_RS_EE_PIN[2] = {2, 8};
+const uint8_t CS_RSC_ADC_PIN[2] = {22, 36};
 // RSC1's DR line should be on pin 15 according to the PCB, however, it was
 // manually reconnected to pin 39 on the first iteration of the PCB
 // change lines accordingly if building a new PCB from the schematics
 // const uint8_t DR_RSC[2] = {39, 26};
-const uint8_t DR_RSC[2] = {15, 26};
+const uint8_t DR_RSC[2] = {23, 15};
 // Thermocouples
 const uint8_t TAT_TC = 3;
-const uint8_t CS_TCS_PIN[4] = {7, 8, 9, 10};
+const uint8_t CS_TCS_PIN[4] = {1, 0, 21, 35};
 // Altimax
 const uint8_t ALTIMAX_DR_PINS[3] = {33, 255, 255}; // 255 for not implemented
 
 // XBee
-const uint8_t XBEE_PINS[] = {255,255}; //Rx, Tx pins
+const uint8_t XBEE_PINS[] = {34,33}; //Rx, Tx pins, connected to Serial5
 
 // MAX-7
-const uint8_t MAX7_PINS[] = {255,255}; //Rx, Tx pins
+const uint8_t MAX7_PINS[] = {31,32}; //Rx, Tx pins, connected to Serial4
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -110,7 +110,7 @@ const uint32_t ACQ_WINDOW_END = 2000;   // [ms]
 
 // XBee
 
-XB8XWrapper xbee(XBEE_PINS[0],XBEE_PINS[1]);
+XB8XWrapper xbee(&Serial5);
 
 // Create the sensor wrapper objects -------------------------------------------
 
@@ -134,12 +134,11 @@ MAX31855Wrapper tcs_3(CS_TCS_PIN[3]);
 
 AltimaxWrapper altimax(ALTIMAX_DR_PINS[0], ALTIMAX_DR_PINS[1], ALTIMAX_DR_PINS[2]);
 
-MAX7Wrapper max7(MAX7_PINS[0],MAX7_PINS[1]);
+MAX7Wrapper max7(&Serial4);
 
 // Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
-// const uint8_t NUM_SENSORS = 9; //-> Set as constexpr in "globalVariables.hpp"
 Sensor *sensorArray[NUM_SENSORS] = {&adis16470,
                                     &ais1120sx,
                                     &rscs_0,
@@ -160,7 +159,7 @@ const uint8_t ADIS16470_INDEX = 0,
               MAX7_INDEX = 9;
 
 const int SENSOR_SETUP_ATTEMPTS = 7;
-const int SETUP_DELAY = 200; // delay in ms to wait between setup attemps
+const int SETUP_DELAY = 50; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
 
@@ -169,11 +168,10 @@ const int SETUP_DELAY = 200; // delay in ms to wait between setup attemps
 
 void setup()
 {
-  delay(5000);
   // Serial communication is started before setup on the Teensy
-  delay(10000); // Wait 10s to ensure Serial is ready
+  delay(5000); // Wait 10s to ensure Serial is ready
   Serial.println("----- Starting setup -----");
-  delay(10000); // Wait 10s more to ensure getting Serial feedback
+  delay(2000); // Wait 5s more to ensure getting Serial feedback
 
   // Set up I/O
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -182,14 +180,21 @@ void setup()
   pinMode(BUTTON1_PIN, INPUT);
   digitalWrite(GREEN_LED_PIN, LOW); // turn off LED in case
   digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
+
+  Serial.println("[Setup] Play with LEDs");
+  delay(2000); 
+  Serial.println("[Setup] Success flash");
   successFlash(); // visual feedback setup is happening
-  successFlash();
+  delay(2000);
+  Serial.println("[Setup] Error flash");
   errorFlash();
-  
+  delay(2000);
 
   SPI.begin();
   SPI1.begin();
   // SPI1.setSCK(20);
+  Serial4.begin(9600);
+  Serial5.begin(9600);
 
   // buildSensorArray();
 
@@ -209,15 +214,15 @@ void setup()
   Serial.print("XBee ");
   if (xbee.setup(SENSOR_SETUP_ATTEMPTS,SETUP_DELAY))
   {
-    Serial.print("has been correctly setup");
+    Serial.print("has been correctly setup\n");
   }
   else
   {
-    Serial.print("could not be setup !!!");
+    Serial.print("could not be setup !!!\n");
   }
 
   Serial.println("----- Setup complete -----");
-  successFlash();
+  //successFlash();
 
   acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT, &xbee);
 }
