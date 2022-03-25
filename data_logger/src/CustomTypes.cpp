@@ -44,6 +44,14 @@ const char *packetTypeStr(const packetType t)
         return "MAX31855";
         break;
 
+    case MAX7_PACKET_TYPE:
+        return "MAX7";
+        break;
+
+    case XBee_PACKET_TYPE:
+        return "XBee";
+        break;
+
     default:
         return "-- unknown packet type --";
         break;

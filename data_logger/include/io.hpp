@@ -9,7 +9,7 @@
 
 #include "globalVariables.hpp"
 
-const int SUCCESS_FLASH_DURATION = 500;
+const int SUCCESS_FLASH_DURATION = 1500;
 const int ERROR_FLASH_DURATION = 1500;
 
 /**

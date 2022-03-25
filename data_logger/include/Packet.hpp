@@ -46,7 +46,7 @@ struct PacketHeader
 #define LINE_SIZE HEADER_SIZE + DATA_SIZE + 2
 
 /// Separator line
-#define SEPARATOR_LINE "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n\n"
+#define SEPARATOR_LINE "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n"
 
 class Packet
 {

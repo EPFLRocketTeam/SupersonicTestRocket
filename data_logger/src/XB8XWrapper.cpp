@@ -87,6 +87,7 @@ bool XB8XWrapper::setup(uint32_t attempts, uint32_t delayDuration)
     {
         if (!enterCmdMode()) // Enter the command mode
         {
+            Serial.write("[XBee] Could not get in CmdMode\n");
             delay(delayDuration);
         }
         else
@@ -118,6 +119,8 @@ void XB8XWrapper::send(Packet *pkt)
                       + sizeof(uint8_t) * 4   // EPFL prefix
                       + sizeof(uint32_t)      // Timestamp
                       + pkt->getPacketSize(); // Size of the 'data' field
+
+    Serial.print("[XBee:send] Setting datatype\n");
 
     // Data type
     uint8_t datagram_ID;
@@ -156,6 +159,8 @@ void XB8XWrapper::send(Packet *pkt)
     uint32_t timestamp = pkt->getTimestamp();
 
     // ----- Setting send buffer ----- //
+
+    Serial.print("[XBee:send] Setting send buffer\n");
 
     memset((void *)sendBuffer, 0, sizeof(sendBuffer));
 
