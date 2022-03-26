@@ -81,6 +81,8 @@ AISx120SX_Packet = PacketType(8, '<ff', ["accX (g)","accY (g)"], "AISx120SX")
 MAX_Packet = PacketType(9, '<ff', ["probeTemp (degC)", "ambientTemp (degC)"],
                         "MAX")
 
+MAX7_Packet = PacketType(10,'<III', ["latitude (deg * 10^-7)", "longitude (deg * 10^-7)", "altitude (mm)"], "MAX7" )
+
 errorNames = ["measLate", "skippedBeat", "drNoTrigger", "checksumError",
               "measInvalid", "placeholder", "placeholder", "placeholder"]
 
@@ -115,18 +117,22 @@ def unpackHeader(buffer):
     packetType = header[0]
     packetLength = header[1]
     
-    if (packetType == 0 and packetLength ==0):
+    
+    if (packetType == 0):# or packetLength ==0):
         raise Warning("An empty packet was sent.")
-    elif (packetLength == PacketType._registry[packetType].packetLength
-        + headerPacket.packetLength):
+    #elif (packetLength == PacketType._registry[packetType].packetLength
+    #    + headerPacket.packetLength):
+    else:
+        packetLength = PacketType._registry[packetType].packetLength\
+            + headerPacket.packetLength
         sensorID = header[2]
         errors = np.unpackbits(np.array([header[3]], dtype=np.uint8))
         timestamp = header[4]
             
         return (packetType, packetLength, sensorID, errors, timestamp)
-    else:
-        raise ValueError("The packet size didn't match the packet type. "
-                         "Perhaps an invalid packet was sent.")
+    #else:
+    #    raise ValueError("The packet size didn't match the packet type. "
+    #                     "Perhaps an invalid packet was sent.")
         
 def unpackPacketData(buffer, packetType):
     """ Takes a C structure packet and unpacks its content into a tuple

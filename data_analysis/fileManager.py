@@ -13,10 +13,10 @@ import os
 from Packet import PacketType, unpackMultiplePackets, splitPacketsDataFrame
 
 extension = ".dat"
-rawLogDirName = "data/rawLog"
-decodedDataDirName = "data/decodedData"
-decodedDataErrorDirName = "data/decodedDataError"
-analyzedDataDirName = "data/analyzedData"
+rawLogDirName = os.path.normpath("data/rawLog")
+decodedDataDirName = os.path.normpath("data/decodedData")
+decodedDataErrorDirName = os.path.normpath("data/decodedDataError")
+analyzedDataDirName = os.path.normpath("data/analyzedData")
 
 def createDirs(rawLogDirName_ = rawLogDirName,
                decodedDataDirName_ = decodedDataDirName,
@@ -173,8 +173,8 @@ def processAndSaveData(rawLogDirName_ = rawLogDirName,
                 dfs[packetType][sensorID].to_csv(fullFileName, index = False)
                 
         file.close()
-        os.rename(os.path.join(rawLogDirName_, fileName),
-                  os.path.join(outDirName, fileName))
+        #os.rename(os.path.join(rawLogDirName_, fileName),
+        #          os.path.join(outDirName, fileName))
         
         
 if __name__ == "__main__":
