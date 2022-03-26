@@ -4,7 +4,7 @@
 uint8_t AD8556Wrapper::sensorQty = 0;
 
 // constructor
-AD8556Wrapper::AD8556Wrapper(uint8_t digin, uint8_t vout,
+AD8556Wrapper::AD8556Wrapper(uint8_t digin, uint8_t vplus, uint8_t vminus,
                              uint8_t firstStageGain_, uint8_t secondStageGain_,
                              uint8_t offset_, uint8_t analogResolution_,
                              float minRead, float maxRead)
@@ -12,7 +12,8 @@ AD8556Wrapper::AD8556Wrapper(uint8_t digin, uint8_t vout,
       opamp(digin),
       lastPacket(getHeader(0)),
       Digin(digin),
-      Vout(vout),
+      Vplus(vplus),
+      Vminus(vminus),
       firstStageGain(firstStageGain_),
       secondStageGain(secondStageGain_),
       offset(offset_),
@@ -50,7 +51,7 @@ bool AD8556Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR
     if (isDueByTime(currMicros))
     {
         // read the measurements from the sensor
-        float rawReading = static_cast<float>(analogRead(Vout));
+        float rawReading = static_cast<float>(analogRead(Vplus)) - static_cast<float>(analogRead(Vminus));
         lastPacket.setReading(minReading + rawReading * rescale);
         return true;
     }

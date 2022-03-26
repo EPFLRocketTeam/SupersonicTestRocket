@@ -76,6 +76,7 @@ namespace DatagramType {
             HERMES_HoneywellRsc_Temp,       //ID: 32
             HERMES_MAX7,                    //ID: 33
             HERMES_MAX31855,                //ID: 34
+            HERMES_AD8556,                  //ID: 35
 
         /// TEST PACKET
             TEST,
@@ -260,6 +261,7 @@ namespace DatagramType {
             case HERMES_HoneywellRsc_Temp: return "HERMES-HoneywellRsc-Temp";
             case HERMES_MAX31855: return "HERMES-MAX31855";
             case HERMES_MAX7: return "HERMES-MAX7";
+            case HERMES_AD8556: return "HERMES-AD8556";
 
             case TEST: return "TEST";
             default: return "Unknown";

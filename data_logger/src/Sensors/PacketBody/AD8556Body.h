@@ -1,6 +1,7 @@
 #pragma once
 
+/// Describe the content of a AD8556 packet
 struct AD8556Body
 {
-  float reading; ///< [application-dependent units], 4 bytes
+  float reading; ///< [N], 4 bytes
 };

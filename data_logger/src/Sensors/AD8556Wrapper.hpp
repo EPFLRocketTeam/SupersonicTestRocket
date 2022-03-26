@@ -122,17 +122,17 @@ private:
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL; ///< [us] (1 ms)
   static const uint32_t MEASUREMENT_MARGIN = 0;                ///< [us], used to define how long to wait when fetching measurements
 
-  AD8555 opamp;             ///< Underlying object
-  static uint8_t sensorQty; ///< How many sensors of this type exist
-  AD8556Packet lastPacket;  ///< Holder for the packet, actualized by measurements
-  uint8_t Digin, Vout;      ///< Data pins
-  uint8_t firstStageGain;   ///< Opamp first stage gain
-  uint8_t secondStageGain;  ///< Opamp second stage gain
-  uint8_t offset;           ///< Opamp offset
-  uint8_t analogResolution; ///< Analog read resolution on the microcontroller
-  float minReading;         ///< Minimum reading expected from sensor connected to AD8556
-  float maxReading;         ///< Maximum reading expected from sensor connected to AD8556
-  float rescale;            ///< Linear value used when rescaling readings; exactly (maxReading-minReading) / (2 << analogResolution)
+  AD8555 opamp;                 ///< Underlying object
+  static uint8_t sensorQty;     ///< How many sensors of this type exist
+  AD8556Packet lastPacket;      ///< Holder for the packet, actualized by measurements
+  uint8_t Digin, Vplus, Vminus; ///< Data pins
+  uint8_t firstStageGain;       ///< Opamp first stage gain
+  uint8_t secondStageGain;      ///< Opamp second stage gain
+  uint8_t offset;               ///< Opamp offset
+  uint8_t analogResolution;     ///< Analog read resolution on the microcontroller
+  float minReading;             ///< Minimum reading expected from sensor connected to AD8556
+  float maxReading;             ///< Maximum reading expected from sensor connected to AD8556
+  float rescale;                ///< Linear value used when rescaling readings; exactly (maxReading-minReading) / (2 << analogResolution)
 
 public:
   /**
@@ -152,7 +152,7 @@ public:
    * @param minRead Minimum reading expected from sensor connected to AD8556
    * @param maxRead Maximum reading expected from sensor connected to AD8556
    */
-  AD8556Wrapper(uint8_t digin, uint8_t vout, uint8_t firstStageGain_,
+  AD8556Wrapper(uint8_t digin, uint8_t vplus, uint8_t vminus, uint8_t firstStageGain_,
                 uint8_t secondStageGain_, uint8_t offset_,
                 uint8_t analogResolution_, float minRead, float maxRead);
 

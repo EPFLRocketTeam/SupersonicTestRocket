@@ -60,11 +60,17 @@
 #include "Sensors/HoneywellRscWrapper.hpp"
 #include "Sensors/MAX31855Wrapper.hpp"
 #include "Sensors/MAX7Wrapper.hpp"
+#include "Sensors/AD8556Wrapper.hpp"
 
 // XBee
 #include "XB8XWrapper.hpp"
 
 // DEFINE VARIABLES ============================================================
+
+// Analog ----------------------------------------------------------------------
+
+const int ANALOG_READ_RESOLUTION = 12;
+const int ANALOG_READ_AVERAGING = 4;
 
 // Pins ------------------------------------------------------------------------
 // I/O
@@ -96,10 +102,20 @@ const uint8_t CS_TCS_PIN[4] = {1, 0, 21, 35};
 const uint8_t ALTIMAX_DR_PINS[3] = {33, 255, 255}; // 255 for not implemented
 
 // XBee
-const uint8_t XBEE_PINS[] = {34,33}; //Rx, Tx pins, connected to Serial5
+const uint8_t XBEE_PINS[] = {34, 33}; // Rx, Tx pins, connected to Serial5
 
 // MAX-7
-const uint8_t MAX7_PINS[] = {31,32}; //Rx, Tx pins, connected to Serial4
+const uint8_t MAX7_PINS[] = {31, 32}; // Rx, Tx pins, connected to Serial4
+
+// AD8556
+const uint8_t AD8556_VPLUS = 19;
+const uint8_t AD8556_VMINUS = 18;
+
+const float AD8556_MIN_READ = 0;
+
+/// maxReading at 3.3V ; at 0.1 V get 200 lbs, converted to kg, then multiply g to get Newtons
+const float AD8556_MAX_READ = 3.3 * (200/0.1) * 0.45359237 * 9.80665;
+
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -136,6 +152,8 @@ AltimaxWrapper altimax(ALTIMAX_DR_PINS[0], ALTIMAX_DR_PINS[1], ALTIMAX_DR_PINS[2
 
 MAX7Wrapper max7(&Serial4);
 
+AD8556Wrapper ad8556(255,AD8556_VPLUS,AD8556_VMINUS,0,0,0,ANALOG_READ_RESOLUTION, AD8556_MIN_READ, AD8556_MAX_READ);
+
 // Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
@@ -148,7 +166,8 @@ Sensor *sensorArray[NUM_SENSORS] = {&adis16470,
                                     &tcs_2,
                                     &tcs_3,
                                     &altimax,
-                                    &max7};
+                                    &max7,
+                                    &ad8556};
 
 const uint8_t ADIS16470_INDEX = 0,
               AISx120SX_INDEX = 1,
@@ -156,18 +175,17 @@ const uint8_t ADIS16470_INDEX = 0,
               Honeywell_Rsc_1_INDEX = 3,
               MAX31855_START_INDEX = 4,
               Altimax_INDEX = 8,
-              MAX7_INDEX = 9;
+              MAX7_INDEX = 9,
+              AD8556_INDEX = 10;
 
 const int SENSOR_SETUP_ATTEMPTS = 7;
 const int SETUP_DELAY = 50; // delay in ms to wait between setup attemps
 
-const int ANALOG_READ_RESOLUTION = 12;
-const int ANALOG_READ_AVERAGING = 4;
+
 
 // USER FUNCTIONS ==============================================================
 
 // SETUP =======================================================================
-
 
 void setup()
 {
@@ -185,7 +203,7 @@ void setup()
   digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
 
   Serial.println("[Setup] Play with LEDs");
-  delay(2000); 
+  delay(2000);
   Serial.println("[Setup] Success flash");
   successFlash(); // visual feedback setup is happening
   delay(2000);
@@ -218,7 +236,7 @@ void setup()
   }
 
   Serial.print("XBee ");
-  if (xbee.setup(SENSOR_SETUP_ATTEMPTS,SETUP_DELAY))
+  if (xbee.setup(SENSOR_SETUP_ATTEMPTS, SETUP_DELAY))
   {
     Serial.print("has been correctly setup\n");
   }
@@ -228,7 +246,7 @@ void setup()
   }
 
   Serial.println("----- Setup complete -----");
-  //successFlash();
+  // successFlash();
 
   acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT, &xbee);
 }
@@ -266,18 +284,18 @@ void loop()
         acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT, &xbee);
         break;
       case BAD_TRANSITION:
-        //monitor.writeMessage("Button not pressed properly. Not doing anything.",
-        //                     micros(), true);
+        // monitor.writeMessage("Button not pressed properly. Not doing anything.",
+        //                      micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         break;
       case WINDOW_START:
-        //monitor.writeMessage("Within window to start data acquisition.",
-        //                     micros(), true);
+        // monitor.writeMessage("Within window to start data acquisition.",
+        //                      micros(), true);
         digitalWrite(GREEN_LED_PIN, HIGH);
         break;
       case WINDOW_END:
-        //monitor.writeMessage("Left window to start data acquisition.",
-        //                     micros(), true);
+        // monitor.writeMessage("Left window to start data acquisition.",
+        //                      micros(), true);
         digitalWrite(GREEN_LED_PIN, LOW);
         break;
       }
