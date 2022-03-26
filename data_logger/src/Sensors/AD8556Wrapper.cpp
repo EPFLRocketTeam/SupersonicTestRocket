@@ -9,6 +9,7 @@ AD8556Wrapper::AD8556Wrapper(uint8_t digin, uint8_t vout,
                              uint8_t offset_, uint8_t analogResolution_,
                              float minRead, float maxRead)
     : Sensor(sensorQty),
+      opamp(digin),
       lastPacket(getHeader(0)),
       Digin(digin),
       Vout(vout),
@@ -17,7 +18,8 @@ AD8556Wrapper::AD8556Wrapper(uint8_t digin, uint8_t vout,
       offset(offset_),
       analogResolution(analogResolution_),
       minReading(minRead),
-      maxReading(maxRead)
+      maxReading(maxRead),
+      rescale((maxRead - minRead) / (2 << analogResolution_))
 {
     setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                     MEASUREMENT_INTERVAL, false);
@@ -33,45 +35,8 @@ AD8556Wrapper::~AD8556Wrapper()
 
 bool AD8556Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
-    // Try to see if the AD8556 is working
-    for (uint32_t i = 0; i < attempts; i++)
-    {
-        // set Second Stage Gain code
-        if (!opamp.setSecondStageGain(secondStageGain))
-        {
-            // opamp will return false if code is out of range
-            Serial.println("Invalid Second Stage Gain code. Valid range is 0..7");
-            return false;
-        }
-        // First Stage Gain code
-        if (!opamp.setFirstStageGain(firstStageGain))
-        {
-            Serial.println("Invalid First Stage Gain code. Valid range is 0..127");
-            return false;
-        }
-
-        // Offset code
-        if (!opamp.setOffset(offset))
-        {
-            Serial.println("Invalid Offset code. Valid range is 0..255");
-            return false;
-        }
-        // if (!gnss.begin(mySerial))
-        // {
-        //     gnss.setUART1Output(COM_TYPE_UBX); // Set the UART port to output UBX only
-        //     gnss.setI2COutput(COM_TYPE_UBX);   // Set the I2C port to output UBX only (turn off NMEA noise)
-        //     gnss.setAutoPVT(true);             // Ask for periodic updates
-        //     gnss.saveConfiguration();          // Save the current settings to flash and BBR
-        //     active = true;
-        //     return active;
-        // }
-        // else // give it time before the next try
-        // {
-        //     delay(delayDuration);
-        // }
-    }
-    active = false;
-    return active; // setup was not succesful
+    active = true;
+    return active;
 }
 
 uint8_t AD8556Wrapper::getSensorQty()
@@ -85,8 +50,8 @@ bool AD8556Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR
     if (isDueByTime(currMicros))
     {
         // read the measurements from the sensor
-        uint16_t rawReading = analogRead(Vout);
-        lastPacket.setReading(rawReading * 1.);
+        float rawReading = static_cast<float>(analogRead(Vout));
+        lastPacket.setReading(minReading + rawReading * rescale);
         return true;
     }
     return returnVal;

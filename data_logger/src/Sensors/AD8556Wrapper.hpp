@@ -12,10 +12,7 @@
 #include "macrofunctions.h"
 #include "globalVariables.hpp"
 
-struct AD8556Body
-{
-  float reading; ///< [application-dependent units], 4 bytes
-};
+#include "PacketBody/AD8556Body.h"
 
 #define AD8556_LINE_0 "Thrust:  %6e N\n"
 #define AD8556_LINE_NBR 0
@@ -35,7 +32,7 @@ public:
    */
   AD8556Packet()
   {
-    header.packetType_ = NO_PACKET;
+    header.packetType_ = AD8556_PACKET_TYPE;
     header.packetSize = sizeof(AD8556Body);
 
     content = malloc(header.packetSize);
@@ -84,11 +81,26 @@ public:
     {
     case 0:
       snprintf(buffer, DATA_SIZE, AD8556_LINE_0, getReading());
-      return 1;
+      return 0;
 
     default:
       return 0;
     }
+  }
+
+  /**
+   * @brief Write MAX7Body in Big AD8556 style in \p buffer
+   *
+   * @warning Move \p buffer past the data
+   *
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    uint8_t *reBuffer = (uint8_t *)buffer;
+    uint32_t reading = getReading();
+
+    BIG_ENDIAN_WRITE(reading, reBuffer);
   }
 
   // ----- Setters ----- //
@@ -120,6 +132,7 @@ private:
   uint8_t analogResolution; ///< Analog read resolution on the microcontroller
   float minReading;         ///< Minimum reading expected from sensor connected to AD8556
   float maxReading;         ///< Maximum reading expected from sensor connected to AD8556
+  float rescale;            ///< Linear value used when rescaling readings; exactly (maxReading-minReading) / (2 << analogResolution)
 
 public:
   /**

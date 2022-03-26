@@ -33,7 +33,7 @@ public:
    */
   MAX7Packet()
   {
-    header.packetType_ = NO_PACKET;
+    header.packetType_ = MAX7_PACKET_TYPE;
     header.packetSize = sizeof(MAX7Body);
 
     content = malloc(header.packetSize);
