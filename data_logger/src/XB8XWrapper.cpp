@@ -62,19 +62,14 @@ void XB8XWrapper::changeDestination(uint32_t dH, uint32_t dL)
     destH = dH;
     destL = dL;
 
-    char destHBuffer[11] = "";
-    char destLBuffer[11] = "";
-
-    snprintf(destHBuffer, 10, "%8.8lX", destH);
-    snprintf(destLBuffer, 10, "%8.8lX", destL);
 
     enterCmdMode();
-    serial->write("ATDH"); // Set high 32-bits of destination address
-    serial->write(destHBuffer);
+    serial->write("ATDH "); // Set high 32-bits of destination address
+    serial->write(dH);
     serial->write('\r');
 
-    serial->write("ATDL"); // Set low 32-bits of destination address
-    serial->write(destLBuffer);
+    serial->write("ATDL "); // Set low 32-bits of destination address
+    serial->write(dL);
     serial->write('\r');
     exitCmdMode();
 }
@@ -92,7 +87,9 @@ bool XB8XWrapper::setup(uint32_t attempts, uint32_t delayDuration)
         {
             setDestination(destH, destL); // Set the wanted destination
 
-            serial->write("ATAP 1\r"); // Set standard API mode
+            serial->write("ATAP "); // Set standard API mode
+            serial->write(1);
+            serial->write('\r');
 
             exitCmdMode();
             return true;
