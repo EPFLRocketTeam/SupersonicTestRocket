@@ -40,6 +40,14 @@
 #include <File/File.h>
 #include <File/Picture.h>
 
+#include <Hermes/hermesADIS16470.h>
+#include <Hermes/hermesAISx120SX.h>
+#include <Hermes/hermesAltimax.h>
+#include <Hermes/hermesHoneywellRsc_Pressure.h>
+#include <Hermes/hermesHoneywellRsc_Temp.h>
+#include <Hermes/hermesMAX7.h>
+#include <Hermes/hermesMAX31855.h>
+
 #include "DataHandler.h"
 
 
@@ -94,6 +102,15 @@ DataHandler::DataHandler(std::shared_ptr<Connector> connector)
 
         //// Air Brakes Datagram
         //dataHandler[AIR_BRAKES]->add(new BasicData<float>(DataType::AIR_BRAKES_ANGLE));
+
+        //// HERMES Datagram
+        dataHandler[DatagramType::HERMES_ADIS16470]->add(new hermesADIS16470);
+        dataHandler[DatagramType::HERMES_AISx120SX]->add(new hermesAISx120SX);
+        dataHandler[DatagramType::HERMES_Altimax]->add(new hermesAltimax);
+        dataHandler[DatagramType::HERMES_HoneywellRsc_Pressure]->add(new hermesHoneywellRsc_Pressure);
+        dataHandler[DatagramType::HERMES_HoneywellRsc_Temp]->add(new hermesHoneywellRsc_Temp);
+        dataHandler[DatagramType::HERMES_MAX7]->add(new hermesMAX7);
+        dataHandler[DatagramType::HERMES_MAX31855]->add(new hermesMAX31855);
 
         //// [Subsystem Name] Datagram
         /// // dataHandler[DatagramID]->add(new MyData);

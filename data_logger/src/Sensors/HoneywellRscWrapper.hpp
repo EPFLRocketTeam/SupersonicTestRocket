@@ -17,18 +17,11 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 #include "globalVariables.hpp"
+#include "macrofunctions.h"
+
+#include "PacketBody/HoneywellRscBody.h"
 
 // *************** HoneywellRsc Packets *************** //
-
-/// Describe the content of a HoneywellRSC packet
-struct HoneywellRSCBody
-{
-  /**
-   * Using floats since the computation is hard to do after acquistion; 4 bytes
-   * Temperature is in degC and pressure in bar
-   */
-  float measurement = 0;
-};
 
 #define HoneywellRSC_TEMP_LINE "Temperature: %6e °C\n"
 #define HoneywellRSC_PRESSURE_LINE "Pressure: %6e bar\n"
@@ -77,6 +70,21 @@ public:
   float getMeasurement()
   {
     return reinterpret_cast<HoneywellRSCBody *>(content)->measurement;
+  }
+
+  /**
+   * @brief Write HoneywellRSCBody in Big Endian style in \p buffer
+   * 
+   * @warning Move \p buffer past the data
+   * 
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    uint8_t* reBuffer = (uint8_t*)buffer;
+    float meas = getMeasurement();
+
+    BIG_ENDIAN_WRITE(meas,reBuffer);
   }
 
   // ----- Setters ----- //

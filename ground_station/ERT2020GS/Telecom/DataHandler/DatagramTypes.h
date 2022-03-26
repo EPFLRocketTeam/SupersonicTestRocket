@@ -18,7 +18,7 @@ namespace DatagramType {
     // DataHandler constructor
 
     // Don't forget to modify header::print() when adding new packet type
-    enum DatagramID {
+    enum DatagramID : uint8_t {
         INIT, // ID = 0 not used
 
         //TODO This may change for project 2021, no ability to add a random packet ID without using empty enums
@@ -65,6 +65,17 @@ namespace DatagramType {
         /// [Subsystem Name] Datagram
         /// ...
                             // <-- add new type here
+
+        //! HERMES Datagram
+
+            HERMES_TEST,                    //ID: 27
+            HERMES_ADIS16470,               //ID: 28
+            HERMES_AISx120SX,               //ID: 29
+            HERMES_Altimax,                 //ID: 30
+            HERMES_HoneywellRsc_Pressure,   //ID: 31
+            HERMES_HoneywellRsc_Temp,       //ID: 32
+            HERMES_MAX7,                    //ID: 33
+            HERMES_MAX31855,                //ID: 34
 
         /// TEST PACKET
             TEST,
@@ -240,6 +251,16 @@ namespace DatagramType {
             case PL_ORDER: return "PL-ORDER";
             case PL_BME_SENSOR: return "PL-BME-SENSOR";
             case PL_BNO_SENSOR: return "PL-BNO-SENSOR";
+
+            case HERMES_TEST: return "HERMES-TEST";
+            case HERMES_ADIS16470: return "HERMES-ADIS16470";
+            case HERMES_AISx120SX: return "HERMES-AISx120SX";
+            case HERMES_Altimax: return "HERMES-Altimax";
+            case HERMES_HoneywellRsc_Pressure: return "HERMES-HoneywellRsc-Pressure";
+            case HERMES_HoneywellRsc_Temp: return "HERMES-HoneywellRsc-Temp";
+            case HERMES_MAX31855: return "HERMES-MAX31855";
+            case HERMES_MAX7: return "HERMES-MAX7";
+
             case TEST: return "TEST";
             default: return "Unknown";
         }

@@ -17,16 +17,11 @@
 #include "Packet.hpp"
 #include "Sensor.hpp"
 #include "globalVariables.hpp"
+#include "macrofunctions.h"
+
+#include "PacketBody/ADIS16470Body.h"
 
 // *************** ADIS16470Packet *************** //
-
-/// Describe the content of a ADIS16470 packet
-struct ADIS16470Body
-{
-  float gyros[3] = {0}; ///< Angular velocities [deg/s] around X,Y,Z axis; 3 * 4 = 12 bytes
-  float acc[3] = {0};   ///< Linear acceleration [g] along X,Y,Z axis; 3 * 4 = 12 bytes
-  float temp = 0;       ///< Temperature [degC]; 4 bytes
-};
 
 #define ADIS16470_LINE_0 "Angular velocities:\n"
 #define ADIS16470_LINE_1 "\t- X: %6e °/s\n"
@@ -259,6 +254,40 @@ public:
     default:
       return 0;
     }
+  }
+
+  /**
+   * @brief Write ADIS16470Body in Big Endian style in \p buffer
+   * 
+   * @warning Move \p buffer past the data
+   * 
+   * @param buffer Buffer of size at least packetSize
+   */
+  void getBigEndian(void *buffer)
+  {
+    // Re cast the buffer to write byte per byte
+    uint8_t *reBuffer = (uint8_t *)buffer;
+    float gyroX,gyroY,gyroZ;
+    float accX,accY,accZ;
+    float temp;
+
+    gyroX = getXGyro();
+    gyroY = getYGyro();
+    gyroZ = getZGyro();
+    accX = getXAcc();
+    accY = getYAcc();
+    accZ = getZAcc();
+    temp = getTemp();
+
+    BIG_ENDIAN_WRITE(gyroX,reBuffer);
+    BIG_ENDIAN_WRITE(gyroY,reBuffer);
+    BIG_ENDIAN_WRITE(gyroZ,reBuffer);
+
+    BIG_ENDIAN_WRITE(accX,reBuffer);
+    BIG_ENDIAN_WRITE(accY,reBuffer);
+    BIG_ENDIAN_WRITE(accZ,reBuffer);
+
+    BIG_ENDIAN_WRITE(temp,reBuffer);
   }
 
   // ----- Setters ----- //

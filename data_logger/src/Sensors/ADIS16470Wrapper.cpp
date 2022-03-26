@@ -40,11 +40,9 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
   // Try to see if the ADIS is working
   for (uint32_t i = 0; i < attempts; i++)
   {
-    if (!isDueByDR(micros(),trDr))
+    if (!isDueByDR(micros(), trDr))
     {
-      if (SERIAL_PRINT)
-        Serial.printf("[ADIS16470 Setup] Waiting for DR\n");
-        delay(delayDuration);
+      delay(delayDuration);
     }
 
     // acquire some data
@@ -64,10 +62,6 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
     }
     else // give it time before the next try
     {
-      if (SERIAL_PRINT)
-      {
-        Serial.printf("[ADIS16470 Setup] Seen %d VS Checksum %d\n", wordBurstData[9], checksum);
-      }
       delay(delayDuration);
     }
   }

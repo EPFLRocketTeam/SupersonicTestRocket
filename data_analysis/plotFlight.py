@@ -12,9 +12,9 @@ import os
 import matplotlib.pyplot as plt
 
 # variables
-directory = "data/decodedData/kaltbrunn_launch_2021_09_04"
+directory = "data/logs/decodedData/cernier_supersonic_09_10_2021"
 # launch start/end window. obtained after graphs first shown
-launch_start = 1100e6
+launch_start = 669e6
 launch_end = 1200e6
 
 # load the raw data
@@ -22,26 +22,34 @@ ADIS16470_data = pd.read_csv(os.path.join(directory,"ADIS16470_0.csv"))
 AIS1120SX_data = pd.read_csv(os.path.join(directory,"AISx120SX_0.csv"))
 RSC1_pressure_data = pd.read_csv(os.path.join(directory,"RSC_pressure_1.csv"))
 RSC1_temp_data = pd.read_csv(os.path.join(directory,"RSC_temp_1.csv"))
-MAX3_data = pd.read_csv(os.path.join(directory,"MAX_3.csv"))
+MAX0_data = pd.read_csv(os.path.join(directory,"MAX_0.csv"))
+MAX1_data = pd.read_csv(os.path.join(directory,"MAX_1.csv"))
+MAX2_data = pd.read_csv(os.path.join(directory,"MAX_2.csv"))
 
 # filter the data according to the window given above
 ADIS16470_data = ADIS16470_data.loc[
-    (ADIS16470_data["timestamp (us)"] >= launch_start) & 
+    (ADIS16470_data["timestamp (us)"] >= launch_start) &
     (ADIS16470_data["timestamp (us)"] <= launch_end)]
 AIS1120SX_data = AIS1120SX_data.loc[
-    (AIS1120SX_data["timestamp (us)"] >= launch_start) & 
+    (AIS1120SX_data["timestamp (us)"] >= launch_start) &
     (AIS1120SX_data["timestamp (us)"] <= launch_end)]
 RSC1_pressure_data = RSC1_pressure_data.loc[
-    (RSC1_pressure_data["timestamp (us)"] >= launch_start) & 
+    (RSC1_pressure_data["timestamp (us)"] >= launch_start) &
     (RSC1_pressure_data["timestamp (us)"] <= launch_end) &
     (RSC1_pressure_data["measInvalid"] == 0)]
 RSC1_temp_data = RSC1_temp_data.loc[
-    (RSC1_temp_data["timestamp (us)"] >= launch_start) & 
+    (RSC1_temp_data["timestamp (us)"] >= launch_start) &
     (RSC1_temp_data["timestamp (us)"] <= launch_end) &
     (RSC1_temp_data["measInvalid"] == 0)]
-MAX3_data = MAX3_data.loc[
-    (MAX3_data["timestamp (us)"] >= launch_start) & 
-    (MAX3_data["timestamp (us)"] <= launch_end)]
+MAX0_data = MAX0_data.loc[
+    (MAX0_data["timestamp (us)"] >= launch_start) &
+    (MAX0_data["timestamp (us)"] <= launch_end)]
+MAX1_data = MAX1_data.loc[
+    (MAX1_data["timestamp (us)"] >= launch_start) &
+    (MAX1_data["timestamp (us)"] <= launch_end)]
+MAX2_data = MAX2_data.loc[
+    (MAX2_data["timestamp (us)"] >= launch_start) &
+    (MAX2_data["timestamp (us)"] <= launch_end)]
 
 
 # plot acceleration graph
@@ -84,8 +92,16 @@ ax_temp.set_xlabel("Time, t [s]")
 ax_temp.set_ylabel("Temperature, T [degC]")
 ax_temp.plot(RSC1_temp_data["timestamp (us)"] / 1e6,
              RSC1_temp_data["temperature (degC)"], label="RSC1 temp")
-ax_temp.plot(MAX3_data["timestamp (us)"] / 1e6,
-             MAX3_data["probeTemp (degC)"], label="MAX3 probe temp")
-ax_temp.plot(MAX3_data["timestamp (us)"] / 1e6,
-             MAX3_data["ambientTemp (degC)"], label="MAX3 ambient temp")
+ax_temp.plot(MAX0_data["timestamp (us)"] / 1e6,
+             MAX0_data["probeTemp (degC)"], label="MAX0 probe temp")
+# ax_temp.plot(MAX0_data["timestamp (us)"] / 1e6,
+#              MAX0_data["ambientTemp (degC)"], label="MAX0 ambient temp")
+ax_temp.plot(MAX1_data["timestamp (us)"] / 1e6,
+             MAX1_data["probeTemp (degC)"], label="MAX1 probe temp")
+# ax_temp.plot(MAX1_data["timestamp (us)"] / 1e6,
+#              MAX1_data["ambientTemp (degC)"], label="MAX1 ambient temp")
+ax_temp.plot(MAX2_data["timestamp (us)"] / 1e6,
+             MAX2_data["probeTemp (degC)"], label="MAX2 probe temp")
+# ax_temp.plot(MAX2_data["timestamp (us)"] / 1e6,
+#              MAX2_data["ambientTemp (degC)"], label="MAX2 ambient temp")
 ax_temp.legend()
