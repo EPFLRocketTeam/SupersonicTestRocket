@@ -105,7 +105,11 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   size_t line_nbr;
   bool printSerial = false;
 
-  Serial.print("[acquireData] Reached acquireData loop\n");
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] Reached acquireData loop\n");
+  }
+
   while (checkButtons(buttonArray, stopEvent))
   {
     printSerial = (micros() - prevSerialLoop > SERIAL_INTERVAL);
@@ -121,26 +125,26 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
     for (size_t i = 0; i < sSize; i++)
     {
 
-      if (sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
+      if (sArray[i]->isDue(micros(), flagArray[i]))//(sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
       {
-        Serial.printf("[dataAcquisition] going for sensor %d : %s\n",i,sArray[i]->myName());
+        // Serial.printf("[dataAcquisition] going for sensor %d : %s\n",i,sArray[i]->myName());
         pkt = sArray[i]->getPacket(micros());
         rb.write(pkt->accessHeader(), sizeof(PacketHeader));
         rb.write(pkt->accessContent(), pkt->getPacketSize());
       }
 
-      
-      if (false)//(micros() - prevRadioLoop > RADIO_INTERVAL)
+      if (micros() - prevRadioLoop > RADIO_INTERVAL)
       {
         pkt = sArray[i]->getPacket(micros());
+        /*
         if (SERIAL_PRINT)
         {
           Serial.printf("[dataAcquisition] XBee send packet %s\n", packetTypeStr(pkt->getPacketType()));
         }
+        */
         xbee->send(pkt);
         prevRadioLoop = micros();
       }
-      
 
       if (printSerial)
       {
