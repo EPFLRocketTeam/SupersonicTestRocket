@@ -161,6 +161,9 @@ const uint8_t ADIS16470_INDEX = 0,
 const int SENSOR_SETUP_ATTEMPTS = 7;
 const int SETUP_DELAY = 50; // delay in ms to wait between setup attemps
 
+const int ANALOG_READ_RESOLUTION = 12;
+const int ANALOG_READ_AVERAGING = 4;
+
 // USER FUNCTIONS ==============================================================
 
 // SETUP =======================================================================
@@ -195,6 +198,9 @@ void setup()
   // SPI1.setSCK(20);
   Serial4.begin(9600);
   Serial5.begin(9600);
+
+  analogReadResolution(ANALOG_READ_RESOLUTION);
+  analogReadAveraging(ANALOG_READ_AVERAGING);
 
   // buildSensorArray();
 
