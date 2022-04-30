@@ -88,8 +88,11 @@ hermesGS
 
 ###  GST Software diagram (ERT2020GS)
 <img src="doc/img/2020_GS_GST_Software_System_Diagram.svg">
+
 -----------------------------------------------------------------
+
 ## Hardware
+
 The ground stations runs directly on a computer running a unix based OS (Windows is also possible through WSL).
 
 The XBee board is composed of an XBee SX868 RF transceiver and a Silicon Labs CP2104 USB-to-UART bridge
