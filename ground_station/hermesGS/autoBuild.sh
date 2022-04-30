@@ -8,4 +8,4 @@ cmake ..
 
 make
 
-echo "Execute the program with : ./build/ERT2020GS"
+echo "Execute the program with : ./build/hermesGS"
