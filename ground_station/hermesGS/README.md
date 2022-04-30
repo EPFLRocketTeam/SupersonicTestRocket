@@ -1,62 +1,22 @@
-[<img src="doc/img/bellalui.png" width=180 align="right" >](https://epflrocketteam.ch/fr/)
-
-# EPFL Rocket Team - <em>Bella Lui Project 2020</em>
+# Hermes GS
 
 -----------------------------------------------------------------
-## Table of Contents
-1. [Abstract](#abstract)
-2. [Repository organization tree](#repository-organization-tree)
-3. [GST system diagram](#ground-station-system-diagram)
-4. [Prerequisites](#prerequisites)
-5. [Configure the XBee](#configure-the-xbee)
-6. [Building software](#building-software)
-7. [Running the tests](#running-the-tests)
-8. [Information](#information)
-9. [Appendix](#appendix)  
-    9.1 [Datagrams description](#Datagrams-description)  
-    9.2 [Tutorials](#tutorial-1--create-a-new-datagram)
+This project is based on the [ERT 2020 Bella Lui GS project](https://github.com/MorgesHAB/ERT2020GS)
+
+Note: this is still work in progress
+
 -----------------------------------------------------------------
-## Abstract
-### Project purpose 
-The EPFL Rocket Team association will be participating in the 10’000 feet 
-SRAD Hybrid Engine category of the 2020 Spaceport America Cup, which will be held 
-from June 16th to 20th.  
-For more information, visit https://epflrocketteam.ch/fr/ :rocket:
+## Project purpose 
+Since we are aiming for the rocket (Hermes II) to go at supersonic speeds and its size is relatively small,
+it is mandatory that we have a telemetry link to receive GPS data on the ground in order to be able to successfully recover the rocket.
 
-### Description
-This repository represent the software of the <b>Ground Segment subsystem</b>.
-The main objective is to check that the mission is proceeding correctly via a 
-two-way radio link with the other rocket subsystems. 
-To do this, the ground station collects data from other subsystems (Avionics, Payload) 
-in order to control the smooth running and also acts by sending radio commands to the 
-Ground Support Equipment (GSE) in order to manage the <b>ignition</b> of the rocket.  
-Therefore, the software is composed of a part that manages the radio communication,
- i.e. reading and writing radio packets correctly according to a specific protocol.
-In addition, the user interaction part is established using a graphical user interface 
-designed with Qt.  
-This C++ software will run on a Raspberry Pi 4 located in the "Ground Station case". 
-Radio communication is established using XBee RF modems (868 MHz in CH and 915 MHz in USA).
-
-### Radio Network
-<img src="doc/img/2020_GS_RF_Network.svg">
-
-### Subsystem requirements
-Avionics
-- [X] Display telemetry, GPS, status data on the GUI
-
-GSE + Propulsion
-- [X] Manage the ignition of the rocket (send correct code)
-- [ ] Manage the filling of the rocket via radio (open - close N2O valves)
-
-Payload
-- [X] Manage the transmission of a picture each 10 min
-- [X] Display some sensors data on the GUI
+The Hermes ground station therefore has the objective of receiving and logging telemetry data coming from the rocket.
 
 
 -----------------------------------------------------------------
 ## Repository organization tree
 ```
-ERT2020GS
+hermesGS
 │   README.md
 │   CmakeLists.txt              main cmake file calling cmake subfiles
 │   autoBuild.sh                bash script to compile all this software   
@@ -84,6 +44,7 @@ ERT2020GS
 │   │   └───GSE                 ""
 │   │   └───Payload             ""
 │   │   └───Propulsion          ""
+│   │   └───Hermes              ""
 │   │
 │   └───RFmodem
 │       │   RFmodem.h/cpp       Superclass for RF communication
@@ -108,7 +69,8 @@ ERT2020GS
 │   │   ...
 │
 └───src                         all available executables
-│   │   ERT2020GS.cpp           Main program with GUI
+│   │   hermesGS.cpp            Main program
+│   │   ERT2020GS.cpp           Bella Lui 2020 Main program with GUI
 │   │   PacketXTest.cpp         Test the Tx or Rx of a specified Datagram
 │   │   AVsimulator.cpp         Simulate AV computer by sending multiple AV Datagram
 │   │   TestDebug.cpp           Test only the xbee transmission without this software
@@ -121,37 +83,24 @@ ERT2020GS
 ```
 -----------------------------------------------------------------
 ## Ground Station system diagram
-###  GST Hardware diagram
+###  GST Hardware diagram (ERT2020GS)
 <img src="doc/img/2020_GS_GST_Hardware_System_Diagram.svg">
 
-###  GST Software diagram
+###  GST Software diagram (ERT2020GS)
 <img src="doc/img/2020_GS_GST_Software_System_Diagram.svg">
-  
+-----------------------------------------------------------------
+## Hardware
+The ground stations runs directly on a computer running a unix based OS (Windows is also possible through WSL).
+
+The XBee board is composed of an XBee SX868 RF transceiver and a Silicon Labs CP2104 USB-to-UART bridge
+to provide a USB serial interface.
+
 -----------------------------------------------------------------
 ## Prerequisites
 
-- [x] Raspbian operating system installed
-
-If you just buy a Raspberry Pi, please follow this part first [Installation of Raspbian](#installation-of-Raspbian)
-
-First enable the SPI interface on your Pi with 
-```console
-sudo raspi-config
-```
-In `Interfacing options` 
-- [x] SPI   
-- [x] Serial
-
 In order to have a correct building, you will need to install the following software
 
-First open a terminal, and update your Raspberry Pi, then upgrade it
-```console
-sudo apt-get update
-```
-```console
-sudo apt-get upgrade
-```
-Now we need to install cmake to compile the code
+Install cmake to compile the code
 ```console
 sudo apt-get install cmake
 ```
@@ -159,65 +108,9 @@ Install git to be able to clone this git repository
 ```console
 sudo apt-get install git
 ```
-Then we need to install wiringpi to interact with the Raspberry Pi GPIO
-```console
-sudo apt-get install wiringpi
-```
-If you aren't working on the RPi, do this to be able to build on Linux :
-```console
-git clone https://github.com/WiringPi/WiringPi.git
-```
-```console
-cd WiringPi && ./build
-```
-(You can delete the WiringPi folder after a correct building)  
 
 
 <img src="doc/img/Qt.png" width=120 align="right" >
-
-### Install necessary Qt5 packages on Raspberry Pi 4
-
-Run the following command as sudo in order to get needed packages before installing Qt5
-```console
-sudo apt-get install build-essential
-```
-Now you can refer to this tutorial:
-Tutorial source : https://vitux.com/compiling-your-first-qt-program-in-ubuntu/
-
-Or simply enter the following commands:  
-To compile some Qt software
-```console
-sudo apt-get install qt5-default
-
-sudo apt-get install qtmultimedia5-dev
-```
-To be able to play sounds
-```console
-sudo apt-get install libqt5multimedia5-plugins
-```
-
-Optional
-```console
-sudo apt-get install qtcreator
-```
-```console
-sudo apt-get install qt5-doc qtbase5-examples qtbase5-doc-html 
-```
-### Install & configure your Pi to run a GPS (optional)
-
-First follow this tutorial to [configure GPSD on your Raspberry Pi](https://wiki.dragino.com/index.php?title=Getting_GPS_to_work_on_Raspberry_Pi_3_Model_B)
-
-Once this part achieved, install the library to use gpsd with c++
-```console
-sudo apt-get install libgps-dev
-```
-So at every boot you have to run this command to be 
-able to read GPS data via gpsd
-```console
- sudo gpsd /dev/ttyS0 -F /var/run/gpsd.sock
-```
-You can also add this command in the file ```/etc/rc.local```
-in order to let the Raspberry Pi run this command automatically on boot
 
 -----------------------------------------------------------------
 ## Configure the xbee
@@ -226,14 +119,17 @@ the same configurations profile as the other xbee modules using XCTU software.
 You can find this configuration profile in [doc/XbeeGS2020config.xpro](doc/XbeeGS2020config.xpro)  
 
 -----------------------------------------------------------------
-## Building software
+## Building the software
 
-First clone this GitHub repository in a folder using:
+First clone the GitHub repository in a folder using:
 ```console
-git clone https://github.com/MorgesHAB/ERT2020GS.git
+git clone https://github.com/EPFLRocketTeam/SupersonicTestRocket.git
 ```
-Move to the root folder of the project and run the bash to compile and build 
-the executable files:
+Move to the root folder of the project and then to the GS directory
+```console
+cd SupersonicTestRocket/ground_station/hermesGS/
+```
+Then run the bash to compile and build the executable files:
 ```console
 sudo bash autoBuild.sh
 ```
@@ -251,97 +147,29 @@ set(USE_SOUND OFF)
 cd build
 cmake ..
 ```
-* Then use make and specify your target, eg an executable without Qt :
+* Then use make and specify your target :
 ```console
-make XbeeTest
-make AVsimualtor
+make clean hermesGS
 ```
-
 -----------------------------------------------------------------
-## Running the tests
-For this part, your working directory should be `.../ERT2020GS/build`. If this directory
-doesn't exist, just type `mkdir build` from ERT2020GS.
-First test that your xbee communication is working
+## Running the software
+Once the executable is successfully built, you can run it using :
 ```console
-make XbeeTest
-./XbeeTest Tx ttyUSB0
+./hermesGS [serial port]                # RX
+./hermesGS [DatagramID] [serial port]   # TX (to send a test packet)
 ```
 
+You will need to run the program as sudo if you want to log received packets
 
-After having run the autoBuild.sh script correctly (no errors), many executable 
-should have been created in a "build" folder. The main program calls "ERT2020GS" 
-and is the one run on the Ground Station with a graphical user interface.
-```console
-./ERT2020GS
-```
------------------------------------------------------------------
-## How to use the software
-Create a `main.cpp` file in the src directory. Add the executable in the main CmakeLists.txt  
-Add a Packet instance and your Transceiver instance 
-and fill data on your packet.
-The Packet::write(T t) method can take all the data that are 
-of a size 8, 16 or 32 bits. You can override this method and adapt it to for 
-example string or GPS data as it's already done. 
-This is the same thing for the Packet::parse(T t) method.
-
-This is an example for the transmitter part with Xbee as RF modem :
-```cpp
-#include "Packet.h"
-#include "Xbee.h"
-
-int main() {
-    Xbee xbee;
-    Packet packet;
-    
-    // fill your packet with some data
-    packet.write(123);
-    packet.write(float(34.56));
-    packet.write('A');
-    packet.write("Hello World");
-
-    // Finally send your packet by RF
-    xbee.send(packet);
-
-    return 0;
-}
-```
------------------------------------------------------------------
-## Information
-
-### Read doxygen documentation
-Open this file in a web browser [doc/html/index.html](doc/html/index.html)  
-For example you will find this class architecture diagram
-<img src="doc/img/inherit_graph.png">
-
------------------------------------------------------------------
-### Developed with
-* Hardware
-    * Raspberry Pi 4 - SDRAM 4Go - SD card 32 Go
-    * 2 Xbee SX 868 MHz + PCBs + Antennas
-    * The Ground Station case (screens, battery, mouse, keyboard, ...)
-
-* Software
-    * [CLion](https://www.jetbrains.com/cpp/) from JetBrains
-    * Qt Designer for the graphical interface
-    * XCTU for xbee configurations
-
-Operating system NB : development on linux is easy.   
-If you want to develop it on windows, I use [ubuntu](https://ubuntu.com/tutorials/tutorial-ubuntu-on-windows#1-overview)
-application and Xserver for UI display redirection. Thus you can interact with the serial port
-and so with the xbee.
 
 -----------------------------------------------------------------
 ### Authors
+* Michael Ha - Implementation of the ground station for Hermes II
+
+### Acknowledgements (Original authors)
 * [Cem Keske](https://ch.linkedin.com/in/cem-keske-565363164) Mission UI & Logger
 * [Stéphanie Lebrun](https://ch.linkedin.com/in/st%C3%A9phanie-lebrun-491695192) implementation of some Data structures
 * [Lionel Isoz](https://github.com/MorgesHAB) RF telecommunication - xbee network - DataHandler
-
------------------------------------------------------------------
-### Acknowledgments
-* [Clément Nussbaumer](https://github.com/clementnuss/gs_matterhorn) - ERT2018 GS, inspired this software
-* [Alexandre Devienne](https://ch.linkedin.com/in/alexandre-devienne-ba4242127) - Xbee PCB & antennas
-* [EPFL Rocket Team](https://epflrocketteam.ch/fr/)
-* [Flaticon](https://www.flaticon.com/categories) for UI icon
 
 -----------------------------------------------------------------
 ### Useful links
@@ -363,7 +191,7 @@ Zoom in for better visibility (svg).
 <img src="doc/img/2020_GS_Communication%20Protocol%20Interface.svg">
 
 -----------------------------------------------------------------
-## Tutorial 1 : create a new Datagram
+## Tutorial 1 : creating a new Datagram
 
 - [X] First, create a new DatagramID in [DatagramTypes.h](Telecom/DataHandler/DatagramTypes.h) 
 and modify the getDatagramIDName() function.  
@@ -431,33 +259,3 @@ void MyData::parse(Packet &packet) {
 
 Finally, here is an example diagram of how to implement a new datagram
 <img src="doc/img/2020_GS_Datagram_Diagram.svg">
-
-
------------------------------------------------------------------
-## Tutorial 2 : change my RF modem
-If you want to use other radio modules in addition of the xbee or LoRa, you will just 
-need to adapt some part of the code.  
-
-First create your new RF module class and made it inherit from the abstract class 
-[RFmodem.h](Telecom/RFmodem/RFmodem.h). Then you have to override the send and
-receive functions. You can have a look to [Xbee.cpp](Telecom/RFmodem/Xbee.cpp) as an example, 
-but mainly, your send function must be able to transmit an array of uint8_t and your 
-receive function to fill a uint8_t array with the received data.
-Next, if you need, override also the getRSSI and isOpen functions.
-If your new RF module requires some new library dependencies, be sure to adapt the 
-[CMakeLists.txt](Telecom/CMakeLists.txt).
-
-Finally you just need to change the RFmodem pointer with 
-your new RF module instance in the mainRoutine of [Worker.cpp](Telecom/Worker/Worker.cpp).
-
------------------------------------------------------------------
-### Installation of Raspbian
-
-Installation of Raspbian operating system on your Rapsberry Pi
-
-Download the last version of Raspbian on (a file with .img extension): https://www.raspberrypi.org/downloads/raspbian/
-
-Then write the img file on your SD card. You can use Win32DiskImager as software
-
-Plug a keyboard & a mouse via USB port and a screen via HDMI port to your Raspberry Pi. 
-Finally plug the 5V power.
