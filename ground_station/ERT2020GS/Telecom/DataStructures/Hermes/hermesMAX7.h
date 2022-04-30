@@ -26,9 +26,9 @@ public:
     bool updateRx(std::shared_ptr<Connector> connector) override;
 
 private:
-    float latitude;  ///< [deg * 10^-7], 8 bytes
-    float longitude; ///< [deg * 10^-7], 8 bytes
-    float altitude;  ///< [mm], 8 bytes
+    uint32_t latitude;  ///< [deg * 10^-7], 8 bytes
+    uint32_t longitude; ///< [deg * 10^-7], 8 bytes
+    uint32_t altitude;  ///< [mm], 8 bytes
 };
 
 

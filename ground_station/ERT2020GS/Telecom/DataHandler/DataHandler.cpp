@@ -47,6 +47,7 @@
 #include <Hermes/hermesHoneywellRsc_Temp.h>
 #include <Hermes/hermesMAX7.h>
 #include <Hermes/hermesMAX31855.h>
+#include <Hermes/hermesAD8556.h>
 
 #include "DataHandler.h"
 
@@ -111,6 +112,7 @@ DataHandler::DataHandler(std::shared_ptr<Connector> connector)
         dataHandler[DatagramType::HERMES_HoneywellRsc_Temp]->add(new hermesHoneywellRsc_Temp);
         dataHandler[DatagramType::HERMES_MAX7]->add(new hermesMAX7);
         dataHandler[DatagramType::HERMES_MAX31855]->add(new hermesMAX31855);
+        dataHandler[DatagramType::HERMES_AD8556]->add(new hermesAD8556);
 
         //// [Subsystem Name] Datagram
         /// // dataHandler[DatagramID]->add(new MyData);

@@ -11,6 +11,7 @@
 
 #include <iomanip>
 #include <Loggable.h>
+#include <cmath>
 
 hermesMAX7::hermesMAX7() {
     srand(std::time(nullptr)); // for simulation random
@@ -30,17 +31,17 @@ void hermesMAX7::parse(Packet& packet) {
 }
 
 void hermesMAX7::print() const {
-    std::cout << std::setprecision(10);
+    std::cout << std::setprecision(7) << std::fixed;
     std::cout << "----- GPS DATA --------------" << std::endl;
-    std::cout << "latitude : " << latitude << "°" << std::endl
-              << "longitude : " << longitude << "°" << std::endl
-              << "altitude : " << altitude << " m" << std::endl;
+    std::cout << "latitude : " << latitude*pow(10,-7) << "°" << std::endl
+              << "longitude : " << longitude*pow(10,-7) << "°" << std::endl
+              << "altitude : " << altitude/1000 << " m" << std::endl;
 }
 
 bool hermesMAX7::updateTx(std::shared_ptr<Connector> connector) {
-    latitude =  42 + ((float) rand()/ RAND_MAX) * 6;
-    longitude =  11 + ((float) rand()/ RAND_MAX) * 6;
-    altitude =  500 + ((float) rand()/ RAND_MAX) * 1000;
+    latitude =  2;
+    longitude =  4;
+    altitude =  999000;
     return true;
 }
 
