@@ -24,7 +24,7 @@ struct PacketHeader
 
 /// Description of errors bits in packet header
 #define HEADER_ERROR_DESC \
-    "\nErr code format: [Measure late] [Check beats skipped] [No DR trigger] [Checksum error] [Invalid measure]\n"
+    "\nErr code format: [Measure late] [Check beats skipped] [No DR trigger] [Checksum error] [Invalid measure]"
 
 /// Description of packet fields
 #define HEADER_LINE "--- Packet type --- | -- Packet size -- | -- Sensor ID -- | -- Error code -- | -- Timestamp -- | -- Data     \n"
