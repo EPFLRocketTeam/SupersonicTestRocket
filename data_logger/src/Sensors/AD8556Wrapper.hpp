@@ -89,7 +89,7 @@ public:
   }
 
   /**
-   * @brief Write MAX7Body in Big AD8556 style in \p buffer
+   * @brief Write AD8556 packet in Big Endian style in \p buffer
    *
    * @warning Move \p buffer past the data
    *
