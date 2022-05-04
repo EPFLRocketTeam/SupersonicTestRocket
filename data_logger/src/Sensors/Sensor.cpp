@@ -41,25 +41,21 @@ bool Sensor::isDueByTime(uint32_t currMicros)
     actualCheckInterval = CHECK_INTERVAL + CHECK_INTERVAL_MARGIN;
   }
 
+  
   if (currMicros - prevCheck > actualCheckInterval)
   {
-    if (checkBeatsSkipped > 1)
-    {
-      // Serial.print("WARNING! Skipped following amount of beats:");
-      // Serial.println(checkBeatsSkipped - 1);
-      // Serial.println("Consider lowering frequency.");
-    }
-
     // Why is prevCheck actualized by incrementing instead of simply taking the actual time???
     // prevCheck += checkBeatsSkipped * CHECK_INTERVAL; // catch up
     prevCheck = currMicros;
 
     dueMethod = DUE_BY_TIME; // sensor is due by time
+    
     return true;             // event is due
   }
   else
   {
-    return 0; // event is not due
+    
+    return false; // event is not due
   }
 }
 
