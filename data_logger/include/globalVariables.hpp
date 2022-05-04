@@ -5,7 +5,7 @@
 // debugging mode
 // for now it's just whether to take real data or generate some fake one
 
-#define DEBUG
+//#define DEBUG
 const bool SERIAL_PRINT = true;
 //#include "TeensyDebug.h"
 //#pragma GCC optimize ("O0")
@@ -43,7 +43,7 @@ extern const uint8_t MAX7_PINS[];
 
 // Sensors ----------------------------------------------------------------------
 
-constexpr size_t NUM_SENSORS = 11; //Should hold in uint8_t
+constexpr size_t NUM_SENSORS = 8; //Should hold in uint8_t
 
 extern const uint8_t ADIS16470_INDEX,
     AISx120SX_INDEX,
