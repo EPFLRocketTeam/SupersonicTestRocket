@@ -1,1 +1,1 @@
-C:/Users/maelf/Desktop/ENSL/EPFL/Master/Rocketry/SupersonicTestRocket/ground_station/ERT2020GS/Telecom/DataHandler/DatagramTypes.h
+../../../ground_station/ERT2020GS/Telecom/DataHandler/DatagramTypes.h
