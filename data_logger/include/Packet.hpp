@@ -7,6 +7,7 @@
 #include <cassert>
 
 #include <Arduino.h>
+#include <ArduinoTrace.h>
 
 #include "CustomTypes.hpp"
 

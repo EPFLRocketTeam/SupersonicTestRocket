@@ -287,7 +287,7 @@ public:
   // determine next reading type
   READING_T nextReadType();
 
-  HoneywellRSCPacket *getPacket(uint32_t currMicros);
+  HoneywellRSCPacket *getPacket();
   HoneywellRSCPacket **getSerialPackets(uint32_t currMicros);
 
   PacketHeader getHeader(uint32_t currMicros);

@@ -8,7 +8,7 @@
 #include "dataAcquisition.hpp"
 
 // Use array to allow interruption of any sensor
-volatile bool flagArray[NUM_SENSORS];
+volatile bool flagArray[NUM_SENSORS] = {false};
 
 // Use lambda function for arbitrary interruptions
 #define INTERRUPT(i) []() { flagArray[i] = true; }
@@ -56,15 +56,17 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
     Serial.print("[acquireData] Buttons has been set up\n");
   }
 
+  
   // attach the interrupts
   attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
                   INTERRUPT(ADIS16470_INDEX), RISING);
   attachInterrupt(digitalPinToInterrupt(DR_RSC[0]),
                   INTERRUPT(Honeywell_Rsc_0_INDEX), FALLING);
-  attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
-                  INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
+  // attachInterrupt(digitalPinToInterrupt(DR_RSC[1]),
+  //                 INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]),
                   INTERRUPT(Altimax_INDEX), RISING);
+  
 
   if (SERIAL_PRINT)
   {
@@ -72,7 +74,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   }
 
   // set the last time for every check to now
-  uint32_t prevSyncLoop = micros();   // timing for syncing
+  // uint32_t prevSyncLoop = micros();   // timing for syncing
   uint32_t prevSerialLoop = micros(); // timing for serial monitor output
   uint32_t prevRadioLoop = micros();  // timing for radio transmission
 
@@ -104,63 +106,75 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   char line_serial_buffer[LINE_SIZE];
   size_t line_nbr;
   bool printSerial = false;
+  bool VRAI = true;
 
   if (SERIAL_PRINT)
   {
     Serial.print("[acquireData] Reached acquireData loop\n");
   }
 
-  while (checkButtons(buttonArray, stopEvent))
+  while (true) //(checkButtons(buttonArray, stopEvent))
   {
-    printSerial = (micros() - prevSerialLoop > SERIAL_INTERVAL);
+    flashLED(RED_LED_PIN, 100);
+    delay(300);
+    printSerial = SERIAL_PRINT & (micros() - prevSerialLoop > SERIAL_INTERVAL);
 
     if (printSerial)
     {
       Serial.write(RESET_TERMINAL);
       Serial.write(HEADER_ERROR_DESC);
+      Serial.printf(" (%ld ms)\n",millis());
       Serial.write(HEADER_LINE);
       Serial.write(SEPARATOR_LINE);
     }
 
     for (size_t i = 0; i < sSize; i++)
     {
-
-      if (sArray[i]->isDue(micros(), flagArray[i]))//(sArray[i]->active && sArray[i]->isDue(micros(), flagArray[i]))
+      if (sArray[i]->active)
       {
-        // Serial.printf("[dataAcquisition] going for sensor %d : %s\n",i,sArray[i]->myName());
-        pkt = sArray[i]->getPacket(micros());
-        rb.write(pkt->accessHeader(), sizeof(PacketHeader));
-        rb.write(pkt->accessContent(), pkt->getPacketSize());
-      }
 
-      if (micros() - prevRadioLoop > RADIO_INTERVAL)
-      {
-        pkt = sArray[i]->getPacket(micros());
-        /*
-        if (SERIAL_PRINT)
+        // Serial.printf("[dataAcquisition] going for sensor %d : %s\n", i, sArray[i]->myName());
+        if (sArray[i]->isDue(micros(), flagArray[i]))
         {
-          Serial.printf("[dataAcquisition] XBee send packet %s\n", packetTypeStr(pkt->getPacketType()));
+          //Serial.printf("[dataAcquisition] getting packet for sensor %d : %s....", i, sArray[i]->myName());
+          pkt = sArray[i]->getPacket();
+          //Serial.print(" Got it!");
+          rb.write(pkt->accessHeader(), sizeof(PacketHeader));
+          rb.write(pkt->accessContent(), pkt->getPacketSize());
+          //Serial.print(" And wrote it down!!\n");
+        }
+
+    /*
+        if (micros() - prevRadioLoop > RADIO_INTERVAL)
+        {
+          pkt = sArray[i]->getPacket();
+          if (SERIAL_PRINT)
+          {
+            Serial.printf("[dataAcquisition] XBee send packet %s\n", packetTypeStr(pkt->getPacketType()));
+          }
+
+          xbee->send(pkt);
+          prevRadioLoop = micros();
         }
         */
-        xbee->send(pkt);
-        prevRadioLoop = micros();
-      }
 
-      if (printSerial)
-      {
-        pkt = sArray[i]->getPacket(micros());
-        memset((void *)line_serial_buffer, '\0', LINE_SIZE);
-        pkt->getPrintableHeader(line_serial_buffer);
-        line_nbr = 0;
-        while (pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE + 1], line_nbr)) // SIZE does not include \0
+        if (printSerial)
         {
-          Serial.write(line_serial_buffer, LINE_SIZE);
+
+          pkt = sArray[i]->getPacket();
           memset((void *)line_serial_buffer, '\0', LINE_SIZE);
-          snprintf(line_serial_buffer, HEADER_SIZE, HEADER_FILLER_LINE);
-          line_nbr++;
+          pkt->getPrintableHeader(line_serial_buffer);
+          line_nbr = 0;
+          while (pkt->getPrintableContent(&line_serial_buffer[HEADER_SIZE + 1], line_nbr)) // SIZE does not include \0
+          {
+            Serial.write(line_serial_buffer, LINE_SIZE);
+            memset((void *)line_serial_buffer, '\0', LINE_SIZE);
+            snprintf(line_serial_buffer, HEADER_SIZE, HEADER_FILLER_LINE);
+            line_nbr++;
+          }
+          Serial.write(line_serial_buffer, LINE_SIZE);
+          Serial.write(SEPARATOR_LINE);
         }
-        Serial.write(line_serial_buffer, LINE_SIZE);
-        Serial.write(SEPARATOR_LINE);
       }
     }
 
@@ -169,29 +183,9 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
       printSerial = false;
       prevSerialLoop = micros();
     }
-    /* NOT IMPLEMENTED VERBATIM
-    // ADIS16470
-    if (adis16470.active && adis16470.isDue(micros(), adis16470DRflag))
-    {
-      ADIS16470Packet packet = adis16470.getPacket(micros());
-
-      // THIS PART IS MISSING (and special to this sensor)
-      // What is its purpose ? Why this sensor only ?
-      if (packet.header.errorCode)
-      {
-        errorCount++;
-        if (errorCount >= 1000)
-        {
-          digitalWrite(RED_LED_PIN, HIGH);
-        }
-      }
-
-      rb.write((const uint8_t *)&packet,
-               sizeof(ADIS16470Packet));
-    }
-    */
 
     // check if it's time to sync
+    /*
     if (micros() - prevSyncLoop > SYNC_INTERVAL)
     {
       prevSyncLoop += SYNC_INTERVAL;
@@ -202,31 +196,6 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
       // And perhaps solve the issue of unplugging during a sync? To investigate
       // See useful memory time when power loss with and without sync
       // rb.sync();
-    }
-
-    /* DESACTIVATE IT FOR NOW (adapt it to the virtual Packet)
-    // check if it's time to output to the console
-    // this is not done with every measurement since the human eye can only
-    // see smoothly up to around 60 Hz anyways, and this is only for debugging
-    if (micros() - prevSerialLoop > SERIAL_INTERVAL)
-    {
-      prevSerialLoop += SERIAL_INTERVAL;
-      // get the packets for the rsc and max
-      HoneywellRSCPacket rscPackets[rscs[0].getSensorQty() * 2] = {};
-      MAX31855Packet maxPackets[tcs[0].getSensorQty()] = {};
-      for (size_t i = 0; i < rscs[0].getSensorQty(); i++)
-      {
-        rscPackets[2 * i] = rscs[i].getSerialPackets(micros())[0];
-        rscPackets[2 * i + 1] = rscs[i].getSerialPackets(micros())[1];
-      }
-      for (size_t i = 0; i < tcs[0].getSensorQty(); i++)
-      {
-        maxPackets[i] = tcs[i].getPacket(micros());
-      }
-      outputSensorData(micros(), adis16470.getPacket(micros()),
-                       ais1120sx.getPacket(micros()),
-                       rscPackets, rscs[0].getSensorQty(),
-                       maxPackets, tcs[0].getSensorQty());
     }
     */
 
@@ -272,6 +241,11 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
       break;
     }
   } // Finished acquiring data
+
+  if (SERIAL_PRINT)
+  {
+    Serial.print("[acquireData] Out of acquisition loop\n");
+  }
 
   // detach the interrupts
   detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
@@ -442,5 +416,6 @@ bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
       break;
     }
   }
+
   return true;
 }

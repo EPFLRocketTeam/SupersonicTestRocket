@@ -64,9 +64,9 @@ void Packet::getPrintableHeader(char *buff)
         // char output[PACKET_HEADER_PRINT_SIZE];
 
         bool error_array[ERROR_TYPE_NUM] = {false};
-
+        
         decodeErrorCode(error_array, header.errorCode);
-
+        
         snprintf(buff, HEADER_SIZE, HEADER_FRMT,
                  packetTypeStr(header.packetType_),
                  header.packetSize,

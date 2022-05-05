@@ -8,6 +8,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <ArduinoTrace.h>
 
 #include "Packet.hpp"
 
@@ -201,7 +202,7 @@ public:
    *
    * @see Packet
    */
-  virtual Packet *getPacket(uint32_t currMicros) = 0;
+  virtual Packet *getPacket() = 0;
 };
 
 /**

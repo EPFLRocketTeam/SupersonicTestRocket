@@ -56,6 +56,7 @@ bool HoneywellRscWrapper::setup(uint32_t attempts, uint32_t delayDuration)
     rscObject.adc_request(PRESSURE);
     delay(50);
     float reading = rscObject.get_pressure();
+    Serial.printf("[HoneywellRSC] Setup pressure reading: %f\n", reading);
     if (reading != 0 && !isnan(reading)) // condition for success
     {
       active = true;
@@ -83,9 +84,40 @@ uint8_t HoneywellRscWrapper::getSensorQty()
 
 bool HoneywellRscWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
 {
-  if (isDueByDR(currMicros, triggeredDR))// || isDueByTime(currMicros)) //Removed dueByTime to avoid packet type confusion
+  if (isDueByDR(currMicros, triggeredDR)) // || isDueByTime(currMicros)) //Removed dueByTime to avoid packet type confusion
   {
     prevMeasTime = currMicros;
+    // determine the type of measurement we are getting
+    if (currReadType() == TEMPERATURE)
+    {
+      lastTempPacket.setMeasurement(rscObject.get_temperature());
+      lastTempPacket.updateHeader(Sensor::getHeader(RSC_TEMP_PACKET_TYPE,
+                                                    sizeof(HoneywellRSCBody),
+                                                    currMicros));
+
+      // request the next data from the adc
+      rscObject.adc_request(nextReadType());
+
+      // update the measurement count
+      measurementAmountModulo += 1;
+      measurementAmountModulo = measurementAmountModulo % temp_frequency;
+      return &lastTempPacket;
+    }
+    else
+    {
+      lastPressurePacket.setMeasurement(rscObject.get_pressure());
+      lastPressurePacket.updateHeader(Sensor::getHeader(RSC_PRESSURE_PACKET_TYPE,
+                                                        sizeof(HoneywellRSCBody),
+                                                        currMicros));
+
+      // request the next data from the adc
+      rscObject.adc_request(nextReadType());
+
+      // update the measurement count
+      measurementAmountModulo += 1;
+      measurementAmountModulo = measurementAmountModulo % temp_frequency;
+      return &lastPressurePacket;
+    }
     return true;
   }
   else
@@ -133,38 +165,15 @@ READING_T HoneywellRscWrapper::nextReadType()
   }
 }
 
-HoneywellRSCPacket *HoneywellRscWrapper::getPacket(uint32_t currMicros)
+HoneywellRSCPacket *HoneywellRscWrapper::getPacket()
 {
-  // determine the type of measurement we are getting
-  if (currReadType() == TEMPERATURE)
+  if (lastPressurePacket.getTimestamp() > lastTempPacket.getTimestamp())
   {
-    lastTempPacket.setMeasurement(rscObject.get_temperature());
-    lastTempPacket.updateHeader(Sensor::getHeader(RSC_TEMP_PACKET_TYPE,
-                                                  sizeof(HoneywellRSCBody),
-                                                  currMicros));
-
-    // request the next data from the adc
-    rscObject.adc_request(nextReadType());
-
-    // update the measurement count
-    measurementAmountModulo += 1;
-    measurementAmountModulo = measurementAmountModulo % temp_frequency;
-    return &lastTempPacket;
+    return &lastPressurePacket;
   }
   else
   {
-    lastPressurePacket.setMeasurement(rscObject.get_pressure());
-    lastPressurePacket.updateHeader(Sensor::getHeader(RSC_PRESSURE_PACKET_TYPE,
-                                                      sizeof(HoneywellRSCBody),
-                                                      currMicros));
-
-    // request the next data from the adc
-    rscObject.adc_request(nextReadType());
-
-    // update the measurement count
-    measurementAmountModulo += 1;
-    measurementAmountModulo = measurementAmountModulo % temp_frequency;
-    return &lastPressurePacket;
+    return &lastTempPacket;
   }
 }
 
@@ -173,7 +182,7 @@ HoneywellRSCPacket **HoneywellRscWrapper::getSerialPackets(uint32_t currMicros)
 #ifdef DEBUG
   lastPressurePacket.setMeasurement(generateFakeData(0, 2, micros(), 14 * SENSOR_ID));
   lastPressurePacket.updateHeader(getHeader(currMicros));
-  lastTempPacket.setMeasurement(generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000));   
+  lastTempPacket.setMeasurement(generateFakeData(-200, 1200, micros(), 25 * SENSOR_ID, 3800000));
   lastTempPacket.updateHeader(getHeader(currMicros));
 #endif
 

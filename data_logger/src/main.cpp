@@ -65,6 +65,9 @@
 // XBee
 #include "XB8XWrapper.hpp"
 
+// Debug
+#include <ArduinoTrace.h>
+
 // DEFINE VARIABLES ============================================================
 
 // Analog ----------------------------------------------------------------------
@@ -90,10 +93,6 @@ const uint8_t staticRSC = 0;
 const uint8_t totalRSC = 1;
 const uint8_t CS_RS_EE_PIN[2] = {2, 8};
 const uint8_t CS_RSC_ADC_PIN[2] = {22, 36};
-// RSC1's DR line should be on pin 15 according to the PCB, however, it was
-// manually reconnected to pin 39 on the first iteration of the PCB
-// change lines accordingly if building a new PCB from the schematics
-// const uint8_t DR_RSC[2] = {39, 26};
 const uint8_t DR_RSC[2] = {23, 15};
 // Thermocouples
 const uint8_t TAT_TC = 3;
@@ -114,8 +113,7 @@ const uint8_t AD8556_VMINUS = 18;
 const float AD8556_MIN_READ = 0;
 
 /// maxReading at 3.3V ; at 0.1 V get 200 lbs, converted to kg, then multiply g to get Newtons
-const float AD8556_MAX_READ = 3.3 * (200/0.1) * 0.45359237 * 9.80665;
-
+const float AD8556_MAX_READ = 3.3 * (200 / 0.1) * 0.45359237 * 9.80665;
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -136,52 +134,47 @@ AISx120SXWrapper ais1120sx(CS_AIS1120SX_PIN, _800Hz, _800Hz,
                            false, false, false, false);
 
 HoneywellRscWrapper rscs_0(DR_RSC[0], CS_RS_EE_PIN[0],
-                           CS_RSC_ADC_PIN[0], 1,
+                           CS_RSC_ADC_PIN[0], 0,
                            F_DR_2000_SPS, 50000);
 
+/*
 HoneywellRscWrapper rscs_1(DR_RSC[1], CS_RS_EE_PIN[1],
                            CS_RSC_ADC_PIN[1], 0,
                            F_DR_2000_SPS, 50000);
-
+*/
 MAX31855Wrapper tcs_0(CS_TCS_PIN[0]);
 MAX31855Wrapper tcs_1(CS_TCS_PIN[1]);
-MAX31855Wrapper tcs_2(CS_TCS_PIN[2]);
-MAX31855Wrapper tcs_3(CS_TCS_PIN[3]);
+// MAX31855Wrapper tcs_2(CS_TCS_PIN[2]);
+// MAX31855Wrapper tcs_3(CS_TCS_PIN[3]);
 
 AltimaxWrapper altimax(ALTIMAX_DR_PINS[0], ALTIMAX_DR_PINS[1], ALTIMAX_DR_PINS[2]);
 
 MAX7Wrapper max7(&Serial4);
 
-AD8556Wrapper ad8556(255,AD8556_VPLUS,AD8556_VMINUS,0,0,0,ANALOG_READ_RESOLUTION, AD8556_MIN_READ, AD8556_MAX_READ);
+AD8556Wrapper ad8556(255, AD8556_VPLUS, AD8556_VMINUS, 0, 0, 0, ANALOG_READ_RESOLUTION, AD8556_MIN_READ, AD8556_MAX_READ);
 
 // Put all sensors in an array and then all functions can simply loop
 // through the array. Requires important overhaul of sensor class and virtual
 // functions that are overidden in the derived wrapper classes.
-Sensor *sensorArray[NUM_SENSORS] = {&adis16470,
-                                    &ais1120sx,
+Sensor *sensorArray[NUM_SENSORS] = {&max7,
+                                    &adis16470,
                                     &rscs_0,
-                                    &rscs_1,
+                                    &ad8556,
                                     &tcs_0,
                                     &tcs_1,
-                                    &tcs_2,
-                                    &tcs_3,
-                                    &altimax,
-                                    &max7,
-                                    &ad8556};
+                                    &ais1120sx,
+                                    &altimax};
 
-const uint8_t ADIS16470_INDEX = 0,
-              AISx120SX_INDEX = 1,
+const uint8_t ADIS16470_INDEX = 1,
+              AISx120SX_INDEX = 6,
               Honeywell_Rsc_0_INDEX = 2,
-              Honeywell_Rsc_1_INDEX = 3,
               MAX31855_START_INDEX = 4,
-              Altimax_INDEX = 8,
-              MAX7_INDEX = 9,
-              AD8556_INDEX = 10;
+              Altimax_INDEX = 7,
+              MAX7_INDEX = 0,
+              AD8556_INDEX = 1;
 
-const int SENSOR_SETUP_ATTEMPTS = 7;
+const int SENSOR_SETUP_ATTEMPTS = 2;
 const int SETUP_DELAY = 50; // delay in ms to wait between setup attemps
-
-
 
 // USER FUNCTIONS ==============================================================
 
@@ -203,13 +196,13 @@ void setup()
   digitalWrite(RED_LED_PIN, LOW);   // turn off LED in case
 
   Serial.println("[Setup] Play with LEDs");
-  delay(2000);
+  delay(500);
   Serial.println("[Setup] Success flash");
   successFlash(); // visual feedback setup is happening
-  delay(2000);
+  delay(1000);
   Serial.println("[Setup] Error flash");
   errorFlash();
-  delay(2000);
+  delay(1000);
 
   SPI.begin();
   SPI1.begin();

@@ -75,6 +75,8 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggered
       // update the last measurements
       lastPacket.setProbeTemperature(probeT);
       lastPacket.setSensorTemperature(ambientT);
+
+      lastPacket.updateHeader(getHeader(currMicros));
     }
   }
   return returnVal;
@@ -92,11 +94,8 @@ bool MAX31855Wrapper::isMeasurementInvalid()
   return false;
 }
 
-MAX31855Packet *MAX31855Wrapper::getPacket(uint32_t currMicros)
+MAX31855Packet *MAX31855Wrapper::getPacket()
 {
-  // update the error on the packet
-  lastPacket.updateHeader(getHeader(currMicros));
-
 #ifdef DEBUG
 
   lastPacket.setProbeTemperature(generateFakeData(-200, 1200, micros(), 35 * SENSOR_ID, 2700000));

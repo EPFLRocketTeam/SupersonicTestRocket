@@ -256,7 +256,7 @@ public:
   // overwritten version of method in base class sensor
   bool isMeasurementInvalid();
 
-  AltimaxPacket *getPacket(uint32_t currMicros);
+  AltimaxPacket *getPacket();
 
   PacketHeader getHeader(uint32_t currMicros);
 };

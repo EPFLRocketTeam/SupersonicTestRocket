@@ -268,7 +268,7 @@ public:
    * @param currMicros Current time, in microseconds
    * @return MAX31855Wrapper* : Reference to the updated MAX31855Wrapper::lastPacket
    */
-  MAX31855Packet *getPacket(uint32_t currMicros);
+  MAX31855Packet *getPacket();
 
   /**
    * @brief Wrapper to generate MAX31855's packet header

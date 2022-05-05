@@ -53,6 +53,8 @@ bool AD8556Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR
         // read the measurements from the sensor
         float rawReading = static_cast<float>(analogRead(Vplus)) - static_cast<float>(analogRead(Vminus));
         lastPacket.setReading(minReading + rawReading * rescale);
+
+        lastPacket.updateHeader(getHeader(currMicros));
         return true;
     }
     return returnVal;
@@ -63,11 +65,8 @@ bool AD8556Wrapper::isMeasurementInvalid()
     return true;
 }
 
-AD8556Packet *AD8556Wrapper::getPacket(uint32_t currMicros)
+AD8556Packet *AD8556Wrapper::getPacket()
 {
-    // update the error on the packet
-    lastPacket.updateHeader(getHeader(currMicros));
-
 #ifdef DEBUG
 
     lastPacket.setReading(generateFakeData(0, 20000, micros(), 0, 9300000));

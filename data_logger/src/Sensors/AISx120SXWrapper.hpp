@@ -319,7 +319,7 @@ public:
    * @param currMicros Current time, in microseconds
    * @return AISx120SXPacket* : Reference to the updated AISx120SXWrapper::lastPacket
    */
-  AISx120SXPacket *getPacket(uint32_t currMicros);
+  AISx120SXPacket *getPacket();
 
   /**
    * @brief Wrapper to generate AISx120SX's packet header

@@ -214,7 +214,7 @@ public:
    * @param currMicros Current time, in microseconds
    * @return AD8556Wrapper* : Reference to the updated AD8556Wrapper::lastPacket
    */
-  AD8556Packet *getPacket(uint32_t currMicros);
+  AD8556Packet *getPacket();
 
   /**
    * @brief Wrapper to generate AD8556's packet header

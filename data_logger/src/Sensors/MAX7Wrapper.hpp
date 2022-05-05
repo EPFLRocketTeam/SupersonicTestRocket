@@ -2,7 +2,7 @@
 
 // Standard libraries
 #include <Arduino.h>
-#include <SparkFun_u-blox_GNSS_Arduino_Library.h>
+#include <MicroNMEA.h>
 #include <SoftwareSerial.h>
 
 // User-defined headers
@@ -13,8 +13,10 @@
 
 #include "PacketBody/MAX7Body.h"
 
-#define MAX7_LINE_0 "Latitude:  %8ld deg.10^-7\n"
-#define MAX7_LINE_1 "Longitude: %8ld deg.10^-7\n"
+#include "ArduinoTrace.h"
+
+#define MAX7_LINE_0 "Latitude:  %8ld deg.E-7\n"
+#define MAX7_LINE_1 "Longitude: %8ld deg.E-7\n"
 #define MAX7_LINE_2 "Altitude:  %8ld mm\n"
 #define MAX7_LINE_NBR 2
 
@@ -171,12 +173,15 @@ public:
 class MAX7Wrapper : public Sensor
 {
 private:
-  static const uint32_t MEASUREMENT_INTERVAL = 1000 * 1000;         ///< [us] (1000 ms)
-  static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL / 10; ///< [us] (100 ms)
+  static const uint32_t MEASUREMENT_INTERVAL = 1500 * 1000;         ///< [us] (1500 ms)
+  static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL / 10; ///< [us] (750 ms)
   static const uint32_t MEASUREMENT_MARGIN = 100;                   ///< [us], used to define how long to wait when fetching measurements
 
+
+
+  char nmeaBuffer[100];
+  MicroNMEA nmea;//(nmeaBuffer, sizeof(nmeaBuffer));
   Stream *mySerial;         ///< Serial connection
-  SFE_UBLOX_GNSS gnss;      ///< Underlying object
   static uint8_t sensorQty; ///< How many sensors of this type exist
   MAX7Packet lastPacket;    ///< Holder for the packet, actualized by measurements
 
@@ -252,7 +257,7 @@ public:
    * @param currMicros Current time, in microseconds
    * @return MAX7Wrapper* : Reference to the updated MAX7Wrapper::lastPacket
    */
-  MAX7Packet *getPacket(uint32_t currMicros);
+  MAX7Packet *getPacket();
 
   /**
    * @brief Wrapper to generate MAX7's packet header
