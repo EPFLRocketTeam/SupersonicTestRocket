@@ -12,6 +12,8 @@
 // Fetch datagram IDs from GS part
 #include <DatagramTypes.h>
 
+#include <ArduinoTrace.h>
+
 /**
  * @brief Generic XBee API frame structure
  *
@@ -99,9 +101,20 @@ private:
     bool enterCmdMode(uint32_t waitAns = 1000);
 
     /**
-     * @brief Exit command mode
+     * @brief Used to verify XBee module answer an acknowledgement
+     * 
+     * @param waitAns How many milliseconds to wait for answer; default is 1000 ms
+     * @return true : got acknowledged
+     * @return false : no answer / wrong answer
      */
-    void exitCmdMode();
+    bool acknowledge(uint32_t waitAns);
+
+    /**
+     * @brief Exit command mode
+     * 
+     * @param waitAns How many milliseconds to wait for answer; default is 1000 ms
+     */
+    void exitCmdMode(uint32_t waitAns = 1000);
 
     /**
      * @brief Set the destination in XBee (store it and update it)

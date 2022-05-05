@@ -550,7 +550,7 @@ public:
    * @param currMicros Current time, in microseconds
    * @return ADIS16470Packet* : Reference to the updated ADIS16470Wrapper::lastPacket
    */
-  ADIS16470Packet *getPacket(uint32_t currMicros);
+  ADIS16470Packet *getPacket();
 
   /**
    * @brief Wrapper to generate ADIS16470's packet header

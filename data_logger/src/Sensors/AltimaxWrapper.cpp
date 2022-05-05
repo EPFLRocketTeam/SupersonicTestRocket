@@ -64,6 +64,12 @@ bool AltimaxWrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
   if (isDueByDR(currMicros, triggeredDR))
   {
     prevMeasTime = currMicros;
+
+    lastPacket.setPin0state(digitalRead(PIN_0));
+    lastPacket.setPin1state(digitalRead(PIN_1));
+    lastPacket.setPin2state(digitalRead(PIN_2));
+
+    lastPacket.updateHeader(getHeader(currMicros));
     return true;
   }
   else
@@ -76,27 +82,19 @@ bool AltimaxWrapper::isMeasurementInvalid()
 {
   // should not be more than 1 pin high
   // (a && b) || (a && c) || (b && c) checks if at least two out of 3 are high
-  if ((lastPacket.getPin0state() && lastPacket.getPin1state()) 
-  || (lastPacket.getPin0state() && lastPacket.getPin2state()) 
-  || (lastPacket.getPin1state() && lastPacket.getPin2state()))
+  if ((lastPacket.getPin0state() && lastPacket.getPin1state()) || (lastPacket.getPin0state() && lastPacket.getPin2state()) || (lastPacket.getPin1state() && lastPacket.getPin2state()))
   {
     return true;
   }
   return false;
 }
 
-AltimaxPacket *AltimaxWrapper::getPacket(uint32_t currMicros)
+AltimaxPacket *AltimaxWrapper::getPacket()
 {
-  // update the error on the packet
-  lastPacket.updateHeader(getHeader(currMicros));
 #ifdef DEBUG
   lastPacket.setPin0state(rand());
 // when not debugging readings are updated in isDue()
 #endif
-
-  lastPacket.setPin0state(digitalRead(PIN_0));
-  lastPacket.setPin1state(digitalRead(PIN_1));
-  lastPacket.setPin2state(digitalRead(PIN_2));
 
   return &lastPacket;
 }

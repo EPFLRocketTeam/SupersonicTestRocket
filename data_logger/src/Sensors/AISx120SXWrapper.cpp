@@ -50,7 +50,6 @@ bool AISx120SXWrapper::setup(uint32_t attempts, uint32_t delayDuration)
     }
     else // give it time before the next try
     {
-      aisObject.reset();
       delay(delayDuration);
     }
   }
@@ -75,6 +74,8 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros, unused(volatile bool &triggere
     // copy new measurements into the old ones
     lastPacket.setXaccel(rawMeas[0] * SENSITIVITY);
     lastPacket.setYaccel(rawMeas[1] * SENSITIVITY);
+
+    lastPacket.updateHeader(getHeader(currMicros));
   }
   return returnVal;
 }
@@ -89,10 +90,8 @@ bool AISx120SXWrapper::isMeasurementInvalid()
   return false;
 }
 
-AISx120SXPacket *AISx120SXWrapper::getPacket(uint32_t currMicros)
+AISx120SXPacket *AISx120SXWrapper::getPacket()
 {
-  // update the error on the packet
-  lastPacket.updateHeader(getHeader(currMicros));
 #ifdef DEBUG
   lastPacket.setXaccel(generateFakeData(-120, 120, micros()));
   lastPacket.setYaccel(generateFakeData(-120, 120, micros(), 1, 5800000));

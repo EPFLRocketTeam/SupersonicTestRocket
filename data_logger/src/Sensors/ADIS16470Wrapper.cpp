@@ -33,7 +33,7 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
   adisObject.resetDUT(100);             // Begin by reset
   adisObject.regWrite(MSC_CTRL, 0xC1);  // Enable Data Ready, set polarity
-  adisObject.regWrite(DEC_RATE, 0x00);  // Set digital filter
+  adisObject.regWrite(DEC_RATE, 0x00);  // Disable decimation
   adisObject.regWrite(FILT_CTRL, 0x04); // Set digital filter
 
   bool trDr;
@@ -62,6 +62,14 @@ bool ADIS16470Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
     }
     else // give it time before the next try
     {
+      if (wordBurstData[9] != checksum && SERIAL_PRINT)
+      {
+        Serial.println("[ADIS16470] Wrong checksum");
+      }
+      if (memcmp(wordBurstData, zeros, sizeof(uint16_t) * wordBurstLength) == 0 && SERIAL_PRINT)
+      {
+        Serial.println("[ADIS16470] Read only zeroes");
+      }
       delay(delayDuration);
     }
   }
@@ -74,6 +82,25 @@ bool ADIS16470Wrapper::isDue(uint32_t currMicros, volatile bool &triggeredDR)
   if (isDueByDR(currMicros, triggeredDR) || isDueByTime(currMicros))
   {
     prevMeasTime = currMicros;
+
+    if (active)
+    {
+      // acquire the data
+      uint16_t *wordBurstData;
+      wordBurstData = adisObject.wordBurst(); // Read data and insert into array
+      verifyCheckSum(wordBurstData);
+
+      lastPacket.setXGyro(((int16_t)wordBurstData[1]) * GYRO_SENSITIVITY);
+      lastPacket.setYGyro(((int16_t)wordBurstData[2]) * GYRO_SENSITIVITY);
+      lastPacket.setZGyro(((int16_t)wordBurstData[3]) * GYRO_SENSITIVITY);
+      lastPacket.setXAcc(((int16_t)wordBurstData[4]) * ACC_SENSITIVITY);
+      lastPacket.setYAcc(((int16_t)wordBurstData[5]) * ACC_SENSITIVITY);
+      lastPacket.setZAcc(((int16_t)wordBurstData[6]) * ACC_SENSITIVITY);
+      lastPacket.setTemp(((int16_t)wordBurstData[7]) * TEMP_SENSITIVITY);
+    }
+    // check for errors and create the header
+    lastPacket.updateHeader(getHeader(currMicros));
+
     return true;
   }
   else
@@ -120,7 +147,7 @@ bool ADIS16470Wrapper::isMeasurementInvalid()
   return allZeros;
 }
 
-ADIS16470Packet *ADIS16470Wrapper::getPacket(uint32_t currMicros)
+ADIS16470Packet *ADIS16470Wrapper::getPacket()
 {
 #ifdef DEBUG
 
@@ -135,24 +162,6 @@ ADIS16470Packet *ADIS16470Wrapper::getPacket(uint32_t currMicros)
   lastPacket.setTemp(generateFakeData(-5, 5, micros(), 23, 5000000));
 
 #endif
-
-  if (active)
-  {
-    // acquire the data
-    uint16_t *wordBurstData;
-    wordBurstData = adisObject.wordBurst(); // Read data and insert into array
-    verifyCheckSum(wordBurstData);
-
-    lastPacket.setXGyro(((int16_t)wordBurstData[1]) * GYRO_SENSITIVITY);
-    lastPacket.setYGyro(((int16_t)wordBurstData[2]) * GYRO_SENSITIVITY);
-    lastPacket.setZGyro(((int16_t)wordBurstData[3]) * GYRO_SENSITIVITY);
-    lastPacket.setXAcc(((int16_t)wordBurstData[4]) * ACC_SENSITIVITY);
-    lastPacket.setYAcc(((int16_t)wordBurstData[5]) * ACC_SENSITIVITY);
-    lastPacket.setZAcc(((int16_t)wordBurstData[6]) * ACC_SENSITIVITY);
-    lastPacket.setTemp(((int16_t)wordBurstData[7]) * TEMP_SENSITIVITY);
-  }
-  // check for errors and create the header
-  lastPacket.updateHeader(getHeader(currMicros));
 
   return &lastPacket;
 }

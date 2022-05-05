@@ -4,19 +4,17 @@
 uint8_t MAX7Wrapper::sensorQty = 0;
 
 // constructor
-MAX7Wrapper::MAX7Wrapper(Stream* s)
+MAX7Wrapper::MAX7Wrapper(Stream *s)
     : Sensor(sensorQty),
       mySerial(s),
       lastPacket(getHeader(0))
 
 {
+    nmea.setBuffer(nmeaBuffer, sizeof(nmeaBuffer));
     setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                     MEASUREMENT_INTERVAL, false);
     sensorQty += 1;
     active = false;
-
-    gnss.setFileBufferSize(100 * sizeof(MAX7Body));
-    gnss.enableDebugging(Serial);
 }
 
 // destructor
@@ -28,33 +26,17 @@ MAX7Wrapper::~MAX7Wrapper()
 bool MAX7Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
     // Try to see if the MAX7 is working
-    for (uint32_t i = 0; i < attempts; i++)
+    uint32_t timeStart = micros();
+    while (micros() - timeStart < attempts * delayDuration)
     {
-
-        if (gnss.begin(*mySerial, 1000))
+        while (mySerial->available())
         {
-            gnss.setUART1Output(COM_TYPE_UBX);          // Set the UART port to output UBX only
-            gnss.setI2COutput(COM_TYPE_UBX);            // Set the I2C port to output UBX only (turn off NMEA noise)
-            gnss.setAutoPVT(true, true, 1000); // Ask for periodic updates
-
-            if (gnss.saveConfiguration(1000)) // Save the current settings to flash and BBR
+            char c = mySerial->read();
+            if (nmea.process(c))
             {
+                // Complete NMEA command : module is OK
                 active = true;
                 return active;
-            }
-            else
-            {
-                if (SERIAL_PRINT)
-                {
-                    Serial.print("[MAX7 Setup] Config timeout\n");
-                }
-            }
-        }
-        else
-        {
-            if (SERIAL_PRINT)
-            {
-                Serial.print("[MAX7 Setup] Failed gnss.begin\n");
             }
         }
     }
@@ -69,34 +51,23 @@ uint8_t MAX7Wrapper::getSensorQty()
 
 bool MAX7Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR))
 {
-    return false;
-
     bool returnVal = false;
     if (isDueByTime(currMicros))
     {
-        // read the measurements from the sensor
-        uint32_t latitude, longitude, altitude;
-
-        Serial.println("[MAX7] Entering id due by time");
-
-        latitude = gnss.getLatitude(MEASUREMENT_MARGIN / 2);
-
-        Serial.println("[MAX7] Got latitude");
-        longitude = gnss.getLongitude(MEASUREMENT_MARGIN / 2);
-        altitude = gnss.getAltitude(MEASUREMENT_MARGIN / 2);
-        if (lastPacket.getLatitude() != latitude ||
-            lastPacket.getLongitude() != longitude ||
-            lastPacket.getAltitude() != altitude)
+        if (nmea.isValid())
         {
             prevMeasTime = currMicros;
             returnVal = true;
+            lastPacket.setLatitude(nmea.getLatitude());
+            lastPacket.setLongitude(nmea.getLongitude());
+            long altitude;
+            if (nmea.getAltitude(altitude))
+                lastPacket.setAltitude(altitude);
 
-            lastPacket.setLatitude(latitude);
-            lastPacket.setLongitude(longitude);
-            lastPacket.setAltitude(altitude);
+            // update the error on the packet
+            lastPacket.updateHeader(getHeader(currMicros));
         }
     }
-
     return returnVal;
 }
 
@@ -105,11 +76,8 @@ bool MAX7Wrapper::isMeasurementInvalid()
     return true;
 }
 
-MAX7Packet *MAX7Wrapper::getPacket(uint32_t currMicros)
+MAX7Packet *MAX7Wrapper::getPacket()
 {
-    // update the error on the packet
-    lastPacket.updateHeader(getHeader(currMicros));
-
 #ifdef DEBUG
 
     lastPacket.setLatitude(generateFakeData(-2000000, 2000000, micros(), 0, 8700000));

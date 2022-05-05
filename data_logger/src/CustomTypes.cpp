@@ -52,6 +52,10 @@ const char *packetTypeStr(const packetType t)
         return "XBee";
         break;
 
+    case AD8556_PACKET_TYPE:
+        return "AD8556";
+        break;
+
     default:
         return "-- unknown packet type --";
         break;
