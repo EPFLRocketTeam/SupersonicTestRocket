@@ -6,13 +6,18 @@ Created on Sat September 04 20:28:00 2021
 @author: newbi
 """
 
+from cProfile import label
 import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import csv
+import argparse
+from Packet import *
 
 # variables
-directory = "data/logs/decodedData/cernier_supersonic_09_10_2021"
+directory = "data/decodedData"#"data/logs/decodedData/cernier_supersonic_09_10_2021"
+"""
 # launch start/end window. obtained after graphs first shown
 launch_start = 669e6
 launch_end = 1200e6
@@ -105,3 +110,32 @@ ax_temp.plot(MAX2_data["timestamp (us)"] / 1e6,
 # ax_temp.plot(MAX2_data["timestamp (us)"] / 1e6,
 #              MAX2_data["ambientTemp (degC)"], label="MAX2 ambient temp")
 ax_temp.legend()
+"""
+
+def plotData(pkt_type:PacketType,data:pd.DataFrame) -> None:
+    values_count = len(pkt_type.columnNames)
+    fig,axes = plt.subplots(values_count,sharex=True)
+    print(data.columns)
+    x_time = data["timestamp (us)"]
+    fig.suptitle(f"Data from {pkt_type.filename}")
+    
+    for i,s in enumerate(pkt_type.columnNames):
+        axes[i].plot(x_time,data[s],label=s)
+        axes[i].set_title(s)
+        
+    fig.tight_layout()
+    plt.show()
+    
+def test():
+    data = pd.read_csv(os.path.normpath("data/decodedData/000003/ADIS16470_0.csv"))
+    plotData(ADIS16470_Packet,data)
+
+def main():
+    parser = argparse.ArgumentParser(prog="Plot Flight data",description="Plot flight data contained in a given directory")
+    
+    
+    
+    
+if __name__ == "__main__":
+    #main()
+    test()

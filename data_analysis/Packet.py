@@ -85,7 +85,7 @@ MAX7_Packet = PacketType(10,'<III', ["latitude (deg * 10^-7)", "longitude (deg *
 
 # Packet type 11 is XBee, should not be logged
 
-AD8556_PACket = PacketType(12,'<f',["Load (N)"], "AD8556")
+AD8556_Packet = PacketType(12,'<f',["Load (N)"], "AD8556")
 
 errorNames = ["measLate", "skippedBeat", "drNoTrigger", "checksumError",
               "measInvalid", "placeholder", "placeholder", "placeholder"]
