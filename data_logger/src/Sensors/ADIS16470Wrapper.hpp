@@ -258,17 +258,17 @@ public:
 
   /**
    * @brief Write ADIS16470Body in Big Endian style in \p buffer
-   * 
+   *
    * @warning Move \p buffer past the data
-   * 
+   *
    * @param buffer Buffer of size at least packetSize
    */
   void getBigEndian(void *buffer)
   {
     // Re cast the buffer to write byte per byte
     uint8_t *reBuffer = (uint8_t *)buffer;
-    float gyroX,gyroY,gyroZ;
-    float accX,accY,accZ;
+    float gyroX, gyroY, gyroZ;
+    float accX, accY, accZ;
     float temp;
 
     gyroX = getXGyro();
@@ -278,16 +278,16 @@ public:
     accY = getYAcc();
     accZ = getZAcc();
     temp = getTemp();
+    
+    BIG_ENDIAN_WRITE(gyroX, reBuffer);
+    BIG_ENDIAN_WRITE(gyroY, reBuffer);
+    BIG_ENDIAN_WRITE(gyroZ, reBuffer);
 
-    BIG_ENDIAN_WRITE(gyroX,reBuffer);
-    BIG_ENDIAN_WRITE(gyroY,reBuffer);
-    BIG_ENDIAN_WRITE(gyroZ,reBuffer);
+    BIG_ENDIAN_WRITE(accX, reBuffer);
+    BIG_ENDIAN_WRITE(accY, reBuffer);
+    BIG_ENDIAN_WRITE(accZ, reBuffer);
 
-    BIG_ENDIAN_WRITE(accX,reBuffer);
-    BIG_ENDIAN_WRITE(accY,reBuffer);
-    BIG_ENDIAN_WRITE(accZ,reBuffer);
-
-    BIG_ENDIAN_WRITE(temp,reBuffer);
+    BIG_ENDIAN_WRITE(temp, reBuffer);
   }
 
   // ----- Setters ----- //
