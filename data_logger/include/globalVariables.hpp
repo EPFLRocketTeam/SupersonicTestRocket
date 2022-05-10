@@ -10,6 +10,9 @@ const bool SERIAL_PRINT = true;
 //#include "TeensyDebug.h"
 //#pragma GCC optimize ("O0")
 
+// Experiment duration, in ms (set to 1h)
+#define EXPERIMENT_DURATION 1*3600*1000
+
 // Pinout ----------------------------------------------------------------------
 // I/O
 extern const uint8_t GREEN_LED_PIN,
