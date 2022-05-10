@@ -24,7 +24,7 @@
 // Counter for the logging file name
 #define COUNTER_FILENAME "counter.dat"
 
-void setupLoggingFile(FsFile &loggingFile,
+int setupLoggingFile(FsFile &loggingFile,
                       RingBuf<FsFile, RING_BUF_CAPACITY> &rb);
 
 // Deprecated function as too slow on a Teensy

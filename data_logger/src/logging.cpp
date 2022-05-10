@@ -7,7 +7,7 @@
 
 #include "logging.hpp"
 
-void setupLoggingFile(FsFile &loggingFile,
+int setupLoggingFile(FsFile &loggingFile,
                       RingBuf<FsFile, RING_BUF_CAPACITY> &rb)
 {
   FsFile counterFile;
@@ -16,8 +16,8 @@ void setupLoggingFile(FsFile &loggingFile,
   // Open or create counter file.
   if (!counterFile.open(COUNTER_FILENAME, O_RDWR | O_CREAT))
   {
-    Serial.println("Open counter file failed.");
-    return;
+    Serial.println("[setupLoggingFile] Open counter file failed.");
+    return 1;
   }
 
   // if the file is not empty, get the current count
@@ -40,21 +40,22 @@ void setupLoggingFile(FsFile &loggingFile,
   // Open or create logging file.
   if (!loggingFile.open(fileName, O_RDWR | O_CREAT | O_TRUNC))
   {
-    Serial.println("Open logging file failed.");
-    return;
+    Serial.println("[setupLoggingFile] Open logging file failed.");
+    return 1;
   }
 
   // File must be pre-allocated to avoid huge
   // delays searching for free clusters.
   if (!loggingFile.preAllocate(LOG_FILE_SIZE))
   {
-    Serial.println("preAllocate failed.");
+    Serial.println("[setupLoggingFile] preAllocate failed.");
     loggingFile.close();
-    return;
+    return 1;
   }
 
   // initialize the RingBuf.
   rb.begin(&loggingFile);
+  return 0;
 }
 
 // Deprecated function as too slow on Teensy
