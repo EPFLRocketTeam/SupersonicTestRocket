@@ -153,7 +153,6 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
           pkt = sArray[i]->getPacket();
           xbee->send(pkt);
           prevRadioLoop = micros();
-          TRACE();
         }
 
         if (printSerial)
