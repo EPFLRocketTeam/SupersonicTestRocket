@@ -33,7 +33,11 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   // Initialize the logging file and ring buffer
   FsFile loggingFile;
   RingBuf<FsFile, RING_BUF_CAPACITY> rb;
-  setupLoggingFile(loggingFile, rb);
+  if (setupLoggingFile(loggingFile, rb))
+  {
+    Serial.print("[acquireData] Failure when setting up logging file. Stopping\n");
+    return;
+  }
   // Max RingBuf used bytes. Useful to understand RingBuf overrun.
   size_t maxUsed = 0;
 
@@ -56,7 +60,6 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
     Serial.print("[acquireData] Buttons has been set up\n");
   }
 
-  
   // attach the interrupts
   attachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN),
                   INTERRUPT(ADIS16470_INDEX), RISING);
@@ -66,7 +69,6 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   //                 INTERRUPT(Honeywell_Rsc_1_INDEX), FALLING);
   attachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]),
                   INTERRUPT(Altimax_INDEX), RISING);
-  
 
   if (SERIAL_PRINT)
   {
@@ -113,7 +115,9 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
     Serial.print("[acquireData] Reached acquireData loop\n");
   }
 
-  while (true) //(checkButtons(buttonArray, stopEvent))
+  uint32_t start_time = millis();
+
+  while (millis() - start_time < EXPERIMENT_DURATION && checkButtons(buttonArray, stopEvent))
   {
     flashLED(RED_LED_PIN, 100);
     delay(300);
@@ -123,7 +127,7 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
     {
       Serial.write(RESET_TERMINAL);
       Serial.write(HEADER_ERROR_DESC);
-      Serial.printf(" (%ld ms)\n",millis());
+      Serial.printf(" (%ld ms)\n", millis());
       Serial.write(HEADER_LINE);
       Serial.write(SEPARATOR_LINE);
     }
@@ -136,27 +140,21 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
         // Serial.printf("[dataAcquisition] going for sensor %d : %s\n", i, sArray[i]->myName());
         if (sArray[i]->isDue(micros(), flagArray[i]))
         {
-          //Serial.printf("[dataAcquisition] getting packet for sensor %d : %s....", i, sArray[i]->myName());
+          // Serial.printf("[dataAcquisition] getting packet for sensor %d : %s....", i, sArray[i]->myName());
           pkt = sArray[i]->getPacket();
-          //Serial.print(" Got it!");
+          // Serial.print(" Got it!");
           rb.write(pkt->accessHeader(), sizeof(PacketHeader));
           rb.write(pkt->accessContent(), pkt->getPacketSize());
-          //Serial.print(" And wrote it down!!\n");
+          // Serial.print(" And wrote it down!!\n");
         }
 
-    /*
         if (micros() - prevRadioLoop > RADIO_INTERVAL)
         {
           pkt = sArray[i]->getPacket();
-          if (SERIAL_PRINT)
-          {
-            Serial.printf("[dataAcquisition] XBee send packet %s\n", packetTypeStr(pkt->getPacketType()));
-          }
-
           xbee->send(pkt);
           prevRadioLoop = micros();
+          TRACE();
         }
-        */
 
         if (printSerial)
         {
@@ -245,6 +243,8 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
   if (SERIAL_PRINT)
   {
     Serial.print("[acquireData] Out of acquisition loop\n");
+    Serial.printf("[acquireData] Button condition: %d\n", checkButtons(buttonArray, stopEvent));
+    Serial.printf("[acquireData] Time condition: %d\n", millis() - start_time < EXPERIMENT_DURATION);
   }
 
   // detach the interrupts
