@@ -232,7 +232,6 @@ bool XB8XWrapper::setup(uint32_t attempts, uint32_t delayDuration)
 void XB8XWrapper::send(Packet *pkt)
 {
     // ----- Computing packet variables ----- //
-    TRACE();
     // Length
     uint16_t length = sizeof(uint8_t)         // Frame type
                       + sizeof(uint8_t)       // Frame id
@@ -245,8 +244,6 @@ void XB8XWrapper::send(Packet *pkt)
                       + sizeof(uint32_t)      // Timestamp
                       + pkt->getPacketSize(); // Size of the 'data' field
 
-    Serial.print("[XBee:send] Setting datatype\n");
-    TRACE();
     // Data type
     uint8_t datagram_ID;
     switch (pkt->getPacketType())
