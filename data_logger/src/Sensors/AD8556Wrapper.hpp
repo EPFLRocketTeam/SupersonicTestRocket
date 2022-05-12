@@ -98,8 +98,7 @@ public:
   void getBigEndian(void *buffer)
   {
     uint8_t *reBuffer = (uint8_t *)buffer;
-    uint32_t reading = getReading();
-
+    float reading = getReading();
     BIG_ENDIAN_WRITE(reading, reBuffer);
   }
 
