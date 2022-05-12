@@ -208,7 +208,7 @@ void setup()
   SPI1.begin();
   // SPI1.setSCK(20);
   Serial4.begin(9600);
-  Serial5.begin(9600);
+  Serial5.begin(115200);
 
   analogReadResolution(ANALOG_READ_RESOLUTION);
   analogReadAveraging(ANALOG_READ_AVERAGING);
@@ -238,7 +238,7 @@ void setup()
     Serial.print("could not be setup !!!\n");
   }
 
-  Serial.println("----- Setup complete -----");
+  Serial.println("----- Setup complete -----\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
   // successFlash();
 
   acquireData(sensorArray, NUM_SENSORS, SERIAL_PRINT, &xbee);
