@@ -78,6 +78,17 @@ bool MAX31855Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggered
 
       lastPacket.updateHeader(getHeader(currMicros));
     }
+    else
+    {
+      uint8_t errorCode = max31855Object.fault();
+      Serial.printf("[MAX31855] error code:"
+                    "\n- Open circuit: %d"
+                    "\n- Short to GND: %d"
+                    "\n- Short to Vcc: %d\n",
+                    errorCode & 0b001,
+                    errorCode & 0b010,
+                    errorCode & 0b100);
+    }
   }
   return returnVal;
 }
