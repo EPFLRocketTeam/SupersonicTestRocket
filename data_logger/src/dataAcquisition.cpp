@@ -148,13 +148,6 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
           // Serial.print(" And wrote it down!!\n");
         }
 
-        if (micros() - prevRadioLoop > RADIO_INTERVAL)
-        {
-          pkt = sArray[i]->getPacket();
-          xbee->send(pkt);
-          prevRadioLoop = micros();
-        }
-
         if (printSerial)
         {
 
@@ -174,247 +167,261 @@ void acquireData(Sensor *sArray[], size_t sSize, bool serialOutput, XB8XWrapper 
         }
       }
     }
-
-    if (printSerial)
+    if (micros() - prevRadioLoop > RADIO_INTERVAL)
     {
-      printSerial = false;
-      prevSerialLoop = micros();
-    }
-
-    // check if it's time to sync
-    /*
-    if (micros() - prevSyncLoop > SYNC_INTERVAL)
-    {
-      prevSyncLoop += SYNC_INTERVAL;
-      // Serial.println("Syncing data.");
-      // Serial.println(micros());
-      // TODO: See if better to have with or without syncing.
-      // Without syncing seems to write to file anyway since it's preallocated
-      // And perhaps solve the issue of unplugging during a sync? To investigate
-      // See useful memory time when power loss with and without sync
-      // rb.sync();
-    }
-    */
-
-    // Check if ringBuf is ready for writing
-    // Amount of data in ringBuf.
-    size_t n = rb.bytesUsed();
-    // See if the file is full
-    if ((n + loggingFile.curPosition()) > (LOG_FILE_SIZE - 100))
-    {
-
-      if (SERIAL_PRINT)
+      prevRadioLoop = micros();
+      Serial.print("Radio sending sensors: ");
+      for (size_t i = 0; i < sSize; i++)
       {
-        Serial.print("[acquireData] File full - quiting.\n");
+        if (sArray[i]->active)
+        {
+          pkt = sArray[i]->getPacket();
+          xbee->send(pkt);
+          Serial.printf("%d ",i);
+        }
       }
-      break;
+      Serial.print('\n');
     }
-    // Update maximum  used buffer size. For buffer overflow issues
-    if (n > maxUsed)
-    {
-      maxUsed = n;
-    }
-    if (n >= 512 && !loggingFile.isBusy())
-    {
-      // Not busy only allows one sector before possible busy wait.
-      // Write one sector from RingBuf to file.
-      if (512 != rb.writeOut(512))
+      if (printSerial)
       {
+        printSerial = false;
+        prevSerialLoop = micros();
+      }
+
+      // check if it's time to sync
+      /*
+      if (micros() - prevSyncLoop > SYNC_INTERVAL)
+      {
+        prevSyncLoop += SYNC_INTERVAL;
+        // Serial.println("Syncing data.");
+        // Serial.println(micros());
+        // TODO: See if better to have with or without syncing.
+        // Without syncing seems to write to file anyway since it's preallocated
+        // And perhaps solve the issue of unplugging during a sync? To investigate
+        // See useful memory time when power loss with and without sync
+        // rb.sync();
+      }
+      */
+
+      // Check if ringBuf is ready for writing
+      // Amount of data in ringBuf.
+      size_t n = rb.bytesUsed();
+      // See if the file is full
+      if ((n + loggingFile.curPosition()) > (LOG_FILE_SIZE - 100))
+      {
+
         if (SERIAL_PRINT)
         {
-          Serial.print("[acquireData] writeOut failed.\n");
+          Serial.print("[acquireData] File full - quiting.\n");
         }
+        break;
+      }
+      // Update maximum  used buffer size. For buffer overflow issues
+      if (n > maxUsed)
+      {
+        maxUsed = n;
+      }
+      if (n >= 512 && !loggingFile.isBusy())
+      {
+        // Not busy only allows one sector before possible busy wait.
+        // Write one sector from RingBuf to file.
+        if (512 != rb.writeOut(512))
+        {
+          if (SERIAL_PRINT)
+          {
+            Serial.print("[acquireData] writeOut failed.\n");
+          }
+          break;
+        }
+      }
+
+      if (rb.getWriteError())
+      {
+        // Error caused by too few free bytes in RingBuf.
+        if (SERIAL_PRINT)
+        {
+          Serial.print("[acquireData] WriteError - RingBuf full.\n");
+        }
+        break;
+      }
+    } // Finished acquiring data
+
+    if (SERIAL_PRINT)
+    {
+      Serial.print("[acquireData] Out of acquisition loop\n");
+      Serial.printf("[acquireData] Button condition: %d\n", checkButtons(buttonArray, stopEvent));
+      Serial.printf("[acquireData] Time condition: %d\n", millis() - start_time < EXPERIMENT_DURATION);
+    }
+
+    // detach the interrupts
+    detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
+    detachInterrupt(digitalPinToInterrupt(DR_RSC[0]));
+    detachInterrupt(digitalPinToInterrupt(DR_RSC[1]));
+    detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]));
+
+    // CLEANUP Phase
+    // Write any RingBuf data to file.
+    rb.sync();
+    loggingFile.truncate();
+    loggingFile.rewind();
+    loggingFile.close();
+    sd.end();
+
+    // Visual cue acquisition has finished
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(RED_LED_PIN, LOW);
+    successFlash();
+
+    if (SERIAL_PRINT)
+    {
+      Serial.print("[acquireData] Finished acquiring data\n");
+    }
+  }
+
+  bool checkButtons(PushButtonArray & buttonArray, uint8_t stopEvent[3])
+  // SerialMonitor monitor)
+  {
+    // see which buttons were pressed
+    bool indivButtonState[2];
+    indivButtonState[0] = digitalRead(BUTTON0_PIN);
+    indivButtonState[1] = digitalRead(BUTTON1_PIN);
+    eventOutput eventCheck = buttonArray.checkEvents(millis(), indivButtonState);
+
+    // if any of the events happened, do something
+    if (eventCheck.triggeredEvent == stopEvent[0])
+    {
+      switch (eventCheck.triggeredEventType)
+      {
+      case NONE:
+        break;
+      case GOOD_TRANSITION:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("First check to stop acquisition passed.\n");
+        }
+        Serial.println("First check to stop acquisition passed.");
+        digitalWrite(GREEN_LED_PIN, LOW);
+        digitalWrite(RED_LED_PIN, LOW);
+        buttonArray.deactivateEvent(stopEvent[0]);
+        buttonArray.activateEvent(stopEvent[1]);
+        break;
+      case BAD_TRANSITION:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Button input wrong. Left window.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, HIGH);
+        digitalWrite(RED_LED_PIN, LOW);
+        break;
+      case WINDOW_START:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Within window for first check.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, LOW);
+        digitalWrite(RED_LED_PIN, HIGH);
+        break;
+      case WINDOW_END:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Left window for first check.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, HIGH);
+        digitalWrite(RED_LED_PIN, LOW);
+        break;
+      }
+    }
+    if (eventCheck.triggeredEvent == stopEvent[1])
+    {
+      switch (eventCheck.triggeredEventType)
+      {
+      case NONE:
+        break;
+      case GOOD_TRANSITION:
+        // monitor.writeMessage("Second check to stop "
+        //                      "acquisition passed.",
+        //                      micros());
+        digitalWrite(RED_LED_PIN, LOW);
+        buttonArray.deactivateEvent(stopEvent[1]);
+        buttonArray.activateEvent(stopEvent[2]);
+        break;
+      case BAD_TRANSITION:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Button input wrong. Left window.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, HIGH);
+        digitalWrite(RED_LED_PIN, LOW);
+        buttonArray.deactivateEvent(stopEvent[1]);
+        buttonArray.activateEvent(stopEvent[0]);
+        break;
+      case WINDOW_START:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Within window for second check.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, LOW);
+        digitalWrite(RED_LED_PIN, HIGH);
+        break;
+      case WINDOW_END:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Left window for second check.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, HIGH);
+        digitalWrite(RED_LED_PIN, LOW);
+        buttonArray.deactivateEvent(stopEvent[1]);
+        buttonArray.activateEvent(stopEvent[0]);
+        break;
+      }
+    }
+    if (eventCheck.triggeredEvent == stopEvent[2])
+    {
+      switch (eventCheck.triggeredEventType)
+      {
+      case NONE:
+        break;
+      case GOOD_TRANSITION:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Passed all checks to stop acquisition.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, LOW);
+        digitalWrite(RED_LED_PIN, HIGH);
+        buttonArray.deactivateEvent(stopEvent[2]);
+        buttonArray.activateEvent(stopEvent[0]);
+        return false;
+        break;
+      case BAD_TRANSITION:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Button input wrong. Left window.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, HIGH);
+        digitalWrite(RED_LED_PIN, LOW);
+        buttonArray.deactivateEvent(stopEvent[2]);
+        buttonArray.activateEvent(stopEvent[0]);
+        break;
+      case WINDOW_START:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Within window for third check.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, LOW);
+        digitalWrite(RED_LED_PIN, HIGH);
+        break;
+      case WINDOW_END:
+        if (SERIAL_PRINT)
+        {
+          Serial.print("Left window for third check.\n");
+        }
+        digitalWrite(GREEN_LED_PIN, HIGH);
+        digitalWrite(RED_LED_PIN, LOW);
+        buttonArray.deactivateEvent(stopEvent[2]);
+        buttonArray.activateEvent(stopEvent[0]);
         break;
       }
     }
 
-    if (rb.getWriteError())
-    {
-      // Error caused by too few free bytes in RingBuf.
-      if (SERIAL_PRINT)
-      {
-        Serial.print("[acquireData] WriteError - RingBuf full.\n");
-      }
-      break;
-    }
-  } // Finished acquiring data
-
-  if (SERIAL_PRINT)
-  {
-    Serial.print("[acquireData] Out of acquisition loop\n");
-    Serial.printf("[acquireData] Button condition: %d\n", checkButtons(buttonArray, stopEvent));
-    Serial.printf("[acquireData] Time condition: %d\n", millis() - start_time < EXPERIMENT_DURATION);
+    return true;
   }
-
-  // detach the interrupts
-  detachInterrupt(digitalPinToInterrupt(DR_ADIS16470_PIN));
-  detachInterrupt(digitalPinToInterrupt(DR_RSC[0]));
-  detachInterrupt(digitalPinToInterrupt(DR_RSC[1]));
-  detachInterrupt(digitalPinToInterrupt(ALTIMAX_DR_PINS[0]));
-
-  // CLEANUP Phase
-  // Write any RingBuf data to file.
-  rb.sync();
-  loggingFile.truncate();
-  loggingFile.rewind();
-  loggingFile.close();
-  sd.end();
-
-  // Visual cue acquisition has finished
-  digitalWrite(GREEN_LED_PIN, LOW);
-  digitalWrite(RED_LED_PIN, LOW);
-  successFlash();
-
-  if (SERIAL_PRINT)
-  {
-    Serial.print("[acquireData] Finished acquiring data\n");
-  }
-}
-
-bool checkButtons(PushButtonArray &buttonArray, uint8_t stopEvent[3])
-// SerialMonitor monitor)
-{
-  // see which buttons were pressed
-  bool indivButtonState[2];
-  indivButtonState[0] = digitalRead(BUTTON0_PIN);
-  indivButtonState[1] = digitalRead(BUTTON1_PIN);
-  eventOutput eventCheck = buttonArray.checkEvents(millis(), indivButtonState);
-
-  // if any of the events happened, do something
-  if (eventCheck.triggeredEvent == stopEvent[0])
-  {
-    switch (eventCheck.triggeredEventType)
-    {
-    case NONE:
-      break;
-    case GOOD_TRANSITION:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("First check to stop acquisition passed.\n");
-      }
-      Serial.println("First check to stop acquisition passed.");
-      digitalWrite(GREEN_LED_PIN, LOW);
-      digitalWrite(RED_LED_PIN, LOW);
-      buttonArray.deactivateEvent(stopEvent[0]);
-      buttonArray.activateEvent(stopEvent[1]);
-      break;
-    case BAD_TRANSITION:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Button input wrong. Left window.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, HIGH);
-      digitalWrite(RED_LED_PIN, LOW);
-      break;
-    case WINDOW_START:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Within window for first check.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, LOW);
-      digitalWrite(RED_LED_PIN, HIGH);
-      break;
-    case WINDOW_END:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Left window for first check.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, HIGH);
-      digitalWrite(RED_LED_PIN, LOW);
-      break;
-    }
-  }
-  if (eventCheck.triggeredEvent == stopEvent[1])
-  {
-    switch (eventCheck.triggeredEventType)
-    {
-    case NONE:
-      break;
-    case GOOD_TRANSITION:
-      // monitor.writeMessage("Second check to stop "
-      //                      "acquisition passed.",
-      //                      micros());
-      digitalWrite(RED_LED_PIN, LOW);
-      buttonArray.deactivateEvent(stopEvent[1]);
-      buttonArray.activateEvent(stopEvent[2]);
-      break;
-    case BAD_TRANSITION:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Button input wrong. Left window.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, HIGH);
-      digitalWrite(RED_LED_PIN, LOW);
-      buttonArray.deactivateEvent(stopEvent[1]);
-      buttonArray.activateEvent(stopEvent[0]);
-      break;
-    case WINDOW_START:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Within window for second check.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, LOW);
-      digitalWrite(RED_LED_PIN, HIGH);
-      break;
-    case WINDOW_END:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Left window for second check.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, HIGH);
-      digitalWrite(RED_LED_PIN, LOW);
-      buttonArray.deactivateEvent(stopEvent[1]);
-      buttonArray.activateEvent(stopEvent[0]);
-      break;
-    }
-  }
-  if (eventCheck.triggeredEvent == stopEvent[2])
-  {
-    switch (eventCheck.triggeredEventType)
-    {
-    case NONE:
-      break;
-    case GOOD_TRANSITION:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Passed all checks to stop acquisition.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, LOW);
-      digitalWrite(RED_LED_PIN, HIGH);
-      buttonArray.deactivateEvent(stopEvent[2]);
-      buttonArray.activateEvent(stopEvent[0]);
-      return false;
-      break;
-    case BAD_TRANSITION:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Button input wrong. Left window.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, HIGH);
-      digitalWrite(RED_LED_PIN, LOW);
-      buttonArray.deactivateEvent(stopEvent[2]);
-      buttonArray.activateEvent(stopEvent[0]);
-      break;
-    case WINDOW_START:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Within window for third check.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, LOW);
-      digitalWrite(RED_LED_PIN, HIGH);
-      break;
-    case WINDOW_END:
-      if (SERIAL_PRINT)
-      {
-        Serial.print("Left window for third check.\n");
-      }
-      digitalWrite(GREEN_LED_PIN, HIGH);
-      digitalWrite(RED_LED_PIN, LOW);
-      buttonArray.deactivateEvent(stopEvent[2]);
-      buttonArray.activateEvent(stopEvent[0]);
-      break;
-    }
-  }
-
-  return true;
-}

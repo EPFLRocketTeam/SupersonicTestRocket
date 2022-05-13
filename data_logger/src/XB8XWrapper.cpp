@@ -279,13 +279,12 @@ void XB8XWrapper::send(Packet *pkt)
         datagram_ID = DatagramType::HERMES_TEST;
         break;
     }
-    TRACE();
     // Timestamp (HERMES timestamps are in microseconds, not milliseconds)
     uint32_t timestamp = pkt->getTimestamp();
 
     // ----- Setting send buffer ----- //
 
-    Serial.print("[XBee:send] Setting send buffer\n");
+    //Serial.print("[XBee:send] Setting send buffer\n");
 
     memset((void *)sendBuffer, 0, sizeof(sendBuffer));
 
@@ -332,14 +331,26 @@ void XB8XWrapper::send(Packet *pkt)
     // Data
     pkt->getBigEndian(buffer_varptr);
 
+    
+    serial->write(sendBuffer[0]);
+    serial->write(sendBuffer[1]);
+    serial->write(sendBuffer[2]);
+    
     // Compute checksum
+    // Go +3 because escape start delimiter and length
+    for (size_t i = 0; i < length; i++)
+        {
+            serial->write(sendBuffer[i+3]);
+            *buffer_varptr += sendBuffer[i+3];
+        }
+
     for (size_t i = 0; i < length; i++)
     {
-        *buffer_varptr += sendBuffer[i + 3]; // Go +3 because escape start delimiter and length
+        *buffer_varptr += sendBuffer[i + 3]; 
     }
     *buffer_varptr = 0xFF - *buffer_varptr;
 
     // Length of content + 1 byte of start delimiter
     //  + 2 bytes of length + 1 byte of checksum
-    serial->write(sendBuffer, length + 4);
+    serial->write(sendBuffer[length+3]);
 }

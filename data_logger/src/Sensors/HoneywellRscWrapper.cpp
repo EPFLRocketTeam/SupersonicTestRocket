@@ -56,7 +56,7 @@ bool HoneywellRscWrapper::setup(uint32_t attempts, uint32_t delayDuration)
     rscObject.adc_request(PRESSURE);
     delay(50);
     float reading = rscObject.get_pressure();
-    Serial.printf("[HoneywellRSC] Setup pressure reading: %f\n", reading);
+    //Serial.printf("[HoneywellRSC] Setup pressure reading: %f\n", reading);
     if (reading != 0 && !isnan(reading)) // condition for success
     {
       active = true;

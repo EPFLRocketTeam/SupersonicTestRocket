@@ -38,7 +38,7 @@ const int AIS1120SX_NOM_INTERVAL = 2500;                          ///< [us] (400
 const int AIS1120SX_CHECK_INTERVAL = AIS1120SX_NOM_INTERVAL / 10; ///< [us]
 const int SYNC_INTERVAL = 100 * 1000;                             ///< [us] (100 ms)
 const int SERIAL_INTERVAL = 20 * 1000;                            ///< [us] (50 Hz)
-const int RADIO_INTERVAL = 500 * 1000;                            //< [us] (500 ms)
+const int RADIO_INTERVAL = 500 * 1000 * 1;                            //< (500 ms)
 
 // Initialisation for data acquisition
 //void initializeDataAcquisition(SdFs *sd, FsFile *loggingFile, RingBuf<FsFile, RING_BUF_CAPACITY> *rb);
