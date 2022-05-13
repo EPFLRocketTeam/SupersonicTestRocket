@@ -112,8 +112,11 @@ const uint8_t AD8556_VMINUS = 18;
 
 const float AD8556_MIN_READ = 0;
 
-/// maxReading at 3.3V ; at 0.1 V get 200 lbs, converted to kg, then multiply g to get Newtons
-const float AD8556_MAX_READ = 3.3 * (200 / 0.1) * 0.45359237 * 9.80665;
+//// maxReading at 3.3V ; at 0.1 V get 200 lbs, converted to kg, then multiply g to get Newtons
+//const float AD8556_MAX_READ = 3.3 * (200 / 0.1) * 0.45359237 * 9.80665;
+
+///maxReading at 3.3V -> get 200 lbs, converted to kg, then multiply g to get Newtons
+const float AD8556_MAX_READ = 3.3 * 200  * 0.45359237 * 9.80665;
 
 // I/O -------------------------------------------------------------------------
 // Button event
@@ -173,8 +176,8 @@ const uint8_t ADIS16470_INDEX = 1,
               MAX7_INDEX = 0,
               AD8556_INDEX = 1;
 
-const int SENSOR_SETUP_ATTEMPTS = 2;
-const int SETUP_DELAY = 50; // delay in ms to wait between setup attemps
+const int SENSOR_SETUP_ATTEMPTS = 3;
+const int SETUP_DELAY = 200; // delay in ms to wait between setup attemps
 
 // USER FUNCTIONS ==============================================================
 
@@ -207,7 +210,7 @@ void setup()
   SPI.begin();
   SPI1.begin();
   // SPI1.setSCK(20);
-  Serial4.begin(9600);
+  Serial4.begin(38400);
   Serial5.begin(115200);
 
   analogReadResolution(ANALOG_READ_RESOLUTION);

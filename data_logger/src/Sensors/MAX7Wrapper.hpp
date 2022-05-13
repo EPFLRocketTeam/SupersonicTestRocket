@@ -2,7 +2,7 @@
 
 // Standard libraries
 #include <Arduino.h>
-#include <MicroNMEA.h>
+#include <TinyGPSPlus.h>
 #include <SoftwareSerial.h>
 
 // User-defined headers
@@ -15,9 +15,9 @@
 
 #include "ArduinoTrace.h"
 
-#define MAX7_LINE_0 "Latitude:  %8ld deg.E-7\n"
-#define MAX7_LINE_1 "Longitude: %8ld deg.E-7\n"
-#define MAX7_LINE_2 "Altitude:  %8ld mm\n"
+#define MAX7_LINE_0 "Latitude:  %6e deg\n"
+#define MAX7_LINE_1 "Longitude: %6e deg\n"
+#define MAX7_LINE_2 "Altitude:  %6e m\n"
 #define MAX7_LINE_NBR 2
 
 class MAX7Packet : public Packet
@@ -62,9 +62,9 @@ public:
   /**
    * @brief Get Latitude
    *
-   * @return uint32_t
+   * @return float
    */
-  uint32_t getLatitude()
+  float getLatitude()
   {
     return reinterpret_cast<MAX7Body *>(content)->latitude;
   }
@@ -72,9 +72,9 @@ public:
   /**
    * @brief Get Longitude
    *
-   * @return uint32_t
+   * @return float
    */
-  uint32_t getLongitude()
+  float getLongitude()
   {
     return reinterpret_cast<MAX7Body *>(content)->longitude;
   }
@@ -82,9 +82,9 @@ public:
   /**
    * @brief Get Altitude
    *
-   * @return uint32_t
+   * @return float
    */
-  uint32_t getAltitude()
+  float getAltitude()
   {
     return reinterpret_cast<MAX7Body *>(content)->altitude;
   }
@@ -129,9 +129,9 @@ public:
   void getBigEndian(void *buffer)
   {
     uint8_t *reBuffer = (uint8_t *)buffer;
-    uint32_t latitude = getLatitude();
-    uint32_t longitude = getLongitude();
-    uint32_t altitude = getAltitude();
+    float latitude = getLatitude();
+    float longitude = getLongitude();
+    float altitude = getAltitude();
 
     BIG_ENDIAN_WRITE(latitude, reBuffer);
     BIG_ENDIAN_WRITE(longitude, reBuffer);
@@ -144,7 +144,7 @@ public:
    *
    * @param l Provided value
    */
-  void setLatitude(uint32_t l)
+  void setLatitude(float l)
   {
     reinterpret_cast<MAX7Body *>(content)->latitude = l;
   }
@@ -154,7 +154,7 @@ public:
    *
    * @param l Provided value
    */
-  void setLongitude(uint32_t l)
+  void setLongitude(float l)
   {
     reinterpret_cast<MAX7Body *>(content)->longitude = l;
   }
@@ -164,7 +164,7 @@ public:
    *
    * @param l Provided value
    */
-  void setAltitude(uint32_t l)
+  void setAltitude(float l)
   {
     reinterpret_cast<MAX7Body *>(content)->altitude = l;
   }
@@ -177,10 +177,7 @@ private:
   static const uint32_t CHECK_INTERVAL = MEASUREMENT_INTERVAL / 10; ///< [us] (750 ms)
   static const uint32_t MEASUREMENT_MARGIN = 100;                   ///< [us], used to define how long to wait when fetching measurements
 
-
-
-  char nmeaBuffer[100];
-  MicroNMEA nmea;//(nmeaBuffer, sizeof(nmeaBuffer));
+  TinyGPSPlus gps;
   Stream *mySerial;         ///< Serial connection
   static uint8_t sensorQty; ///< How many sensors of this type exist
   MAX7Packet lastPacket;    ///< Holder for the packet, actualized by measurements

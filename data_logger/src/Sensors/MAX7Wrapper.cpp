@@ -10,7 +10,6 @@ MAX7Wrapper::MAX7Wrapper(Stream *s)
       lastPacket(getHeader(0))
 
 {
-    nmea.setBuffer(nmeaBuffer, sizeof(nmeaBuffer));
     setupProperties(CHECK_INTERVAL, MEASUREMENT_MARGIN,
                     MEASUREMENT_INTERVAL, false);
     sensorQty += 1;
@@ -26,13 +25,13 @@ MAX7Wrapper::~MAX7Wrapper()
 bool MAX7Wrapper::setup(uint32_t attempts, uint32_t delayDuration)
 {
     // Try to see if the MAX7 is working
-    uint32_t timeStart = micros();
-    while (micros() - timeStart < attempts * delayDuration)
+    uint32_t timeStart = millis();
+    while (millis() - timeStart < attempts * delayDuration * 10)
     {
         while (mySerial->available())
         {
             char c = mySerial->read();
-            if (nmea.process(c))
+            if (gps.encode(c))
             {
                 // Complete NMEA command : module is OK
                 active = true;
@@ -54,18 +53,22 @@ bool MAX7Wrapper::isDue(uint32_t currMicros, unused(volatile bool &triggeredDR))
     bool returnVal = false;
     if (isDueByTime(currMicros))
     {
-        if (nmea.isValid())
+        //Serial.print("[MAX7] GNSS is due: ");
+        while (mySerial->available())
         {
-            prevMeasTime = currMicros;
-            returnVal = true;
-            lastPacket.setLatitude(nmea.getLatitude());
-            lastPacket.setLongitude(nmea.getLongitude());
-            long altitude;
-            if (nmea.getAltitude(altitude))
-                lastPacket.setAltitude(altitude);
+            char c = mySerial->read();
+            //Serial.print(c);
+            if (gps.encode(c) && gps.location.isValid())
+            {
+                prevMeasTime = currMicros;
+                returnVal = true;
+                lastPacket.setLatitude(gps.location.lat());
+                lastPacket.setLongitude(gps.location.lng());
+                lastPacket.setAltitude(gps.altitude.meters());
 
-            // update the error on the packet
-            lastPacket.updateHeader(getHeader(currMicros));
+                // update the error on the packet
+                lastPacket.updateHeader(getHeader(currMicros));
+            }
         }
     }
     return returnVal;
