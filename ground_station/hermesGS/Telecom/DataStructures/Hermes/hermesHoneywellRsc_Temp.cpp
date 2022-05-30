@@ -17,7 +17,7 @@ void hermesHoneywellRsc_Temp::print() const {
 }
 
 bool hermesHoneywellRsc_Temp::updateTx(std::shared_ptr<Connector> connector) {
-    temperature =  12 + ((float) rand()/ RAND_MAX) * 20;
+    temperature =  24 + ((float) rand()/ RAND_MAX);
     return true;
 }
 

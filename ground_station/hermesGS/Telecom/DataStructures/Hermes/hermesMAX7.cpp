@@ -39,9 +39,9 @@ void hermesMAX7::print() const {
 }
 
 bool hermesMAX7::updateTx(std::shared_ptr<Connector> connector) {
-    latitude =  2;
-    longitude =  4;
-    altitude =  999000;
+    latitude =  46.5197*pow(10,7) + ((float)rand()/RAND_MAX)*100;
+    longitude =  6.5657*pow(10,7) + ((float)rand()/RAND_MAX)*100;
+    altitude =  490*1000 + ((float)rand()/RAND_MAX)*25000;
     return true;
 }
 
