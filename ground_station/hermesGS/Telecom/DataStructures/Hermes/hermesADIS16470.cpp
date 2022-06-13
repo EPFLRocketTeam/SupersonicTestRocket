@@ -31,7 +31,13 @@ void hermesADIS16470::print() const {
 }
 
 bool hermesADIS16470::updateTx(std::shared_ptr<Connector> connector) {
-
+    gyros[0] = 7 + ((float)rand()/RAND_MAX)*2;
+    gyros[1] = -17 + ((float)rand()/RAND_MAX)*2;
+    gyros[2] = 170 + ((float)rand()/RAND_MAX)*2;
+    acc[0] = 1 + ((float)rand()/RAND_MAX)*2;
+    acc[1] = 2 + ((float)rand()/RAND_MAX)*2;
+    acc[2] = 3 + ((float)rand()/RAND_MAX)*2;
+    temp = 17 + ((float)rand()/RAND_MAX)*2;
     return true;
 }
 

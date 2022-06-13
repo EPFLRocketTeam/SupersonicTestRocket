@@ -17,7 +17,7 @@ void hermesAD8556::print() const {
 }
 
 bool hermesAD8556::updateTx(std::shared_ptr<Connector> connector) {
-    thrust =  12 + ((float) rand()/ RAND_MAX) * 20;
+    thrust =  12 + ((float) rand()/ RAND_MAX) * 4;
     return true;
 }
 

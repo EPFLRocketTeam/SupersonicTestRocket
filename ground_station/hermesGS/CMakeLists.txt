@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6.2)
-project(ERT2020GS)
+project(hermesGS)
 
 ###############################################################
 # Set the build varialble to ON or OFF on your need
@@ -23,31 +23,25 @@ add_subdirectory(RF-UI-Interface)
 if (USE_XBEE)
     include_directories(Telecom/RFmodem/lib/serial/include/)
 
-    add_executable(AVsimulator src/AVsimulator.cpp)
-    add_executable(GSE_PLsimu src/GSE_PLsimu.cpp)
-    add_executable(TestPacket src/PacketXTest.cpp)
     add_executable(hermesGS src/HERMES_GS.cpp)
+    add_executable(hermesAVsim src/HERMES_AVsim.cpp)
 
     if (USE_GUI)
         find_package(Qt5Widgets)
         find_package(Qt5Charts)
         qt5_add_resources(RCC_SOURCES UI/assets.qrc)      # add resources to Gui
         add_subdirectory(UI)
-        add_executable(${PROJECT_NAME} ${RCC_SOURCES} src/ERT2020GS.cpp)
+        #add_executable(${PROJECT_NAME} ${RCC_SOURCES} src/ERT2020GS.cpp)
     endif (USE_GUI)
 
 endif (USE_XBEE)
 
 ############# link librarie to targets #######################
 if (USE_XBEE)
-    target_link_libraries(AVsimulator Telecom)
-    target_link_libraries(GSE_PLsimu Telecom)
-    target_link_libraries(TestPacket Telecom)
     target_link_libraries(hermesGS Telecom)
+    target_link_libraries(hermesAVsim Telecom)
 
-    add_executable(XbeeTest src/XbeeTest.cpp)
     include_directories(RFmodem/lib/serial/include/)
-    target_link_libraries(XbeeTest serial)
 
     if (USE_GUI)
         target_link_libraries(${PROJECT_NAME} GUI)

@@ -17,7 +17,7 @@ void hermesHoneywellRsc_Pressure::print() const {
 }
 
 bool hermesHoneywellRsc_Pressure::updateTx(std::shared_ptr<Connector> connector) {
-    pressure =  12 + ((float) rand()/ RAND_MAX) * 20;
+    pressure =  1 + ((float) rand()/ RAND_MAX);
     return true;
 }
 

@@ -24,10 +24,10 @@ void hermesAltimax::print() const {
 }
 
 bool hermesAltimax::updateTx(std::shared_ptr<Connector> connector) {
-    pinStates[0] = 1;
-    pinStates[1] = 0;
-    pinStates[2] = 0;
-    pinStates[3] = 1;
+    pinStates[0] = rand() & 1;
+    pinStates[1] = rand() & 1;
+    pinStates[2] = rand() & 1;
+    pinStates[3] = 0;   // padding byte
 
     return true;
 }

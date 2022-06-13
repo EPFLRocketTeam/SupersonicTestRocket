@@ -23,9 +23,9 @@ static void sig_handler(int _) {
 }
 
 int main(int argc, char** argv) {
-    std::cout << "Syntax : [Tx] ./hermesGS [DatagramID] [serial port]" << std::endl;
+    std::cout << "Syntax : [Tx] ./hermesGS [serial port] [DatagramID]" << std::endl;
     std::cout << "         [Rx] ./hermesGS [serial port]" << std::endl;
-    std::cout << "Syntax ex [Tx] : ./hermesGS 3 ttyS3" << std::endl;
+    std::cout << "Syntax ex [Tx] : ./hermesGS ttyS3 27" << std::endl;
 
     using namespace DatagramType;
 
@@ -37,8 +37,8 @@ int main(int argc, char** argv) {
 
     switch (argc) {
         case 3:
-            port = "/dev/" + std::string(argv[2]);
-            ID = (DatagramID) atoi(argv[1]);
+            port = "/dev/" + std::string(argv[1]);
+            ID = (DatagramID) atoi(argv[2]);
             modeTx = 1;             // Tx
             break;
         case 2:
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
             dataHandler.updateTx(ID);
             xbee.send(dataHandler.getPacket(ID));
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
             // Receiver
         else {

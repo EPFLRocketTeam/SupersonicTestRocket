@@ -20,8 +20,8 @@ void hermesAISx120SX::print() const {
 }
 
 bool hermesAISx120SX::updateTx(std::shared_ptr<Connector> connector) {
-    accel[0] = 1;
-    accel[1] = 2;
+    accel[0] = ((float)rand()/RAND_MAX);
+    accel[1] = ((float)rand()/RAND_MAX);
     return true;
 }
 
