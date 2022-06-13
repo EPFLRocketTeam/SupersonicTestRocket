@@ -64,16 +64,20 @@ bool AISx120SXWrapper::isDue(uint32_t currMicros, unused(volatile bool &triggere
   {
     // read the measurements from the sensor
     int16_t *rawMeas = aisObject.readAccel();
+    float xAcc = (float)(rawMeas[0]/4) * 0.015;
+    
 
-    if (lastPacket.getXaccel() != rawMeas[0] * SENSITIVITY ||
+    if (lastPacket.getXaccel() != xAcc ||
         lastPacket.getYaccel() != rawMeas[1] * SENSITIVITY) // data is new
     {
       returnVal = true;
       prevMeasTime = currMicros;
     }
     // copy new measurements into the old ones
-    lastPacket.setXaccel(rawMeas[0] * SENSITIVITY);
+    lastPacket.setXaccel(xAcc);//rawMeas[0] * SENSITIVITY);
     lastPacket.setYaccel(rawMeas[1] * SENSITIVITY);
+
+    //Serial.printf("[AIS2120SX] xAcc: %f ===== %f\n",xAcc,lastPacket.getXaccel());
 
     lastPacket.updateHeader(getHeader(currMicros));
   }

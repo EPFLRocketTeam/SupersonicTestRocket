@@ -186,7 +186,7 @@ public:
    */
   void setYaccel(float a_y)
   {
-    reinterpret_cast<AISx120SXBody *>(content)->accel[0] = a_y;
+    reinterpret_cast<AISx120SXBody *>(content)->accel[1] = a_y;
   }
 
   /**
@@ -215,8 +215,9 @@ private:
 
   // sensor properties for error checking and conversions
   static constexpr float SENSITIVITY = 1 / (68 * 4.); ///< [g/LSB]
-  static constexpr float ACC_MAX = 120;               ///< [g]
-  static constexpr float ACC_MIN = -120;              ///< [g]
+  static constexpr float ACC_MAX = 120.4;               ///< [g]
+  static constexpr float ACC_MIN = -120.5;              ///< [g]
+  static constexpr float RESCALE_FACTOR = ACC_MAX / (float)(1 << 14);
 
   AISx120SX aisObject;      ///< Underlying object
   static uint8_t sensorQty; ///< How many sensors of this type exist
